@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="CuentaEditDlg" widgetVar="CuentaEditDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.EditCuentaTitle}">
+            <h:form id="CuentaEditForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{cuentaController.selected != null}">
+                        <p:outputLabel value="#{bundle.EditCuentaLabel_idCuenta}" for="idCuenta" />
+                        <p:inputText id="idCuenta" value="#{cuentaController.selected.idCuenta}" title="#{bundle.EditCuentaTitle_idCuenta}" required="true" requiredMessage="#{bundle.EditCuentaRequiredMessage_idCuenta}"/>
+                        <p:outputLabel value="#{bundle.EditCuentaLabel_numeroCuenta}" for="numeroCuenta" />
+                        <p:inputText id="numeroCuenta" value="#{cuentaController.selected.numeroCuenta}" title="#{bundle.EditCuentaTitle_numeroCuenta}" required="true" requiredMessage="#{bundle.EditCuentaRequiredMessage_numeroCuenta}"/>
+                        <p:outputLabel value="#{bundle.EditCuentaLabel_descripcion}" for="descripcion" />
+                        <p:inputText id="descripcion" value="#{cuentaController.selected.descripcion}" title="#{bundle.EditCuentaTitle_descripcion}" required="true" requiredMessage="#{bundle.EditCuentaRequiredMessage_descripcion}"/>
+                        <p:outputLabel value="#{bundle.EditCuentaLabel_categoria}" for="categoria" />
+                        <p:inputText id="categoria" value="#{cuentaController.selected.categoria}" title="#{bundle.EditCuentaTitle_categoria}" required="true" requiredMessage="#{bundle.EditCuentaRequiredMessage_categoria}"/>
+                        <p:outputLabel value="#{bundle.EditCuentaLabel_saldoInicial}" for="saldoInicial" />
+                        <p:inputText id="saldoInicial" value="#{cuentaController.selected.saldoInicial}" title="#{bundle.EditCuentaTitle_saldoInicial}" required="true" requiredMessage="#{bundle.EditCuentaRequiredMessage_saldoInicial}"/>
+                        <p:outputLabel value="#{bundle.EditCuentaLabel_saldoFinal}" for="saldoFinal" />
+                        <p:inputText id="saldoFinal" value="#{cuentaController.selected.saldoFinal}" title="#{bundle.EditCuentaTitle_saldoFinal}" required="true" requiredMessage="#{bundle.EditCuentaRequiredMessage_saldoFinal}"/>
+                        <p:outputLabel value="#{bundle.EditCuentaLabel_idTipoCuenta}" for="idTipoCuenta" />
+                        <p:selectOneMenu id="idTipoCuenta" value="#{cuentaController.selected.idTipoCuenta}" required="true" requiredMessage="#{bundle.EditCuentaRequiredMessage_idTipoCuenta}">
+                            <f:selectItem itemLabel="#{bundle.SelectOneMessage}"/>
+                            <f:selectItems value="#{tipocuentaController.itemsAvailableSelectOne}"
+                                           var="idTipoCuentaItem"
+                                           itemValue="#{idTipoCuentaItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundle.EditCuentaLabel_idCuentaPadre}" for="idCuentaPadre" />
+                        <p:selectOneMenu id="idCuentaPadre" value="#{cuentaController.selected.idCuentaPadre}" >
+                            <f:selectItem itemLabel="#{bundle.SelectOneMessage}"/>
+                            <f:selectItems value="#{cuentaController.itemsAvailableSelectOne}"
+                                           var="idCuentaPadreItem"
+                                           itemValue="#{idCuentaPadreItem}"/>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{cuentaController.update}" value="#{bundle.Save}" update="display,:CuentaListForm:datalist,:growl" oncomplete="handleSubmit(args, 'CuentaEditDialog');"/>
+                    <p:commandButton value="#{bundle.Cancel}" onclick="CuentaEditDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="AsientoEditDlg" widgetVar="AsientoEditDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.EditAsientoTitle}">
+            <h:form id="AsientoEditForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{asientoController.selected != null}">
+                        <p:outputLabel value="#{bundle.EditAsientoLabel_idAsiento}" for="idAsiento" />
+                        <p:inputText id="idAsiento" value="#{asientoController.selected.idAsiento}" title="#{bundle.EditAsientoTitle_idAsiento}" required="true" requiredMessage="#{bundle.EditAsientoRequiredMessage_idAsiento}"/>
+                        <p:outputLabel value="#{bundle.EditAsientoLabel_numeroDiario}" for="numeroDiario" />
+                        <p:inputText id="numeroDiario" value="#{asientoController.selected.numeroDiario}" title="#{bundle.EditAsientoTitle_numeroDiario}" required="true" requiredMessage="#{bundle.EditAsientoRequiredMessage_numeroDiario}"/>
+                        <p:outputLabel value="#{bundle.EditAsientoLabel_periodo}" for="periodo" />
+                        <p:inputText id="periodo" value="#{asientoController.selected.periodo}" title="#{bundle.EditAsientoTitle_periodo}" required="true" requiredMessage="#{bundle.EditAsientoRequiredMessage_periodo}"/>
+                        <p:outputLabel value="#{bundle.EditAsientoLabel_fecha}" for="fecha" />
+                        <p:calendar id="fecha" pattern="MM/dd/yyyy" value="#{asientoController.selected.fecha}" title="#{bundle.EditAsientoTitle_fecha}" required="true" requiredMessage="#{bundle.EditAsientoRequiredMessage_fecha}" showOn="button"/>
+                        <p:outputLabel value="#{bundle.EditAsientoLabel_numeroAsiento}" for="numeroAsiento" />
+                        <p:inputText id="numeroAsiento" value="#{asientoController.selected.numeroAsiento}" title="#{bundle.EditAsientoTitle_numeroAsiento}" required="true" requiredMessage="#{bundle.EditAsientoRequiredMessage_numeroAsiento}"/>
+                        <p:outputLabel value="#{bundle.EditAsientoLabel_debe}" for="debe" />
+                        <p:inputText id="debe" value="#{asientoController.selected.debe}" title="#{bundle.EditAsientoTitle_debe}" required="true" requiredMessage="#{bundle.EditAsientoRequiredMessage_debe}"/>
+                        <p:outputLabel value="#{bundle.EditAsientoLabel_haber}" for="haber" />
+                        <p:inputText id="haber" value="#{asientoController.selected.haber}" title="#{bundle.EditAsientoTitle_haber}" required="true" requiredMessage="#{bundle.EditAsientoRequiredMessage_haber}"/>
+                        <p:outputLabel value="#{bundle.EditAsientoLabel_concepto}" for="concepto" />
+                        <p:inputText id="concepto" value="#{asientoController.selected.concepto}" title="#{bundle.EditAsientoTitle_concepto}" required="true" requiredMessage="#{bundle.EditAsientoRequiredMessage_concepto}"/>
+                        <p:outputLabel value="#{bundle.EditAsientoLabel_numeroDocumento}" for="numeroDocumento" />
+                        <p:inputText id="numeroDocumento" value="#{asientoController.selected.numeroDocumento}" title="#{bundle.EditAsientoTitle_numeroDocumento}" required="true" requiredMessage="#{bundle.EditAsientoRequiredMessage_numeroDocumento}"/>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{asientoController.update}" value="#{bundle.Save}" update="display,:AsientoListForm:datalist,:growl" oncomplete="handleSubmit(args, 'AsientoEditDialog');"/>
+                    <p:commandButton value="#{bundle.Cancel}" onclick="AsientoEditDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

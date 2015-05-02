@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="AsientoViewDlg" widgetVar="AsientoViewDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.ViewAsientoTitle}">
+            <h:form id="AsientoViewForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{asientoController.selected != null}">
+                        <h:outputText value="#{bundle.ViewAsientoLabel_idAsiento}"/>
+                        <h:outputText value="#{asientoController.selected.idAsiento}" title="#{bundle.ViewAsientoTitle_idAsiento}"/>
+                        <h:outputText value="#{bundle.ViewAsientoLabel_numeroDiario}"/>
+                        <h:outputText value="#{asientoController.selected.numeroDiario}" title="#{bundle.ViewAsientoTitle_numeroDiario}"/>
+                        <h:outputText value="#{bundle.ViewAsientoLabel_periodo}"/>
+                        <h:outputText value="#{asientoController.selected.periodo}" title="#{bundle.ViewAsientoTitle_periodo}"/>
+                        <h:outputText value="#{bundle.ViewAsientoLabel_fecha}"/>
+                        <h:outputText value="#{asientoController.selected.fecha}" title="#{bundle.ViewAsientoTitle_fecha}">
+                            <f:convertDateTime pattern="MM/dd/yyyy" />
+                        </h:outputText>
+                        <h:outputText value="#{bundle.ViewAsientoLabel_numeroAsiento}"/>
+                        <h:outputText value="#{asientoController.selected.numeroAsiento}" title="#{bundle.ViewAsientoTitle_numeroAsiento}"/>
+                        <h:outputText value="#{bundle.ViewAsientoLabel_debe}"/>
+                        <h:outputText value="#{asientoController.selected.debe}" title="#{bundle.ViewAsientoTitle_debe}"/>
+                        <h:outputText value="#{bundle.ViewAsientoLabel_haber}"/>
+                        <h:outputText value="#{asientoController.selected.haber}" title="#{bundle.ViewAsientoTitle_haber}"/>
+                        <h:outputText value="#{bundle.ViewAsientoLabel_concepto}"/>
+                        <h:outputText value="#{asientoController.selected.concepto}" title="#{bundle.ViewAsientoTitle_concepto}"/>
+                        <h:outputText value="#{bundle.ViewAsientoLabel_numeroDocumento}"/>
+                        <h:outputText value="#{asientoController.selected.numeroDocumento}" title="#{bundle.ViewAsientoTitle_numeroDocumento}"/>
+                    </p:panelGrid>
+                    <p:commandButton value="#{bundle.Close}" onclick="AsientoViewDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

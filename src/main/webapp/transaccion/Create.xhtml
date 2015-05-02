@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="TransaccionCreateDlg" widgetVar="TransaccionCreateDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.CreateTransaccionTitle}">
+            <h:form id="TransaccionCreateForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{transaccionController.selected != null}">
+                        <p:outputLabel value="#{bundle.CreateTransaccionLabel_idTransaccion}" for="idTransaccion" />
+                        <p:inputText id="idTransaccion" value="#{transaccionController.selected.idTransaccion}" title="#{bundle.CreateTransaccionTitle_idTransaccion}" required="true" requiredMessage="#{bundle.CreateTransaccionRequiredMessage_idTransaccion}"/>
+                        <p:outputLabel value="#{bundle.CreateTransaccionLabel_debe}" for="debe" />
+                        <p:inputText id="debe" value="#{transaccionController.selected.debe}" title="#{bundle.CreateTransaccionTitle_debe}" required="true" requiredMessage="#{bundle.CreateTransaccionRequiredMessage_debe}"/>
+                        <p:outputLabel value="#{bundle.CreateTransaccionLabel_haber}" for="haber" />
+                        <p:inputText id="haber" value="#{transaccionController.selected.haber}" title="#{bundle.CreateTransaccionTitle_haber}" required="true" requiredMessage="#{bundle.CreateTransaccionRequiredMessage_haber}"/>
+                        <p:outputLabel value="#{bundle.CreateTransaccionLabel_referencia}" for="referencia" />
+                        <p:inputText id="referencia" value="#{transaccionController.selected.referencia}" title="#{bundle.CreateTransaccionTitle_referencia}" required="true" requiredMessage="#{bundle.CreateTransaccionRequiredMessage_referencia}"/>
+                        <p:outputLabel value="#{bundle.CreateTransaccionLabel_idAsiento}" for="idAsiento" />
+                        <p:selectOneMenu id="idAsiento" value="#{transaccionController.selected.idAsiento}" required="true" requiredMessage="#{bundle.EditTransaccionRequiredMessage_idAsiento}">
+                            <f:selectItems value="#{asientoController.itemsAvailableSelectOne}"
+                                           var="idAsientoItem"
+                                           itemValue="#{idAsientoItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundle.CreateTransaccionLabel_idCuenta}" for="idCuenta" />
+                        <p:selectOneMenu id="idCuenta" value="#{transaccionController.selected.idCuenta}" required="true" requiredMessage="#{bundle.EditTransaccionRequiredMessage_idCuenta}">
+                            <f:selectItems value="#{cuentaController.itemsAvailableSelectOne}"
+                                           var="idCuentaItem"
+                                           itemValue="#{idCuentaItem}"/>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{transaccionController.create}" value="#{bundle.Save}" update="display,:TransaccionListForm:datalist,:growl" oncomplete="handleSubmit(args,'TransaccionCreateDialog');"/>
+                    <p:commandButton value="#{bundle.Cancel}" onclick="TransaccionCreateDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

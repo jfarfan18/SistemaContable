@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="CuentaViewDlg" widgetVar="CuentaViewDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.ViewCuentaTitle}">
+            <h:form id="CuentaViewForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{cuentaController.selected != null}">
+                        <h:outputText value="#{bundle.ViewCuentaLabel_idCuenta}"/>
+                        <h:outputText value="#{cuentaController.selected.idCuenta}" title="#{bundle.ViewCuentaTitle_idCuenta}"/>
+                        <h:outputText value="#{bundle.ViewCuentaLabel_numeroCuenta}"/>
+                        <h:outputText value="#{cuentaController.selected.numeroCuenta}" title="#{bundle.ViewCuentaTitle_numeroCuenta}"/>
+                        <h:outputText value="#{bundle.ViewCuentaLabel_descripcion}"/>
+                        <h:outputText value="#{cuentaController.selected.descripcion}" title="#{bundle.ViewCuentaTitle_descripcion}"/>
+                        <h:outputText value="#{bundle.ViewCuentaLabel_categoria}"/>
+                        <h:outputText value="#{cuentaController.selected.categoria}" title="#{bundle.ViewCuentaTitle_categoria}"/>
+                        <h:outputText value="#{bundle.ViewCuentaLabel_saldoInicial}"/>
+                        <h:outputText value="#{cuentaController.selected.saldoInicial}" title="#{bundle.ViewCuentaTitle_saldoInicial}"/>
+                        <h:outputText value="#{bundle.ViewCuentaLabel_saldoFinal}"/>
+                        <h:outputText value="#{cuentaController.selected.saldoFinal}" title="#{bundle.ViewCuentaTitle_saldoFinal}"/>
+                        <h:outputText value="#{bundle.ViewCuentaLabel_idTipoCuenta}"/>
+                        <h:outputText value="#{cuentaController.selected.idTipoCuenta}" title="#{bundle.ViewCuentaTitle_idTipoCuenta}"/>
+                        <h:outputText value="#{bundle.ViewCuentaLabel_idCuentaPadre}"/>
+                        <h:outputText value="#{cuentaController.selected.idCuentaPadre}" title="#{bundle.ViewCuentaTitle_idCuentaPadre}"/>
+                    </p:panelGrid>
+                    <p:commandButton value="#{bundle.Close}" onclick="CuentaViewDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="CuentaCreateDlg" widgetVar="CuentaCreateDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.CreateCuentaTitle}">
+            <h:form id="CuentaCreateForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{cuentaController.selected != null}">
+                        <p:outputLabel value="#{bundle.CreateCuentaLabel_idCuenta}" for="idCuenta" />
+                        <p:inputText id="idCuenta" value="#{cuentaController.selected.idCuenta}" title="#{bundle.CreateCuentaTitle_idCuenta}" required="true" requiredMessage="#{bundle.CreateCuentaRequiredMessage_idCuenta}"/>
+                        <p:outputLabel value="#{bundle.CreateCuentaLabel_numeroCuenta}" for="numeroCuenta" />
+                        <p:inputText id="numeroCuenta" value="#{cuentaController.selected.numeroCuenta}" title="#{bundle.CreateCuentaTitle_numeroCuenta}" required="true" requiredMessage="#{bundle.CreateCuentaRequiredMessage_numeroCuenta}"/>
+                        <p:outputLabel value="#{bundle.CreateCuentaLabel_descripcion}" for="descripcion" />
+                        <p:inputText id="descripcion" value="#{cuentaController.selected.descripcion}" title="#{bundle.CreateCuentaTitle_descripcion}" required="true" requiredMessage="#{bundle.CreateCuentaRequiredMessage_descripcion}"/>
+                        <p:outputLabel value="#{bundle.CreateCuentaLabel_categoria}" for="categoria" />
+                        <p:inputText id="categoria" value="#{cuentaController.selected.categoria}" title="#{bundle.CreateCuentaTitle_categoria}" required="true" requiredMessage="#{bundle.CreateCuentaRequiredMessage_categoria}"/>
+                        <p:outputLabel value="#{bundle.CreateCuentaLabel_saldoInicial}" for="saldoInicial" />
+                        <p:inputText id="saldoInicial" value="#{cuentaController.selected.saldoInicial}" title="#{bundle.CreateCuentaTitle_saldoInicial}" required="true" requiredMessage="#{bundle.CreateCuentaRequiredMessage_saldoInicial}"/>
+                        <p:outputLabel value="#{bundle.CreateCuentaLabel_saldoFinal}" for="saldoFinal" />
+                        <p:inputText id="saldoFinal" value="#{cuentaController.selected.saldoFinal}" title="#{bundle.CreateCuentaTitle_saldoFinal}" required="true" requiredMessage="#{bundle.CreateCuentaRequiredMessage_saldoFinal}"/>
+                        <p:outputLabel value="#{bundle.CreateCuentaLabel_idTipoCuenta}" for="idTipoCuenta" />
+                        <p:selectOneMenu id="idTipoCuenta" value="#{cuentaController.selected.idTipoCuenta}" required="true" requiredMessage="#{bundle.EditCuentaRequiredMessage_idTipoCuenta}">
+                            <f:selectItems value="#{tipocuentaController.itemsAvailableSelectOne}"
+                                           var="idTipoCuentaItem"
+                                           itemValue="#{idTipoCuentaItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundle.CreateCuentaLabel_idCuentaPadre}" for="idCuentaPadre" />
+                        <p:selectOneMenu id="idCuentaPadre" value="#{cuentaController.selected.idCuentaPadre}" >
+                            <f:selectItems value="#{cuentaController.itemsAvailableSelectOne}"
+                                           var="idCuentaPadreItem"
+                                           itemValue="#{idCuentaPadreItem}"/>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{cuentaController.create}" value="#{bundle.Save}" update="display,:CuentaListForm:datalist,:growl" oncomplete="handleSubmit(args,'CuentaCreateDialog');"/>
+                    <p:commandButton value="#{bundle.Cancel}" onclick="CuentaCreateDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

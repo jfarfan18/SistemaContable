@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="TransaccionViewDlg" widgetVar="TransaccionViewDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.ViewTransaccionTitle}">
+            <h:form id="TransaccionViewForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{transaccionController.selected != null}">
+                        <h:outputText value="#{bundle.ViewTransaccionLabel_idTransaccion}"/>
+                        <h:outputText value="#{transaccionController.selected.idTransaccion}" title="#{bundle.ViewTransaccionTitle_idTransaccion}"/>
+                        <h:outputText value="#{bundle.ViewTransaccionLabel_debe}"/>
+                        <h:outputText value="#{transaccionController.selected.debe}" title="#{bundle.ViewTransaccionTitle_debe}"/>
+                        <h:outputText value="#{bundle.ViewTransaccionLabel_haber}"/>
+                        <h:outputText value="#{transaccionController.selected.haber}" title="#{bundle.ViewTransaccionTitle_haber}"/>
+                        <h:outputText value="#{bundle.ViewTransaccionLabel_referencia}"/>
+                        <h:outputText value="#{transaccionController.selected.referencia}" title="#{bundle.ViewTransaccionTitle_referencia}"/>
+                        <h:outputText value="#{bundle.ViewTransaccionLabel_idAsiento}"/>
+                        <h:outputText value="#{transaccionController.selected.idAsiento}" title="#{bundle.ViewTransaccionTitle_idAsiento}"/>
+                        <h:outputText value="#{bundle.ViewTransaccionLabel_idCuenta}"/>
+                        <h:outputText value="#{transaccionController.selected.idCuenta}" title="#{bundle.ViewTransaccionTitle_idCuenta}"/>
+                    </p:panelGrid>
+                    <p:commandButton value="#{bundle.Close}" onclick="TransaccionViewDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>
