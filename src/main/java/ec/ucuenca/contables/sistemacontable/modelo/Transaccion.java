@@ -55,7 +55,7 @@ public class Transaccion implements Serializable {
     private BigDecimal haber;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 400)
+    @Size(min = 0, max = 400)
     @Column(name = "referencia")
     private String referencia;
     @JoinColumn(name = "idAsiento", referencedColumnName = "idAsiento")

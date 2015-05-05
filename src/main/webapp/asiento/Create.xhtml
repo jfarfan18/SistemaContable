@@ -8,31 +8,155 @@
 
     <ui:composition>
 
-        <p:dialog id="AsientoCreateDlg" widgetVar="AsientoCreateDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.CreateAsientoTitle}">
+        <p:dialog id="AsientoCreateDlg" widgetVar="AsientoCreateDialog" modal="true" resizable="false" appendTo="@(body)" header="NUEVO ASIENTO CONTABLE">
             <h:form id="AsientoCreateForm">
-                <h:panelGroup id="display">
-                    <p:panelGrid columns="2" rendered="#{asientoController.selected != null}">
-                        <p:outputLabel value="#{bundle.CreateAsientoLabel_idAsiento}" for="idAsiento" />
-                        <p:inputText id="idAsiento" value="#{asientoController.selected.idAsiento}" title="#{bundle.CreateAsientoTitle_idAsiento}" required="true" requiredMessage="#{bundle.CreateAsientoRequiredMessage_idAsiento}"/>
-                        <p:outputLabel value="#{bundle.CreateAsientoLabel_numeroDiario}" for="numeroDiario" />
-                        <p:inputText id="numeroDiario" value="#{asientoController.selected.numeroDiario}" title="#{bundle.CreateAsientoTitle_numeroDiario}" required="true" requiredMessage="#{bundle.CreateAsientoRequiredMessage_numeroDiario}"/>
-                        <p:outputLabel value="#{bundle.CreateAsientoLabel_periodo}" for="periodo" />
-                        <p:inputText id="periodo" value="#{asientoController.selected.periodo}" title="#{bundle.CreateAsientoTitle_periodo}" required="true" requiredMessage="#{bundle.CreateAsientoRequiredMessage_periodo}"/>
-                        <p:outputLabel value="#{bundle.CreateAsientoLabel_fecha}" for="fecha" />
-                        <p:calendar id="fecha" pattern="MM/dd/yyyy" value="#{asientoController.selected.fecha}" title="#{bundle.EditAsientoTitle_fecha}" required="true" requiredMessage="#{bundle.EditAsientoRequiredMessage_fecha}" showOn="button"/>
-                        <p:outputLabel value="#{bundle.CreateAsientoLabel_numeroAsiento}" for="numeroAsiento" />
-                        <p:inputText id="numeroAsiento" value="#{asientoController.selected.numeroAsiento}" title="#{bundle.CreateAsientoTitle_numeroAsiento}" required="true" requiredMessage="#{bundle.CreateAsientoRequiredMessage_numeroAsiento}"/>
-                        <p:outputLabel value="#{bundle.CreateAsientoLabel_debe}" for="debe" />
-                        <p:inputText id="debe" value="#{asientoController.selected.debe}" title="#{bundle.CreateAsientoTitle_debe}" required="true" requiredMessage="#{bundle.CreateAsientoRequiredMessage_debe}"/>
-                        <p:outputLabel value="#{bundle.CreateAsientoLabel_haber}" for="haber" />
-                        <p:inputText id="haber" value="#{asientoController.selected.haber}" title="#{bundle.CreateAsientoTitle_haber}" required="true" requiredMessage="#{bundle.CreateAsientoRequiredMessage_haber}"/>
-                        <p:outputLabel value="#{bundle.CreateAsientoLabel_concepto}" for="concepto" />
-                        <p:inputText id="concepto" value="#{asientoController.selected.concepto}" title="#{bundle.CreateAsientoTitle_concepto}" required="true" requiredMessage="#{bundle.CreateAsientoRequiredMessage_concepto}"/>
-                        <p:outputLabel value="#{bundle.CreateAsientoLabel_numeroDocumento}" for="numeroDocumento" />
-                        <p:inputText id="numeroDocumento" value="#{asientoController.selected.numeroDocumento}" title="#{bundle.CreateAsientoTitle_numeroDocumento}" required="true" requiredMessage="#{bundle.CreateAsientoRequiredMessage_numeroDocumento}"/>
-                    </p:panelGrid>
-                    <p:commandButton actionListener="#{asientoController.create}" value="#{bundle.Save}" update="display,:AsientoListForm:datalist,:growl" oncomplete="handleSubmit(args,'AsientoCreateDialog');"/>
-                    <p:commandButton value="#{bundle.Cancel}" onclick="AsientoCreateDialog.hide()"/>
+                <h:panelGroup id="display">                    
+
+                    <h:panelGrid columns="1" rendered="#{asientoController.selected != null}">
+                        <h:panelGrid columns="6">
+                            <f:facet name="header">
+                                <h:outputText value="PERIODO"/>
+
+                                <p:separator/>
+                            </f:facet>
+                            <p:outputLabel value="Número Diario" 
+                                           for="numeroDiario" />
+                            <p:inputText id="numeroDiario" 
+                                         value="#{asientoController.selected.numeroDiario}" 
+                                         title="Numero Diario" />
+                            <p:outputLabel value="Periodo" 
+                                           for="periodo" />
+                            <p:inputText id="periodo" 
+                                         value="#{asientoController.selected.periodo}" 
+                                         title="#{bundle.CreateAsientoTitle_periodo}"/>
+                            <p:outputLabel value="Fecha" 
+                                           for="fecha" />
+                            <p:calendar id="fecha" 
+                                        pattern="dd/MM/yyyy" 
+                                        value="#{asientoController.selected.fecha}" 
+                                        title="#{bundle.EditAsientoTitle_fecha}"
+                                        showOn="button"/>
+
+                        </h:panelGrid>
+                        <h:panelGrid columns="2">
+                            <f:facet name="header">
+                                <h:outputText value="CABECERA"/>
+                                <p:separator/>
+                            </f:facet>
+                            <p:outputLabel value="Concepto" 
+                                           for="concepto" />
+                            <p:inputText id="concepto" 
+                                         value="#{asientoController.selected.concepto}" 
+                                         title="#{bundle.CreateAsientoTitle_concepto}"
+                                         size="150"/>
+                            <p:outputLabel value="Numero Documento" 
+                                           for="numeroDocumento" />
+                            <p:inputText id="numeroDocumento" 
+                                         value="#{asientoController.selected.numeroDocumento}" 
+                                         title="#{bundle.CreateAsientoTitle_numeroDocumento}" />
+
+                        </h:panelGrid>
+                        <h:panelGrid columns="2">
+                            <f:facet name="header">
+                                <h:outputText value="DETALLE"/>
+                                <p:separator/>
+                            </f:facet>
+                            <p:outputLabel value="Cuenta" 
+                                           for="cuenta" />
+                            <p:selectOneMenu id="cuenta"
+                                             value="#{asientoController.nuevaTransaccion.idCuenta}" 
+                                             effect="fade"
+                                             filter="true" 
+                                             filterMatchMode="startsWith">
+                                <f:selectItems value="#{cuentaController.itemsAvailableSelectOne}"
+                                               var="cuenta"
+                                               itemValue="#{cuenta}"
+                                               itemLabel="#{cuenta.descripcion}"
+                                               itemDescription="#{cuenta.numeroCuenta}"/>
+                            </p:selectOneMenu>
+                        </h:panelGrid>
+                    </h:panelGrid>
+                    <h:panelGrid columns="6">
+                        <p:outputLabel value="Valor" 
+                                       for="valor" />
+                        <p:inputText id="valor" 
+                                     value="#{asientoController.valorTransaccion}" 
+                                     title="Valor de la transaccion"/>
+                        <p:outputLabel value="Tipo" 
+                                       for="tipo" />
+                        <p:selectOneMenu id="tipo" 
+                                         value="#{asientoController.tipoValor}">
+                            <f:selectItem itemLabel="Debe" itemValue="D" />
+                            <f:selectItem itemLabel="Haber" itemValue="H" />
+                        </p:selectOneMenu>
+                        <p:outputLabel value="Referencia" 
+                                       for="descripcion" />
+                        <p:inputText id="descripcion" 
+                                     value="#{asientoController.nuevaTransaccion.referencia}" 
+                                     title="Referencia de la transaccion"
+                                     size="100"/>
+                    </h:panelGrid>
+                    <p:commandButton action="#{asientoController.agregarTransaccion}" value="Agregar" update="display,:AsientoCreateForm:transaccionesTbl,:growl" />
+
+
+                    <p:dataTable id="transaccionesTbl" 
+                                 var="trans" 
+                                 value="#{asientoController.selected.transaccionList}" 
+                                 editable="true" 
+                                 editMode="cell" 
+                                 widgetVar="cellTrans">
+                        <f:facet name="header">
+                            Asiento
+                        </f:facet>
+                        
+                        <p:ajax event="cellEdit" listener="#{asientoController.onCellEdit}" update=":growl" />
+                        
+                        <p:column headerText="Cuenta">
+                            <p:cellEditor>
+                                <f:facet name="output"><h:outputText value="#{trans.idCuenta.descripcion}" title="#{trans.idCuenta.numeroCuenta}" /></f:facet>
+                                <f:facet name="input">
+                                    <p:selectOneMenu id="cuentaEdit"
+                                                     value="#{trans.idCuenta}" 
+                                                     effect="fade"
+                                                     filter="true" 
+                                                     filterMatchMode="startsWith">
+                                        <f:selectItems value="#{cuentaController.itemsAvailableSelectOne}"
+                                                       var="cuenta"
+                                                       itemValue="#{cuenta}"
+                                                       itemLabel="#{cuenta.descripcion}"
+                                                       itemDescription="#{cuenta.numeroCuenta}"/>
+                                    </p:selectOneMenu>
+
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+
+                        <p:column headerText="Debe">
+                            <p:cellEditor>
+                                <f:facet name="output"><h:outputText value="#{trans.debe}" /></f:facet>
+                                <f:facet name="input"><p:inputText value="#{trans.debe}"/></f:facet>
+                            </p:cellEditor>
+                        </p:column>
+                        
+                        <p:column headerText="Haber">
+                            <p:cellEditor>
+                                <f:facet name="output"><h:outputText value="#{trans.haber}" /></f:facet>
+                                <f:facet name="input"><p:inputText value="#{trans.haber}"/></f:facet>
+                            </p:cellEditor>
+                        </p:column>
+                        
+                        <p:column headerText="Referencia">
+                            <p:cellEditor>
+                                <f:facet name="output"><h:outputText value="#{trans.referencia}" /></f:facet>
+                                <f:facet name="input"><p:inputText value="#{trans.referencia}"/></f:facet>
+                            </p:cellEditor>
+                        </p:column>
+
+                    </p:dataTable>
+
+
+                    <p:commandButton actionListener="#{asientoController.create}" value="Guardar" update="display,:AsientoListForm:datalist,:growl" oncomplete="handleSubmit(args,'AsientoCreateDialog');"/>
+                    <p:commandButton value="Cancelar" onclick="AsientoCreateDialog.hide()"/>
                 </h:panelGroup>
             </h:form>
         </p:dialog>

@@ -1,23 +1,29 @@
 package ec.ucuenca.contables.sistemacontable.controlador;
 
-import ec.ucuenca.contables.sistemacontable.modelo.Asiento;
 import ec.ucuenca.contables.sistemacontable.controlador.util.JsfUtil;
 import ec.ucuenca.contables.sistemacontable.controlador.util.JsfUtil.PersistAction;
+import ec.ucuenca.contables.sistemacontable.modelo.Asiento;
+import ec.ucuenca.contables.sistemacontable.modelo.Cuenta;
+import ec.ucuenca.contables.sistemacontable.modelo.Transaccion;
 import ec.ucuenca.contables.sistemacontable.negocio.AsientoFacade;
-
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.scene.control.TableColumn.CellEditEvent;
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
-import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
+import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
+import javax.inject.Named;
 
 @Named("asientoController")
 @SessionScoped
@@ -27,8 +33,38 @@ public class AsientoController implements Serializable {
     private ec.ucuenca.contables.sistemacontable.negocio.AsientoFacade ejbFacade;
     private List<Asiento> items = null;
     private Asiento selected;
+    private Transaccion nuevaTransaccion;
+    private double valorTransaccion;
+    private char tipoValor;
+    private Transaccion transaccionSeleccion;
 
     public AsientoController() {
+    }
+        
+    
+    public void agregarTransaccion(){
+        System.out.println("Entrooooo");
+        if (this.getTipoValor()=='D'){
+            nuevaTransaccion.setDebe(new BigDecimal(this.valorTransaccion));
+            nuevaTransaccion.setHaber(new BigDecimal(0));}
+        if (this.getTipoValor()=='H'){
+            nuevaTransaccion.setHaber(new BigDecimal(this.valorTransaccion));
+            nuevaTransaccion.setDebe(new BigDecimal(0));}
+        selected.getTransaccionList().add(nuevaTransaccion);
+        nuevaTransaccion=new Transaccion();
+        this.valorTransaccion=0;
+        System.out.println(selected.getTransaccionList().size());
+    }
+    
+    public void onCellEdit(CellEditEvent event) {
+        Object oldValue = event.getOldValue();
+        Object newValue = event.getNewValue();
+//        
+//         
+//        if(newValue != null && !newValue.equals(oldValue)) {
+//            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Cell Changed", "Old: " + oldValue + ", New:" + newValue);
+//            FacesContext.getCurrentInstance().addMessage(null, msg);
+//        }
     }
 
     public Asiento getSelected() {
@@ -51,6 +87,9 @@ public class AsientoController implements Serializable {
 
     public Asiento prepareCreate() {
         selected = new Asiento();
+        selected.setTransaccionList(new ArrayList<Transaccion>());
+        selected.setFecha(new Date());
+        nuevaTransaccion=new Transaccion();
         initializeEmbeddableKey();
         return selected;
     }
@@ -121,6 +160,63 @@ public class AsientoController implements Serializable {
         return getFacade().findAll();
     }
 
+    /**
+     * @return the nuevaTransaccion
+     */
+    public Transaccion getNuevaTransaccion() {
+        return nuevaTransaccion;
+    }
+
+    /**
+     * @param nuevaTransaccion the nuevaTransaccion to set
+     */
+    public void setNuevaTransaccion(Transaccion nuevaTransaccion) {
+        this.nuevaTransaccion = nuevaTransaccion;
+    }
+
+    /**
+     * @return the valorTransaccion
+     */
+    public double getValorTransaccion() {
+        return valorTransaccion;
+    }
+
+    /**
+     * @param valorTransaccion the valorTransaccion to set
+     */
+    public void setValorTransaccion(double valorTransaccion) {
+        this.valorTransaccion = valorTransaccion;
+    }
+
+    /**
+     * @return the tipoValor
+     */
+    public char getTipoValor() {
+        return tipoValor;
+    }
+
+    /**
+     * @param tipoValor the tipoValor to set
+     */
+    public void setTipoValor(char tipoValor) {
+        this.tipoValor = tipoValor;
+    }
+
+    /**
+     * @return the transaccionSeleccion
+     */
+    public Transaccion getTransaccionSeleccion() {
+        return transaccionSeleccion;
+    }
+
+    /**
+     * @param transaccionSeleccion the transaccionSeleccion to set
+     */
+    public void setTransaccionSeleccion(Transaccion transaccionSeleccion) {
+        this.transaccionSeleccion = transaccionSeleccion;
+    }
+
+   
     @FacesConverter(forClass = Asiento.class)
     public static class AsientoControllerConverter implements Converter {
 

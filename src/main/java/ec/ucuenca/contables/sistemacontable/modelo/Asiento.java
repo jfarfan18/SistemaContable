@@ -48,6 +48,12 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Asiento.findByConcepto", query = "SELECT a FROM Asiento a WHERE a.concepto = :concepto"),
     @NamedQuery(name = "Asiento.findByNumeroDocumento", query = "SELECT a FROM Asiento a WHERE a.numeroDocumento = :numeroDocumento")})
 public class Asiento implements Serializable {
+    @Column(name = "numeroDiario")
+    private Integer numeroDiario;
+    @Column(name = "periodo")
+    private Integer periodo;
+    @Column(name = "numeroAsiento")
+    private Integer numeroAsiento;
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -56,21 +62,9 @@ public class Asiento implements Serializable {
     private Integer idAsiento;
     @Basic(optional = false)
     @NotNull
-    @Column(name = "numeroDiario")
-    private int numeroDiario;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "periodo")
-    private int periodo;
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "fecha")
     @Temporal(TemporalType.DATE)
     private Date fecha;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "numeroAsiento")
-    private int numeroAsiento;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Basic(optional = false)
     @NotNull
@@ -82,12 +76,12 @@ public class Asiento implements Serializable {
     private BigDecimal haber;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 500)
+    @Size(min = 0, max = 500)
     @Column(name = "concepto")
     private String concepto;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 45)
+    @Size(min = 0, max = 45)
     @Column(name = "numeroDocumento")
     private String numeroDocumento;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idAsiento", fetch = FetchType.LAZY)
@@ -120,21 +114,6 @@ public class Asiento implements Serializable {
         this.idAsiento = idAsiento;
     }
 
-    public int getNumeroDiario() {
-        return numeroDiario;
-    }
-
-    public void setNumeroDiario(int numeroDiario) {
-        this.numeroDiario = numeroDiario;
-    }
-
-    public int getPeriodo() {
-        return periodo;
-    }
-
-    public void setPeriodo(int periodo) {
-        this.periodo = periodo;
-    }
 
     public Date getFecha() {
         return fecha;
@@ -144,13 +123,6 @@ public class Asiento implements Serializable {
         this.fecha = fecha;
     }
 
-    public int getNumeroAsiento() {
-        return numeroAsiento;
-    }
-
-    public void setNumeroAsiento(int numeroAsiento) {
-        this.numeroAsiento = numeroAsiento;
-    }
 
     public BigDecimal getDebe() {
         return debe;
@@ -216,6 +188,30 @@ public class Asiento implements Serializable {
     @Override
     public String toString() {
         return "ec.ucuenca.contables.sistemacontable.modelo.Asiento[ idAsiento=" + idAsiento + " ]";
+    }
+
+    public Integer getNumeroDiario() {
+        return numeroDiario;
+    }
+
+    public void setNumeroDiario(Integer numeroDiario) {
+        this.numeroDiario = numeroDiario;
+    }
+
+    public Integer getPeriodo() {
+        return periodo;
+    }
+
+    public void setPeriodo(Integer periodo) {
+        this.periodo = periodo;
+    }
+
+    public Integer getNumeroAsiento() {
+        return numeroAsiento;
+    }
+
+    public void setNumeroAsiento(Integer numeroAsiento) {
+        this.numeroAsiento = numeroAsiento;
     }
     
 }
