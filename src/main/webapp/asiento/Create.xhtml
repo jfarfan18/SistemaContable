@@ -10,10 +10,9 @@
 
         <p:dialog id="AsientoCreateDlg" widgetVar="AsientoCreateDialog" modal="true" resizable="false" appendTo="@(body)" header="NUEVO ASIENTO CONTABLE">
             <h:form id="AsientoCreateForm">
-                <h:panelGroup id="display">                    
-
+                <h:panelGroup id="display" >   
                     <h:panelGrid columns="1" rendered="#{asientoController.selected != null}">
-                        <h:panelGrid columns="6">
+                        <h:panelGrid columns="6" >
                             <f:facet name="header">
                                 <h:outputText value="PERIODO"/>
 
@@ -38,7 +37,7 @@
                                         showOn="button"/>
 
                         </h:panelGrid>
-                        <h:panelGrid columns="2">
+                        <h:panelGrid columns="2" >
                             <f:facet name="header">
                                 <h:outputText value="CABECERA"/>
                                 <p:separator/>
@@ -96,7 +95,7 @@
                                      title="Referencia de la transaccion"
                                      size="100"/>
                     </h:panelGrid>
-                    <p:commandButton action="#{asientoController.agregarTransaccion}" value="Agregar" update="display,:AsientoCreateForm:transaccionesTbl,:growl" />
+                    <p:commandButton actionListener ="#{asientoController.agregarTransaccion}" value="Agregar" update="cuenta,valor,tipo,descripcion,display,:AsientoCreateForm:transaccionesTbl,:growl" />
 
 
                     <p:dataTable id="transaccionesTbl" 

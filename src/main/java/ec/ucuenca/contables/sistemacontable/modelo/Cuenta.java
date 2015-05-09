@@ -45,6 +45,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Cuenta.findBySaldoFinal", query = "SELECT c FROM Cuenta c WHERE c.saldoFinal = :saldoFinal")})
 public class Cuenta implements Serializable {
     private static final long serialVersionUID = 1L;
+    public static String findByCatgoria="Cuenta.findByCategoria";
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)

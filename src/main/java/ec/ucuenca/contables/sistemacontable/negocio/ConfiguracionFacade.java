@@ -6,19 +6,17 @@
 
 package ec.ucuenca.contables.sistemacontable.negocio;
 
-import ec.ucuenca.contables.sistemacontable.modelo.Cuenta;
-import java.util.List;
+import ec.ucuenca.contables.sistemacontable.modelo.Configuracion;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 
 /**
  *
  * @author Farfan
  */
 @Stateless
-public class CuentaFacade extends AbstractFacade<Cuenta> {
+public class ConfiguracionFacade extends AbstractFacade<Configuracion> {
     @PersistenceContext(unitName = "ec.ucuenca.contables_SistemaContable_war_1.0-SNAPSHOTPU")
     private EntityManager em;
 
@@ -27,14 +25,8 @@ public class CuentaFacade extends AbstractFacade<Cuenta> {
         return em;
     }
 
-    public CuentaFacade() {
-        super(Cuenta.class);
-    }
-    
-    public List<Cuenta> getCuentasDetale() {
-        Query query = this.em.createNamedQuery(Cuenta.findByCatgoria);
-        query.setParameter("categoria",'D');
-        return query.getResultList();
+    public ConfiguracionFacade() {
+        super(Configuracion.class);
     }
     
 }

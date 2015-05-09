@@ -3,9 +3,11 @@ package ec.ucuenca.contables.sistemacontable.controlador;
 import ec.ucuenca.contables.sistemacontable.controlador.util.JsfUtil;
 import ec.ucuenca.contables.sistemacontable.controlador.util.JsfUtil.PersistAction;
 import ec.ucuenca.contables.sistemacontable.modelo.Asiento;
+import ec.ucuenca.contables.sistemacontable.modelo.Configuracion;
 import ec.ucuenca.contables.sistemacontable.modelo.Cuenta;
 import ec.ucuenca.contables.sistemacontable.modelo.Transaccion;
 import ec.ucuenca.contables.sistemacontable.negocio.AsientoFacade;
+import ec.ucuenca.contables.sistemacontable.negocio.TransaccionFacade;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -31,6 +33,13 @@ public class AsientoController implements Serializable {
 
     @EJB
     private ec.ucuenca.contables.sistemacontable.negocio.AsientoFacade ejbFacade;
+
+    @EJB
+    private ec.ucuenca.contables.sistemacontable.negocio.ConfiguracionFacade ejbFacadeConfiguracionFacade;
+    
+    @EJB
+    private TransaccionFacade ejbFacadeTransaccion;
+
     private List<Asiento> items = null;
     private Asiento selected;
     private Transaccion nuevaTransaccion;
@@ -40,22 +49,31 @@ public class AsientoController implements Serializable {
 
     public AsientoController() {
     }
-        
-    
-    public void agregarTransaccion(){
+
+    public void agregarTransaccion() {
         System.out.println("Entrooooo");
-        if (this.getTipoValor()=='D'){
+        for (Transaccion tra : selected.getTransaccionList()) {
+            if (tra.getIdCuenta().getIdCuenta() == nuevaTransaccion.getIdCuenta().getIdCuenta()) {
+                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "ERROR", "La cuenta ya fue ingresada en el asiento");
+                FacesContext.getCurrentInstance().addMessage(null, msg);
+                return;
+            }
+        }
+        if (this.getTipoValor() == 'D') {
             nuevaTransaccion.setDebe(new BigDecimal(this.valorTransaccion));
-            nuevaTransaccion.setHaber(new BigDecimal(0));}
-        if (this.getTipoValor()=='H'){
+            nuevaTransaccion.setHaber(new BigDecimal(0));
+        }
+        if (this.getTipoValor() == 'H') {
             nuevaTransaccion.setHaber(new BigDecimal(this.valorTransaccion));
-            nuevaTransaccion.setDebe(new BigDecimal(0));}
+            nuevaTransaccion.setDebe(new BigDecimal(0));
+        }
+        nuevaTransaccion.setIdAsiento(selected);
         selected.getTransaccionList().add(nuevaTransaccion);
-        nuevaTransaccion=new Transaccion();
-        this.valorTransaccion=0;
+        nuevaTransaccion = new Transaccion();
+        this.valorTransaccion = 0;
         System.out.println(selected.getTransaccionList().size());
     }
-    
+
     public void onCellEdit(CellEditEvent event) {
         Object oldValue = event.getOldValue();
         Object newValue = event.getNewValue();
@@ -85,20 +103,91 @@ public class AsientoController implements Serializable {
         return ejbFacade;
     }
 
+    public void preparaNuevo() {
+        System.out.println("Valee");
+        selected = new Asiento();
+        selected.setTransaccionList(new ArrayList<Transaccion>());
+        selected.setFecha(new Date());
+        selected.setPeriodo(this.getPeriodo());
+        selected.setNumeroDiario(this.getNumeroDiario());
+        nuevaTransaccion = new Transaccion();
+        initializeEmbeddableKey();
+    }
+
     public Asiento prepareCreate() {
         selected = new Asiento();
         selected.setTransaccionList(new ArrayList<Transaccion>());
         selected.setFecha(new Date());
-        nuevaTransaccion=new Transaccion();
+        selected.setPeriodo(this.getPeriodo());
+        selected.setNumeroDiario(this.getNumeroDiario());
+        nuevaTransaccion = new Transaccion();
         initializeEmbeddableKey();
         return selected;
     }
 
+    private int getPeriodo() {
+        List<Configuracion> lista = this.ejbFacadeConfiguracionFacade.findAll();
+        if (!lista.isEmpty()) {
+            return lista.get(0).getPeriodo();
+        } else {
+            return 0;
+        }
+    }
+
+    private int getNumeroDiario() {
+        List<Configuracion> lista = ejbFacadeConfiguracionFacade.findAll();
+        if (!lista.isEmpty()) {
+            return lista.get(0).getNumeroDiario();
+        } else {
+            return 0;
+        }
+    }
+
     public void create() {
-        persist(PersistAction.CREATE, ResourceBundle.getBundle("/Bundle").getString("AsientoCreated"));
+        boolean tieneError = false;
+        double sumaDebe = 0, sumaHaber = 0;
+        for (Transaccion tra : this.selected.getTransaccionList()) {
+            if (tra.getDebe().doubleValue() == 0 && tra.getHaber().doubleValue() == 0) {
+                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "ERROR", "La cuenta " + tra.getIdCuenta().getNumeroCuenta() + " no tiene asignado un valor");
+                FacesContext.getCurrentInstance().addMessage(null, msg);
+                tieneError = true;
+            }
+            if (tra.getDebe().doubleValue() != 0 && tra.getHaber().doubleValue() != 0) {
+                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "ERROR", "La cuenta " + tra.getIdCuenta().getNumeroCuenta() + " tine asignado un valor al debe y al haber");
+                FacesContext.getCurrentInstance().addMessage(null, msg);
+                tieneError = true;
+            }
+            if (tra.getDebe().doubleValue() < 0 || tra.getHaber().doubleValue() < 0) {
+                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "ERROR", "La cuenta " + tra.getIdCuenta().getNumeroCuenta() + " tine asignado un valor menor que cero");
+                FacesContext.getCurrentInstance().addMessage(null, msg);
+                tieneError = true;
+            }
+            sumaDebe = sumaDebe + tra.getDebe().doubleValue();
+            sumaHaber = sumaHaber + tra.getHaber().doubleValue();
+        }
+        if (sumaDebe != sumaHaber) {
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "ERROR", "Total debe es diferente al total del haber");
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+            tieneError = true;
+        }
+        if (tieneError) {
+            return;
+        }
+        selected.setDebe(new BigDecimal(sumaDebe));
+        selected.setHaber(new BigDecimal(sumaHaber));
+        selected.setNumeroAsiento(1);
+        List<Transaccion> detalle=selected.getTransaccionList();
+//        selected.setTransaccionList(null);
+        persist(PersistAction.CREATE, "Asiento creado correctamente");
         if (!JsfUtil.isValidationFailed()) {
             items = null;    // Invalidate list of items to trigger re-query.
         }
+//        System.out.println(selected);
+//        for (Transaccion tra:detalle){
+//            tra.setIdAsiento(selected);
+//            ejbFacadeTransaccion.create(tra);
+//        }
+//        selected.setTransaccionList(detalle);
     }
 
     public void update() {
@@ -216,7 +305,6 @@ public class AsientoController implements Serializable {
         this.transaccionSeleccion = transaccionSeleccion;
     }
 
-   
     @FacesConverter(forClass = Asiento.class)
     public static class AsientoControllerConverter implements Converter {
 

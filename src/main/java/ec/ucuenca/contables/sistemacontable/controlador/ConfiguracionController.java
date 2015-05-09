@@ -1,10 +1,9 @@
 package ec.ucuenca.contables.sistemacontable.controlador;
 
-import ec.ucuenca.contables.sistemacontable.modelo.Cuenta;
 import ec.ucuenca.contables.sistemacontable.controlador.util.JsfUtil;
 import ec.ucuenca.contables.sistemacontable.controlador.util.JsfUtil.PersistAction;
-import ec.ucuenca.contables.sistemacontable.negocio.CuentaFacade;
-
+import ec.ucuenca.contables.sistemacontable.modelo.Configuracion;
+import ec.ucuenca.contables.sistemacontable.negocio.ConfiguracionFacade;
 import java.io.Serializable;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -12,30 +11,45 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
-import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
+import javax.inject.Named;
 
-@Named("cuentaController")
+@Named("configuracionController")
 @SessionScoped
-public class CuentaController implements Serializable {
+public class ConfiguracionController implements Serializable {
 
     @EJB
-    private ec.ucuenca.contables.sistemacontable.negocio.CuentaFacade ejbFacade;
-    private List<Cuenta> items = null;
-    private Cuenta selected;
+    private ec.ucuenca.contables.sistemacontable.negocio.ConfiguracionFacade ejbFacade;
+    private List<Configuracion> items = null;
+    private Configuracion selected;
 
-    public CuentaController() {
+    public ConfiguracionController() {
     }
 
-    public Cuenta getSelected() {
+    public int getPeriodo(){
+        List<Configuracion> lista=getFacade().findAll();
+        if (!lista.isEmpty())
+            return lista.get(0).getPeriodo();
+        else
+            return 0;
+    }
+    public int getNumeroDiario(){
+        List<Configuracion> lista=getFacade().findAll();
+        if (!lista.isEmpty())
+            return lista.get(0).getNumeroDiario();
+        else
+            return 0;
+    }
+    
+    public Configuracion getSelected() {
         return selected;
     }
 
-    public void setSelected(Cuenta selected) {
+    public void setSelected(Configuracion selected) {
         this.selected = selected;
     }
 
@@ -45,36 +59,36 @@ public class CuentaController implements Serializable {
     protected void initializeEmbeddableKey() {
     }
 
-    private CuentaFacade getFacade() {
+    private ConfiguracionFacade getFacade() {
         return ejbFacade;
     }
 
-    public Cuenta prepareCreate() {
-        selected = new Cuenta();
+    public Configuracion prepareCreate() {
+        selected = new Configuracion();
         initializeEmbeddableKey();
         return selected;
     }
 
     public void create() {
-        persist(PersistAction.CREATE, ResourceBundle.getBundle("/Bundle").getString("CuentaCreated"));
+        persist(PersistAction.CREATE, ResourceBundle.getBundle("/Bundle").getString("ConfiguracionCreated"));
         if (!JsfUtil.isValidationFailed()) {
             items = null;    // Invalidate list of items to trigger re-query.
         }
     }
 
     public void update() {
-        persist(PersistAction.UPDATE, ResourceBundle.getBundle("/Bundle").getString("CuentaUpdated"));
+        persist(PersistAction.UPDATE, ResourceBundle.getBundle("/Bundle").getString("ConfiguracionUpdated"));
     }
 
     public void destroy() {
-        persist(PersistAction.DELETE, ResourceBundle.getBundle("/Bundle").getString("CuentaDeleted"));
+        persist(PersistAction.DELETE, ResourceBundle.getBundle("/Bundle").getString("ConfiguracionDeleted"));
         if (!JsfUtil.isValidationFailed()) {
             selected = null; // Remove selection
             items = null;    // Invalidate list of items to trigger re-query.
         }
     }
 
-    public List<Cuenta> getItems() {
+    public List<Configuracion> getItems() {
         if (items == null) {
             items = getFacade().findAll();
         }
@@ -109,29 +123,29 @@ public class CuentaController implements Serializable {
         }
     }
 
-    public Cuenta getCuenta(java.lang.Integer id) {
+    public Configuracion getConfiguracion(java.lang.Integer id) {
         return getFacade().find(id);
     }
 
-    public List<Cuenta> getItemsAvailableSelectMany() {
+    public List<Configuracion> getItemsAvailableSelectMany() {
         return getFacade().findAll();
     }
 
-    public List<Cuenta> getItemsAvailableSelectOne() {
-        return getFacade().getCuentasDetale();
+    public List<Configuracion> getItemsAvailableSelectOne() {
+        return getFacade().findAll();
     }
 
-    @FacesConverter(forClass = Cuenta.class)
-    public static class CuentaControllerConverter implements Converter {
+    @FacesConverter(forClass = Configuracion.class)
+    public static class ConfiguracionControllerConverter implements Converter {
 
         @Override
         public Object getAsObject(FacesContext facesContext, UIComponent component, String value) {
             if (value == null || value.length() == 0) {
                 return null;
             }
-            CuentaController controller = (CuentaController) facesContext.getApplication().getELResolver().
-                    getValue(facesContext.getELContext(), null, "cuentaController");
-            return controller.getCuenta(getKey(value));
+            ConfiguracionController controller = (ConfiguracionController) facesContext.getApplication().getELResolver().
+                    getValue(facesContext.getELContext(), null, "tipocuentaController");
+            return controller.getConfiguracion(getKey(value));
         }
 
         java.lang.Integer getKey(String value) {
@@ -151,11 +165,11 @@ public class CuentaController implements Serializable {
             if (object == null) {
                 return null;
             }
-            if (object instanceof Cuenta) {
-                Cuenta o = (Cuenta) object;
-                return getStringKey(o.getIdCuenta());
+            if (object instanceof Configuracion) {
+                Configuracion o = (Configuracion) object;
+                return getStringKey(o.getIdconfiguracion());
             } else {
-                Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, "object {0} is of type {1}; expected type: {2}", new Object[]{object, object.getClass().getName(), Cuenta.class.getName()});
+                Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, "object {0} is of type {1}; expected type: {2}", new Object[]{object, object.getClass().getName(), Configuracion.class.getName()});
                 return null;
             }
         }
