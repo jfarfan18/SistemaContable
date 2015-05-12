@@ -6,6 +6,7 @@ import ec.ucuenca.contables.sistemacontable.controlador.util.JsfUtil.PersistActi
 import ec.ucuenca.contables.sistemacontable.negocio.CuentaFacade;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -18,6 +19,7 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
+import org.primefaces.context.RequestContext;
 
 @Named("cuentaController")
 @SessionScoped
@@ -161,5 +163,35 @@ public class CuentaController implements Serializable {
         }
 
     }
-
+    
+    public String getNumeroCuentaByNumero(String numero){
+        this.items=this.getFacade().findAll();
+        for(int i=0;i<items.size();i++){
+            if(numero.equals(items.get(i).getNumeroCuenta()))
+                return items.get(i).getNumeroCuenta();
+        }
+        return "";
+    }
+    
+    public String getNombreCuentaByNumero(String numero){
+        this.items=this.getFacade().findAll();
+        for(int i=0;i<items.size();i++){
+            if(numero.equals(items.get(i).getNumeroCuenta()))
+                return items.get(i).getDescripcion();
+        }
+        return "";
+    }
+    
+    public List<Cuenta> getCuentasDetalle(){
+        this.items=this.getFacade().findAll();
+        char d='D';
+        List<Cuenta> cdetalle=new ArrayList();
+        for(int i=0;i<items.size();i++){
+            if(items.get(i).getCategoria()==d){
+                cdetalle.add(items.get(i));
+            }
+        }
+        return cdetalle;
+    }
+    
 }
