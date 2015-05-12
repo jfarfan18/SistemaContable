@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition template="/template.xhtml">
+
+
+        <ui:define name="title">
+            <h:outputText value="Libro Mayor"></h:outputText>
+        </ui:define>
+
+        <ui:define name="body">
+            <h:form id="LibroMayor">
+                <p:panel header="Libro Mayor">
+                    <h:panelGrid columns="3" cellpadding="5">
+                        <h:outputLabel for="numerob" value="# Cuenta:" style="font-weight:bold" />
+                        <p:inputText id="numerob" value="#{transaccionController.numcuenta}"  />
+                        <p:commandButton value="Buscar" icon="ui-icon-search" update="LibroMayor" />
+                    </h:panelGrid>
+                    <h:panelGrid columns="2" cellpadding="5">
+                        <h:outputLabel for="# Cuenta" value="# Cuenta:" style="font-weight:bold" />
+                        <p:inputText id="numero" value="#{cuentaController.getNumeroCuentaByNumero(transaccionController.numcuenta)}" disabled="true"/>
+                    </h:panelGrid>
+                    <h:panelGrid columns="2" cellpadding="5">
+                        <h:outputLabel for="Nombre" value="Nombre :" style="font-weight:bold" />
+                        <p:inputText id="nombre" value="#{cuentaController.getNombreCuentaByNumero(transaccionController.numcuenta)}" disabled="true"/>
+                    </h:panelGrid>
+                    <p:dataTable id="datalist" value="#{transaccionController.itemsByCuenta}" var="item"
+                                 selectionMode="single" 
+                                 paginator="true"
+                                 rowKey="#{item.idTransaccion}"
+                                 rows="10"
+                                 rowsPerPageTemplate="10,20,30,40,50"
+                                 >
+
+                     
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="FECHA"/>
+                            </f:facet>
+                            <h:outputText value="#{item.idAsiento.fecha}">
+                                <f:convertDateTime pattern="dd/MM/yyyy" />
+                            </h:outputText>
+                        </p:column>                        
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="NUMERO ASIENTO"/>
+                            </f:facet>
+                            <h:outputText value="#{item.idAsiento.numeroAsiento}"/>
+                        </p:column>                        
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="CONCEPTO"/>
+                            </f:facet>
+                            <h:outputText value="#{item.idAsiento.concepto}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="NUMERO DIARIO"/>
+                            </f:facet>
+                            <h:outputText value="#{item.idAsiento.numeroDiario}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="PERIODO"/>
+                            </f:facet>
+                            <h:outputText value="#{item.idAsiento.periodo}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="DEBE"/>
+                            </f:facet>
+                            <h:outputText value="#{item.debe}"/>      
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="HABER"/>
+                            </f:facet>
+                            <h:outputText value="#{item.haber}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="SALDO"/>
+                            </f:facet>
+                            <h:outputText value="#{transaccionController.getSaldoByCuentaAndTrans(item.idCuenta.numeroCuenta, item.idTransaccion)}"/>
+                        </p:column>
+                       
+                    </p:dataTable>
+                </p:panel>
+            </h:form>
+
+            
+        </ui:define>
+    </ui:composition>
+
+</html>

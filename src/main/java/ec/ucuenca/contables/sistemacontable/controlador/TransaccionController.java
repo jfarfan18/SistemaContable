@@ -6,6 +6,8 @@ import ec.ucuenca.contables.sistemacontable.controlador.util.JsfUtil.PersistActi
 import ec.ucuenca.contables.sistemacontable.negocio.TransaccionFacade;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -27,6 +29,7 @@ public class TransaccionController implements Serializable {
     private ec.ucuenca.contables.sistemacontable.negocio.TransaccionFacade ejbFacade;
     private List<Transaccion> items = null;
     private Transaccion selected;
+    private String numcuenta;
 
     public TransaccionController() {
     }
@@ -162,4 +165,40 @@ public class TransaccionController implements Serializable {
 
     }
 
+    public List<Transaccion> getItemsByCuenta(){
+        this.items=this.getItems();
+        List<Transaccion> transcta=new ArrayList();
+        for(int i=0;i<items.size();i++){
+            if(items.get(i).getIdCuenta().getNumeroCuenta().equals(this.numcuenta)){
+                transcta.add(items.get(i));
+            }
+        }
+        return transcta;
+    }
+
+    public String getNumcuenta() {
+        return numcuenta;
+    }
+
+    public void setNumcuenta(String numcuenta) {
+        this.numcuenta = numcuenta;
+    }
+    
+    public float getSaldoByCuentaAndTrans(String numerocuenta, Integer idtrans){
+        float saldo=0;
+        this.items=this.getFacade().findAll();
+        for(int i=0;i<items.size();i++){
+            if(items.get(i).getIdCuenta().getNumeroCuenta().equals(numerocuenta)){
+                if(items.get(i).getIdCuenta().getIdTipoCuenta().getIdTipoCuenta()==1 || items.get(i).getIdCuenta().getIdTipoCuenta().getIdTipoCuenta()==5){
+                    saldo=saldo+items.get(i).getDebe().floatValue()-items.get(i).getHaber().floatValue();
+                }else{
+                    saldo=saldo-items.get(i).getDebe().floatValue()+items.get(i).getHaber().floatValue();
+                }
+                if(items.get(i).getIdTransaccion()==idtrans){
+                    break;
+                }
+            }
+        }
+        return saldo;
+    }
 }
