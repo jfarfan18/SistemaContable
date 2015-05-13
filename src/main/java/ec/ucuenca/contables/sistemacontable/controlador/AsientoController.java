@@ -51,11 +51,20 @@ public class AsientoController implements Serializable {
     public AsientoController() {
     }
 
+    
+    
+    public void quitarTransaccion(){
+        System.out.println("Quitar");
+        System.out.println(transaccionSeleccion);
+        selected.getTransaccionList().remove(transaccionSeleccion);
+        System.out.println(selected.getTransaccionList().size());
+    }
+    
     public void agregarTransaccion() {
         System.out.println("Entrooooo");
         for (Transaccion tra : selected.getTransaccionList()) {
             if (tra.getIdCuenta().getIdCuenta() == nuevaTransaccion.getIdCuenta().getIdCuenta()) {
-                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "ERROR", "La cuenta ya fue ingresada en el asiento");
+                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "La cuenta ya fue ingresada en el asiento");
                 FacesContext.getCurrentInstance().addMessage(null, msg);
                 return;
             }
@@ -170,6 +179,21 @@ public class AsientoController implements Serializable {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "Total debe es diferente al total del haber");
             FacesContext.getCurrentInstance().addMessage(null, msg);
             tieneError = true;
+        }
+        if (selected.getTransaccionList().isEmpty()) {
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "Ingrese transacciones al asiento");
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+            tieneError = true;
+        }
+        for (int i=0;i<selected.getTransaccionList().size()-1;i++){
+            for (int j=i;j<selected.getTransaccionList().size();j++){
+                if (selected.getTransaccionList().get(i).getIdCuenta().getIdCuenta()==selected.getTransaccionList().get(j).getIdCuenta().getIdCuenta()){
+                    FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "La cuenta "+selected.getTransaccionList().get(j).getIdCuenta().getDescripcion()+" se encuentra duplicada en el asiento");
+                    FacesContext.getCurrentInstance().addMessage(null, msg);
+                    tieneError = true;
+                    break;
+                }
+            }
         }
         if (tieneError) {
             return;
