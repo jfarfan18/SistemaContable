@@ -26,6 +26,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 import javax.inject.Named;
+import org.primefaces.context.RequestContext;
 
 @Named("asientoController")
 @SessionScoped
@@ -148,17 +149,17 @@ public class AsientoController implements Serializable {
         double sumaDebe = 0, sumaHaber = 0;
         for (Transaccion tra : this.selected.getTransaccionList()) {
             if (tra.getDebe().doubleValue() == 0 && tra.getHaber().doubleValue() == 0) {
-                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "ERROR", "La cuenta " + tra.getIdCuenta().getNumeroCuenta() + " no tiene asignado un valor");
+                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "La cuenta " + tra.getIdCuenta().getNumeroCuenta() + " no tiene asignado un valor");
                 FacesContext.getCurrentInstance().addMessage(null, msg);
                 tieneError = true;
             }
             if (tra.getDebe().doubleValue() != 0 && tra.getHaber().doubleValue() != 0) {
-                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "ERROR", "La cuenta " + tra.getIdCuenta().getNumeroCuenta() + " tine asignado un valor al debe y al haber");
+                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "La cuenta " + tra.getIdCuenta().getNumeroCuenta() + " tine asignado un valor al debe y al haber");
                 FacesContext.getCurrentInstance().addMessage(null, msg);
                 tieneError = true;
             }
             if (tra.getDebe().doubleValue() < 0 || tra.getHaber().doubleValue() < 0) {
-                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "ERROR", "La cuenta " + tra.getIdCuenta().getNumeroCuenta() + " tine asignado un valor menor que cero");
+                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "La cuenta " + tra.getIdCuenta().getNumeroCuenta() + " tine asignado un valor menor que cero");
                 FacesContext.getCurrentInstance().addMessage(null, msg);
                 tieneError = true;
             }
@@ -166,7 +167,7 @@ public class AsientoController implements Serializable {
             sumaHaber = sumaHaber + tra.getHaber().doubleValue();
         }
         if (sumaDebe != sumaHaber) {
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "ERROR", "Total debe es diferente al total del haber");
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "Total debe es diferente al total del haber");
             FacesContext.getCurrentInstance().addMessage(null, msg);
             tieneError = true;
         }
@@ -175,19 +176,12 @@ public class AsientoController implements Serializable {
         }
         selected.setDebe(new BigDecimal(sumaDebe));
         selected.setHaber(new BigDecimal(sumaHaber));
-        selected.setNumeroAsiento(1);
-        List<Transaccion> detalle=selected.getTransaccionList();
-//        selected.setTransaccionList(null);
+        selected.setNumeroAsiento(ejbFacade.getNumeroAsientoMayor(selected.getNumeroDiario(), selected.getPeriodo())+1);
         persist(PersistAction.CREATE, "Asiento creado correctamente");
         if (!JsfUtil.isValidationFailed()) {
             items = null;    // Invalidate list of items to trigger re-query.
         }
-//        System.out.println(selected);
-//        for (Transaccion tra:detalle){
-//            tra.setIdAsiento(selected);
-//            ejbFacadeTransaccion.create(tra);
-//        }
-//        selected.setTransaccionList(detalle);
+        RequestContext.getCurrentInstance().execute("AsientoCreateDialog.hide()");
     }
 
     public void update() {

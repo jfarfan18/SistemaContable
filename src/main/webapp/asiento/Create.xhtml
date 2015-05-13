@@ -108,8 +108,6 @@
                             Asiento
                         </f:facet>
                         
-                        <p:ajax event="cellEdit" listener="#{asientoController.onCellEdit}" update=":growl" />
-                        
                         <p:column headerText="Cuenta">
                             <p:cellEditor>
                                 <f:facet name="output"><h:outputText value="#{trans.idCuenta.descripcion}" title="#{trans.idCuenta.numeroCuenta}" /></f:facet>
@@ -154,7 +152,7 @@
                     </p:dataTable>
 
 
-                    <p:commandButton actionListener="#{asientoController.create}" value="Guardar" update="display,:AsientoListForm:datalist,:growl" oncomplete="handleSubmit(args,'AsientoCreateDialog');"/>
+                    <p:commandButton actionListener="#{asientoController.create}" value="Guardar" update="display,:AsientoListForm:datalist,:growl"/>
                     <p:commandButton value="Cancelar" onclick="AsientoCreateDialog.hide()"/>
                 </h:panelGroup>
             </h:form>
