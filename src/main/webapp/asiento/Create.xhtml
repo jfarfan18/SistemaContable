@@ -16,7 +16,7 @@
                             <f:facet name="header">
                                 <h:outputText value="PERIODO"/>
 
-                                <p:separator/>
+                                <p:separator style="width: 1050px"/>
                             </f:facet>
                             <p:outputLabel value="Número Diario" 
                                            for="numeroDiario" />
@@ -40,7 +40,7 @@
                         <h:panelGrid columns="2" >
                             <f:facet name="header">
                                 <h:outputText value="CABECERA"/>
-                                <p:separator/>
+                                <p:separator style="width: 1050px"/>
                             </f:facet>
                             <p:outputLabel value="Concepto" 
                                            for="concepto" />
@@ -58,7 +58,7 @@
                         <h:panelGrid columns="2">
                             <f:facet name="header">
                                 <h:outputText value="DETALLE"/>
-                                <p:separator/>
+                                <p:separator style="width: 1050px"/>
                             </f:facet>
                             <p:outputLabel value="Cuenta" 
                                            for="cuenta" />
@@ -74,7 +74,7 @@
                                                itemDescription="#{cuenta.numeroCuenta}"/>
                             </p:selectOneMenu>
                         </h:panelGrid>
-                    </h:panelGrid>
+                        
                     <h:panelGrid columns="6">
                         <p:outputLabel value="Valor" 
                                        for="valor" />
@@ -94,22 +94,23 @@
                                      value="#{asientoController.nuevaTransaccion.referencia}" 
                                      title="Referencia de la transaccion"
                                      size="100"/>
-                    </h:panelGrid>
                     <p:commandButton actionListener ="#{asientoController.agregarTransaccion}" value="Agregar" update="cuenta,valor,tipo,descripcion,display,:AsientoCreateForm:transaccionesTbl,:growl" />
+                    </h:panelGrid>
+                    </h:panelGrid>
 
 
                     <p:dataTable id="transaccionesTbl" 
                                  var="trans" 
                                  value="#{asientoController.selected.transaccionList}" 
+                                 rowKey="#{trans.idCuenta.idCuenta}"
+                                 selection="#{asientoController.transaccionSeleccion}"
+                                 selectionMode="single"
                                  editable="true" 
                                  editMode="cell" 
                                  widgetVar="cellTrans">
                         <f:facet name="header">
                             Asiento
                         </f:facet>
-                        
-                        <p:ajax event="cellEdit" listener="#{asientoController.onCellEdit}" update=":growl" />
-                        
                         <p:column headerText="Cuenta">
                             <p:cellEditor>
                                 <f:facet name="output"><h:outputText value="#{trans.idCuenta.descripcion}" title="#{trans.idCuenta.numeroCuenta}" /></f:facet>
@@ -136,14 +137,14 @@
                                 <f:facet name="input"><p:inputText value="#{trans.debe}"/></f:facet>
                             </p:cellEditor>
                         </p:column>
-                        
+
                         <p:column headerText="Haber">
                             <p:cellEditor>
                                 <f:facet name="output"><h:outputText value="#{trans.haber}" /></f:facet>
                                 <f:facet name="input"><p:inputText value="#{trans.haber}"/></f:facet>
                             </p:cellEditor>
                         </p:column>
-                        
+
                         <p:column headerText="Referencia">
                             <p:cellEditor>
                                 <f:facet name="output"><h:outputText value="#{trans.referencia}" /></f:facet>
@@ -151,10 +152,15 @@
                             </p:cellEditor>
                         </p:column>
 
+                        <p:column style="width:32px;text-align: center">
+                            <p:commandButton update="transaccionesTbl" action="#{asientoController.quitarTransaccion()}" icon="ui-icon-close" title="Quitar">
+                                <f:setPropertyActionListener value="#{trans}" target="#{asientoController.transaccionSeleccion}" />
+                            </p:commandButton>
+                        </p:column>
                     </p:dataTable>
 
 
-                    <p:commandButton actionListener="#{asientoController.create}" value="Guardar" update="display,:AsientoListForm:datalist,:growl" oncomplete="handleSubmit(args,'AsientoCreateDialog');"/>
+                    <p:commandButton actionListener="#{asientoController.create}" value="Guardar" update="display,:AsientoListForm:datalist,:growl"/>
                     <p:commandButton value="Cancelar" onclick="AsientoCreateDialog.hide()"/>
                 </h:panelGroup>
             </h:form>

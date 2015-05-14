@@ -46,7 +46,11 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Asiento.findByDebe", query = "SELECT a FROM Asiento a WHERE a.debe = :debe"),
     @NamedQuery(name = "Asiento.findByHaber", query = "SELECT a FROM Asiento a WHERE a.haber = :haber"),
     @NamedQuery(name = "Asiento.findByConcepto", query = "SELECT a FROM Asiento a WHERE a.concepto = :concepto"),
-    @NamedQuery(name = "Asiento.findByNumeroDocumento", query = "SELECT a FROM Asiento a WHERE a.numeroDocumento = :numeroDocumento")})
+    @NamedQuery(name = "Asiento.findByNumeroDocumento", query = "SELECT a FROM Asiento a WHERE a.numeroDocumento = :numeroDocumento"),
+//personalizadas
+    @NamedQuery(name = "Asiento.findByNumeroDiarioPeriodo", query = "SELECT a FROM Asiento a WHERE a.numeroDiario = :numeroDiario AND a.periodo = :periodo ORDER BY a.numeroAsiento")
+
+})
 public class Asiento implements Serializable {
     @Column(name = "numeroDiario")
     private Integer numeroDiario;
@@ -55,6 +59,7 @@ public class Asiento implements Serializable {
     @Column(name = "numeroAsiento")
     private Integer numeroAsiento;
     private static final long serialVersionUID = 1L;
+    public static String findByNumeroDiarioPeriodo="Asiento.findByNumeroDiarioPeriodo";
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)

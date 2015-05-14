@@ -26,6 +26,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 import javax.inject.Named;
+import org.primefaces.context.RequestContext;
 
 @Named("asientoController")
 @SessionScoped
@@ -50,11 +51,20 @@ public class AsientoController implements Serializable {
     public AsientoController() {
     }
 
+    
+    
+    public void quitarTransaccion(){
+        System.out.println("Quitar");
+        System.out.println(transaccionSeleccion);
+        selected.getTransaccionList().remove(transaccionSeleccion);
+        System.out.println(selected.getTransaccionList().size());
+    }
+    
     public void agregarTransaccion() {
         System.out.println("Entrooooo");
         for (Transaccion tra : selected.getTransaccionList()) {
             if (tra.getIdCuenta().getIdCuenta() == nuevaTransaccion.getIdCuenta().getIdCuenta()) {
-                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "ERROR", "La cuenta ya fue ingresada en el asiento");
+                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "La cuenta ya fue ingresada en el asiento");
                 FacesContext.getCurrentInstance().addMessage(null, msg);
                 return;
             }
@@ -148,17 +158,17 @@ public class AsientoController implements Serializable {
         double sumaDebe = 0, sumaHaber = 0;
         for (Transaccion tra : this.selected.getTransaccionList()) {
             if (tra.getDebe().doubleValue() == 0 && tra.getHaber().doubleValue() == 0) {
-                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "ERROR", "La cuenta " + tra.getIdCuenta().getNumeroCuenta() + " no tiene asignado un valor");
+                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "La cuenta " + tra.getIdCuenta().getNumeroCuenta() + " no tiene asignado un valor");
                 FacesContext.getCurrentInstance().addMessage(null, msg);
                 tieneError = true;
             }
             if (tra.getDebe().doubleValue() != 0 && tra.getHaber().doubleValue() != 0) {
-                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "ERROR", "La cuenta " + tra.getIdCuenta().getNumeroCuenta() + " tine asignado un valor al debe y al haber");
+                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "La cuenta " + tra.getIdCuenta().getNumeroCuenta() + " tine asignado un valor al debe y al haber");
                 FacesContext.getCurrentInstance().addMessage(null, msg);
                 tieneError = true;
             }
             if (tra.getDebe().doubleValue() < 0 || tra.getHaber().doubleValue() < 0) {
-                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "ERROR", "La cuenta " + tra.getIdCuenta().getNumeroCuenta() + " tine asignado un valor menor que cero");
+                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "La cuenta " + tra.getIdCuenta().getNumeroCuenta() + " tine asignado un valor menor que cero");
                 FacesContext.getCurrentInstance().addMessage(null, msg);
                 tieneError = true;
             }
@@ -166,28 +176,36 @@ public class AsientoController implements Serializable {
             sumaHaber = sumaHaber + tra.getHaber().doubleValue();
         }
         if (sumaDebe != sumaHaber) {
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "ERROR", "Total debe es diferente al total del haber");
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "Total debe es diferente al total del haber");
             FacesContext.getCurrentInstance().addMessage(null, msg);
             tieneError = true;
+        }
+        if (selected.getTransaccionList().isEmpty()) {
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "Ingrese transacciones al asiento");
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+            tieneError = true;
+        }
+        for (int i=0;i<selected.getTransaccionList().size()-1;i++){
+            for (int j=i;j<selected.getTransaccionList().size();j++){
+                if (selected.getTransaccionList().get(i).getIdCuenta().getIdCuenta()==selected.getTransaccionList().get(j).getIdCuenta().getIdCuenta()){
+                    FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "La cuenta "+selected.getTransaccionList().get(j).getIdCuenta().getDescripcion()+" se encuentra duplicada en el asiento");
+                    FacesContext.getCurrentInstance().addMessage(null, msg);
+                    tieneError = true;
+                    break;
+                }
+            }
         }
         if (tieneError) {
             return;
         }
         selected.setDebe(new BigDecimal(sumaDebe));
         selected.setHaber(new BigDecimal(sumaHaber));
-        selected.setNumeroAsiento(1);
-        List<Transaccion> detalle=selected.getTransaccionList();
-//        selected.setTransaccionList(null);
+        selected.setNumeroAsiento(ejbFacade.getNumeroAsientoMayor(selected.getNumeroDiario(), selected.getPeriodo())+1);
         persist(PersistAction.CREATE, "Asiento creado correctamente");
         if (!JsfUtil.isValidationFailed()) {
             items = null;    // Invalidate list of items to trigger re-query.
         }
-//        System.out.println(selected);
-//        for (Transaccion tra:detalle){
-//            tra.setIdAsiento(selected);
-//            ejbFacadeTransaccion.create(tra);
-//        }
-//        selected.setTransaccionList(detalle);
+        RequestContext.getCurrentInstance().execute("AsientoCreateDialog.hide()");
     }
 
     public void update() {

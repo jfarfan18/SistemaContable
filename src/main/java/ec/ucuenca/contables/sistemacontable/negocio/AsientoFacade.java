@@ -7,9 +7,11 @@
 package ec.ucuenca.contables.sistemacontable.negocio;
 
 import ec.ucuenca.contables.sistemacontable.modelo.Asiento;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 /**
  *
@@ -29,4 +31,14 @@ public class AsientoFacade extends AbstractFacade<Asiento> {
         super(Asiento.class);
     }
     
+    public int getNumeroAsientoMayor(int numeroDiario, int periodo) {
+        Query query = this.em.createNamedQuery(Asiento.findByNumeroDiarioPeriodo);
+        query.setParameter("periodo",periodo);
+        query.setParameter("numeroDiario",numeroDiario);
+        List <Asiento> res= query.getResultList();
+        if (res.isEmpty())
+            return 1;
+        else
+            return res.get(res.size()-1).getNumeroAsiento();
+    }
 }

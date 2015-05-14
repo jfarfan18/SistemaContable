@@ -8,32 +8,94 @@
 
     <ui:composition>
 
-        <p:dialog id="AsientoViewDlg" widgetVar="AsientoViewDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.ViewAsientoTitle}">
+        <p:dialog id="AsientoViewDlg" widgetVar="AsientoViewDialog" modal="true" resizable="false" appendTo="@(body)" header="ASIENTO CONTABLE">
             <h:form id="AsientoViewForm">
-                <h:panelGroup id="display">
-                    <p:panelGrid columns="2" rendered="#{asientoController.selected != null}">
-                        <h:outputText value="#{bundle.ViewAsientoLabel_idAsiento}"/>
-                        <h:outputText value="#{asientoController.selected.idAsiento}" title="#{bundle.ViewAsientoTitle_idAsiento}"/>
-                        <h:outputText value="#{bundle.ViewAsientoLabel_numeroDiario}"/>
-                        <h:outputText value="#{asientoController.selected.numeroDiario}" title="#{bundle.ViewAsientoTitle_numeroDiario}"/>
-                        <h:outputText value="#{bundle.ViewAsientoLabel_periodo}"/>
-                        <h:outputText value="#{asientoController.selected.periodo}" title="#{bundle.ViewAsientoTitle_periodo}"/>
-                        <h:outputText value="#{bundle.ViewAsientoLabel_fecha}"/>
-                        <h:outputText value="#{asientoController.selected.fecha}" title="#{bundle.ViewAsientoTitle_fecha}">
-                            <f:convertDateTime pattern="MM/dd/yyyy" />
-                        </h:outputText>
-                        <h:outputText value="#{bundle.ViewAsientoLabel_numeroAsiento}"/>
-                        <h:outputText value="#{asientoController.selected.numeroAsiento}" title="#{bundle.ViewAsientoTitle_numeroAsiento}"/>
-                        <h:outputText value="#{bundle.ViewAsientoLabel_debe}"/>
-                        <h:outputText value="#{asientoController.selected.debe}" title="#{bundle.ViewAsientoTitle_debe}"/>
-                        <h:outputText value="#{bundle.ViewAsientoLabel_haber}"/>
-                        <h:outputText value="#{asientoController.selected.haber}" title="#{bundle.ViewAsientoTitle_haber}"/>
-                        <h:outputText value="#{bundle.ViewAsientoLabel_concepto}"/>
-                        <h:outputText value="#{asientoController.selected.concepto}" title="#{bundle.ViewAsientoTitle_concepto}"/>
-                        <h:outputText value="#{bundle.ViewAsientoLabel_numeroDocumento}"/>
-                        <h:outputText value="#{asientoController.selected.numeroDocumento}" title="#{bundle.ViewAsientoTitle_numeroDocumento}"/>
-                    </p:panelGrid>
-                    <p:commandButton value="#{bundle.Close}" onclick="AsientoViewDialog.hide()"/>
+                <h:panelGroup id="display" >   
+                    <h:panelGrid columns="1" rendered="#{asientoController.selected != null}">
+                        <h:panelGrid columns="6" >
+                            <f:facet name="header">
+                                <h:outputText value="PERIODO"/>
+
+                                <p:separator style="width: 1050px"/>
+                            </f:facet>
+                            <p:outputLabel value="Número Diario" 
+                                           for="numeroDiario" />
+                            <p:inputText readonly="true"  
+                                         id="numeroDiario" 
+                                         value="#{asientoController.selected.numeroDiario}" 
+                                         title="Numero Diario" />
+                            <p:outputLabel value="Periodo" 
+                                           for="periodo" />
+                            <p:inputText readonly="true"                                          
+                                         id="periodo" 
+                                         value="#{asientoController.selected.periodo}" 
+                                         title="#{bundle.CreateAsientoTitle_periodo}"/>
+                            <p:outputLabel value="Fecha" 
+                                           for="fecha" />
+                            <p:calendar id="fecha" 
+                                        readonly="trua"
+                                        pattern="dd/MM/yyyy" 
+                                        value="#{asientoController.selected.fecha}" 
+                                        title="#{bundle.EditAsientoTitle_fecha}"/>
+
+                        </h:panelGrid>
+                        <h:panelGrid columns="2" >
+                            <f:facet name="header">
+                                <h:outputText value="CABECERA"/>
+                                <p:separator style="width: 1050px"/>
+                            </f:facet>
+                            <p:outputLabel value="Concepto" 
+                                           for="concepto" />
+                            <p:inputText readonly="true"                                          id="concepto" 
+                                         value="#{asientoController.selected.concepto}" 
+                                         title="#{bundle.CreateAsientoTitle_concepto}"
+                                         size="150"/>
+                            <p:outputLabel value="Numero Documento" 
+                                           for="numeroDocumento" />
+                            <p:inputText readonly="true"                                          id="numeroDocumento" 
+                                         value="#{asientoController.selected.numeroDocumento}" 
+                                         title="#{bundle.CreateAsientoTitle_numeroDocumento}" />
+
+                        </h:panelGrid>
+                        <h:panelGrid columns="2">
+                            <f:facet name="header">
+                                <h:outputText value="DETALLE"/>
+                                <p:separator style="width: 1050px"/>
+                            </f:facet>
+                        </h:panelGrid>
+                        
+                    </h:panelGrid>
+
+                    <p:dataTable id="transaccionesTbl" 
+                                 var="trans" 
+                                 value="#{asientoController.selected.transaccionList}" 
+                                 rowKey="#{trans.idCuenta.idCuenta}"
+                                 selection="#{asientoController.transaccionSeleccion}"
+                                 selectionMode="single"
+                                 widgetVar="cellTrans">
+                        <f:facet name="header">
+                            Asiento
+                        </f:facet>
+                        <p:column headerText="Cuenta">
+                            <h:outputText value="#{trans.idCuenta.descripcion}" title="#{trans.idCuenta.numeroCuenta}" />
+                        </p:column>
+
+                        <p:column headerText="Debe">
+                            <h:outputText value="#{trans.debe}" />
+                        </p:column>
+
+                        <p:column headerText="Haber">
+                            <h:outputText value="#{trans.haber}" />
+                        </p:column>
+
+                        <p:column headerText="Referencia">
+                            <h:outputText value="#{trans.referencia}" />
+                        </p:column>
+
+                        
+                    </p:dataTable>
+
+
                 </h:panelGroup>
             </h:form>
         </p:dialog>
