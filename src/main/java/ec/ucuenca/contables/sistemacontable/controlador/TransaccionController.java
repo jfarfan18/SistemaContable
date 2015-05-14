@@ -201,4 +201,73 @@ public class TransaccionController implements Serializable {
         }
         return saldo;
     }
+    
+    public float getSaldoByCuenta(String numerocuenta){
+        float saldo=0;
+        this.items=this.getFacade().findAll();
+        for(int i=0;i<items.size();i++){
+            if(items.get(i).getIdCuenta().getNumeroCuenta().equals(numerocuenta)){
+                if(items.get(i).getIdCuenta().getIdTipoCuenta().getIdTipoCuenta()==1 || items.get(i).getIdCuenta().getIdTipoCuenta().getIdTipoCuenta()==5){
+                    saldo=saldo+items.get(i).getDebe().floatValue()-items.get(i).getHaber().floatValue();
+                }else{
+                    saldo=saldo-items.get(i).getDebe().floatValue()+items.get(i).getHaber().floatValue();
+                }
+            }
+        }
+        return saldo;
+    }
+    
+    public float getSaldoDebeByCuenta(String numerocuenta){
+        float saldo=0;
+        this.items=this.getFacade().findAll();
+        for(int i=0;i<items.size();i++){
+            if(items.get(i).getIdCuenta().getNumeroCuenta().equals(numerocuenta)){
+                if(items.get(i).getIdCuenta().getIdTipoCuenta().getIdTipoCuenta()==1 || items.get(i).getIdCuenta().getIdTipoCuenta().getIdTipoCuenta()==5){
+                    saldo=saldo+items.get(i).getDebe().floatValue()-items.get(i).getHaber().floatValue();
+                }else{
+                    return 0;
+                }
+            }
+        }
+        return saldo;
+    }
+    
+    public float getSaldoHaberByCuenta(String numerocuenta){
+        float saldo=0;
+        this.items=this.getFacade().findAll();
+        for(int i=0;i<items.size();i++){
+            if(items.get(i).getIdCuenta().getNumeroCuenta().equals(numerocuenta)){
+                if(items.get(i).getIdCuenta().getIdTipoCuenta().getIdTipoCuenta()==1 || items.get(i).getIdCuenta().getIdTipoCuenta().getIdTipoCuenta()==5){
+                    return 0;
+                }else{
+                    saldo=saldo+items.get(i).getHaber().floatValue()-items.get(i).getDebe().floatValue();
+                }
+            }
+        }
+        return saldo;
+    }
+    
+    public float getSumaDebeByCuenta(String numerocuenta){
+        float debe=0;
+        this.items=this.getFacade().findAll();
+        for(int i=0;i<items.size();i++){
+            if(items.get(i).getIdCuenta().getNumeroCuenta().equals(numerocuenta)){
+                debe=debe+items.get(i).getDebe().floatValue();
+            }
+        }
+        return debe;
+    }
+    
+    public float getSumaHaberByCuenta(String numerocuenta){
+        float haber=0;
+        this.items=this.getFacade().findAll();
+        for(int i=0;i<items.size();i++){
+            if(items.get(i).getIdCuenta().getNumeroCuenta().equals(numerocuenta)){
+                haber=haber+items.get(i).getHaber().floatValue();
+            }
+        }
+        return haber;
+    }
+    
+   
 }

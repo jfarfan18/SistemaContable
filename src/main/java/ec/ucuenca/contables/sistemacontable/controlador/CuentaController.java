@@ -194,4 +194,47 @@ public class CuentaController implements Serializable {
         return cdetalle;
     }
     
+    public float getTotalSumasDebe(){
+        float totaldebe=0;
+        this.items=this.getFacade().findAll();
+        FacesContext facesContext= FacesContext.getCurrentInstance();
+        TransaccionController beanTransaccion = (TransaccionController)facesContext.getApplication().createValueBinding("#{transaccionController}").getValue(facesContext);
+        for(int i=0;i<items.size();i++){
+            totaldebe=totaldebe+beanTransaccion.getSumaDebeByCuenta(items.get(i).getNumeroCuenta());
+        }
+        return totaldebe;
+    }
+    
+    public float getTotalSumasHaber(){
+        float totalhaber=0;
+        this.items=this.getFacade().findAll();
+        FacesContext facesContext= FacesContext.getCurrentInstance();
+        TransaccionController beanTransaccion = (TransaccionController)facesContext.getApplication().createValueBinding("#{transaccionController}").getValue(facesContext);
+        for(int i=0;i<items.size();i++){
+            totalhaber=totalhaber+beanTransaccion.getSumaHaberByCuenta(items.get(i).getNumeroCuenta());
+        }
+        return totalhaber;
+    }
+    
+    public float getTotalSaldosDebe(){
+        float totaldebe=0;
+        this.items=this.getFacade().findAll();
+        FacesContext facesContext= FacesContext.getCurrentInstance();
+        TransaccionController beanTransaccion = (TransaccionController)facesContext.getApplication().createValueBinding("#{transaccionController}").getValue(facesContext);
+        for(int i=0;i<items.size();i++){
+            totaldebe=totaldebe+beanTransaccion.getSaldoDebeByCuenta(items.get(i).getNumeroCuenta());
+        }
+        return totaldebe;
+    }
+    
+    public float getTotalSaldosHaber(){
+        float totalhaber=0;
+        this.items=this.getFacade().findAll();
+        FacesContext facesContext= FacesContext.getCurrentInstance();
+        TransaccionController beanTransaccion = (TransaccionController)facesContext.getApplication().createValueBinding("#{transaccionController}").getValue(facesContext);
+        for(int i=0;i<items.size();i++){
+            totalhaber=totalhaber+beanTransaccion.getSaldoHaberByCuenta(items.get(i).getNumeroCuenta());
+        }
+        return totalhaber;
+    }
 }
