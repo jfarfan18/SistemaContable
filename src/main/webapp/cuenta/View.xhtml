@@ -8,26 +8,26 @@
 
     <ui:composition>
 
-        <p:dialog id="CuentaViewDlg" widgetVar="CuentaViewDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.ViewCuentaTitle}">
+        <p:dialog id="CuentaViewDlg" widgetVar="CuentaViewDialog" modal="true" resizable="false" appendTo="@(body)" header="VER CUENTA CONTABLE">
             <h:form id="CuentaViewForm">
                 <h:panelGroup id="display">
                     <p:panelGrid columns="2" rendered="#{cuentaController.selected != null}">
-                        <h:outputText value="#{bundle.ViewCuentaLabel_idCuenta}"/>
+                        <h:outputText value="Código"/>
                         <h:outputText value="#{cuentaController.selected.idCuenta}" title="#{bundle.ViewCuentaTitle_idCuenta}"/>
-                        <h:outputText value="#{bundle.ViewCuentaLabel_numeroCuenta}"/>
+                        <h:outputText value="Número Cuenta"/>
                         <h:outputText value="#{cuentaController.selected.numeroCuenta}" title="#{bundle.ViewCuentaTitle_numeroCuenta}"/>
-                        <h:outputText value="#{bundle.ViewCuentaLabel_descripcion}"/>
+                        <h:outputText value="Descripción"/>
                         <h:outputText value="#{cuentaController.selected.descripcion}" title="#{bundle.ViewCuentaTitle_descripcion}"/>
-                        <h:outputText value="#{bundle.ViewCuentaLabel_categoria}"/>
+                        <h:outputText value="Categoría"/>
                         <h:outputText value="#{cuentaController.selected.categoria}" title="#{bundle.ViewCuentaTitle_categoria}"/>
-                        <h:outputText value="#{bundle.ViewCuentaLabel_saldoInicial}"/>
+                        <h:outputText value="Saldo Inicial"/>
                         <h:outputText value="#{cuentaController.selected.saldoInicial}" title="#{bundle.ViewCuentaTitle_saldoInicial}"/>
-                        <h:outputText value="#{bundle.ViewCuentaLabel_saldoFinal}"/>
+                        <h:outputText value="Saldo Final"/>
                         <h:outputText value="#{cuentaController.selected.saldoFinal}" title="#{bundle.ViewCuentaTitle_saldoFinal}"/>
-                        <h:outputText value="#{bundle.ViewCuentaLabel_idTipoCuenta}"/>
-                        <h:outputText value="#{cuentaController.selected.idTipoCuenta}" title="#{bundle.ViewCuentaTitle_idTipoCuenta}"/>
-                        <h:outputText value="#{bundle.ViewCuentaLabel_idCuentaPadre}"/>
-                        <h:outputText value="#{cuentaController.selected.idCuentaPadre}" title="#{bundle.ViewCuentaTitle_idCuentaPadre}"/>
+                        <h:outputText value="Tipo Cuenta"/>
+                        <h:outputText value="#{cuentaController.selected.idTipoCuenta.nombreTipo}" title="#{bundle.ViewCuentaTitle_idTipoCuenta}"/>
+                        <h:outputText value="Cuenta Padre}"/>
+                        <h:outputText value="#{cuentaController.selected.idCuentaPadre.descripcion} (#{cuentaController.selected.idCuentaPadre.numeroCuenta})" title="#{bundle.ViewCuentaTitle_idCuentaPadre}"/>
                     </p:panelGrid>
                     <p:commandButton value="#{bundle.Close}" onclick="CuentaViewDialog.hide()"/>
                 </h:panelGroup>

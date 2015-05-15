@@ -37,4 +37,17 @@ public class CuentaFacade extends AbstractFacade<Cuenta> {
         return query.getResultList();
     }
     
+    public List<Cuenta> getCuentasGrupo() {
+        Query query = this.em.createNamedQuery(Cuenta.findByCatgoria);
+        query.setParameter("categoria",'G');
+        return query.getResultList();
+    }
+    
+    public List<Cuenta> getCuentasLikeCuentaDetalle(String numeroCuenta) {
+        Query query = this.em.createNamedQuery(Cuenta.findLikeCuentaDetalle);
+        query.setParameter("categoria",'D');
+        query.setParameter("numeroCuenta",numeroCuenta+"%");
+        return query.getResultList();
+    }
+    
 }

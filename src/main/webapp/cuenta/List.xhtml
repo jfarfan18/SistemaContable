@@ -10,7 +10,7 @@
 
 
         <ui:define name="title">
-            <h:outputText value="#{bundle.ListCuentaTitle}"></h:outputText>
+            <h:outputText value="PLAN DE CUENTAS"></h:outputText>
         </ui:define>
 
         <ui:define name="body">
@@ -29,57 +29,52 @@
 
                         <p:column>
                             <f:facet name="header">
-                                <h:outputText value="#{bundle.ListCuentaTitle_idCuenta}"/>
+                                <h:outputText value="CODIGO"/>
                             </f:facet>
                             <h:outputText value="#{item.idCuenta}"/>
                         </p:column>
                         <p:column>
                             <f:facet name="header">
-                                <h:outputText value="#{bundle.ListCuentaTitle_numeroCuenta}"/>
+                                <h:outputText value="NUMERO CUENTA"/>
                             </f:facet>
                             <h:outputText value="#{item.numeroCuenta}"/>
                         </p:column>
                         <p:column>
                             <f:facet name="header">
-                                <h:outputText value="#{bundle.ListCuentaTitle_descripcion}"/>
+                                <h:outputText value="DESCRIPCION"/>
                             </f:facet>
                             <h:outputText value="#{item.descripcion}"/>
                         </p:column>
                         <p:column>
                             <f:facet name="header">
-                                <h:outputText value="#{bundle.ListCuentaTitle_categoria}"/>
+                                <h:outputText value="CATEGORIA"/>
                             </f:facet>
                             <h:outputText value="#{item.categoria}"/>
                         </p:column>
                         <p:column>
                             <f:facet name="header">
-                                <h:outputText value="#{bundle.ListCuentaTitle_saldoInicial}"/>
+                                <h:outputText value="SALDO INICIAL"/>
                             </f:facet>
                             <h:outputText value="#{item.saldoInicial}"/>
                         </p:column>
                         <p:column>
                             <f:facet name="header">
-                                <h:outputText value="#{bundle.ListCuentaTitle_saldoFinal}"/>
+                                <h:outputText value="SALDO FINAL"/>
                             </f:facet>
                             <h:outputText value="#{item.saldoFinal}"/>
                         </p:column>
                         <p:column>
                             <f:facet name="header">
-                                <h:outputText value="#{bundle.ListCuentaTitle_idTipoCuenta}"/>
+                                <h:outputText value="TIPO CUENTA"/>
                             </f:facet>
-                            <h:outputText value="#{item.idTipoCuenta}"/>
+                            <h:outputText value="#{item.idTipoCuenta.nombreTipo}"/>
                         </p:column>
-                        <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="#{bundle.ListCuentaTitle_idCuentaPadre}"/>
-                            </f:facet>
-                            <h:outputText value="#{item.idCuentaPadre}"/>
-                        </p:column>
+                        
                         <f:facet name="footer">
-                            <p:commandButton id="createButton" icon="ui-icon-plus"   value="#{bundle.Create}" actionListener="#{cuentaController.prepareCreate}" update=":CuentaCreateForm" oncomplete="PF('CuentaCreateDialog').show()"/>
-                            <p:commandButton id="viewButton"   icon="ui-icon-search" value="#{bundle.View}" update=":CuentaViewForm" oncomplete="PF('CuentaViewDialog').show()" disabled="#{empty cuentaController.selected}"/>
-                            <p:commandButton id="editButton"   icon="ui-icon-pencil" value="#{bundle.Edit}" update=":CuentaEditForm" oncomplete="PF('CuentaEditDialog').show()" disabled="#{empty cuentaController.selected}"/>
-                            <p:commandButton id="deleteButton" icon="ui-icon-trash"  value="#{bundle.Delete}" actionListener="#{cuentaController.destroy}" update=":growl,datalist" disabled="#{empty cuentaController.selected}"/>
+                            <p:commandButton id="createButton" icon="ui-icon-plus"   value="Crear" actionListener="#{cuentaController.prepareCreate}" update=":CuentaCreateForm" oncomplete="PF('CuentaCreateDialog').show()"/>
+                            <p:commandButton id="viewButton"   icon="ui-icon-search" value="Ver" update=":CuentaViewForm" oncomplete="PF('CuentaViewDialog').show()" disabled="#{empty cuentaController.selected}"/>
+                            <p:commandButton id="editButton"   icon="ui-icon-pencil" value="Editar" update=":CuentaEditForm" oncomplete="PF('CuentaEditDialog').show()" disabled="#{empty cuentaController.selected}"/>
+                            <p:commandButton id="deleteButton" icon="ui-icon-trash"  value="Eliminar" actionListener="#{cuentaController.destroy}" update=":growl,datalist" disabled="#{empty cuentaController.selected}"/>
                         </f:facet>
                     </p:dataTable>
                 </p:panel>

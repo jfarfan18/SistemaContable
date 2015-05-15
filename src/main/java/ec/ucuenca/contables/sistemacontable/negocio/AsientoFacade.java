@@ -41,4 +41,11 @@ public class AsientoFacade extends AbstractFacade<Asiento> {
         else
             return res.get(res.size()-1).getNumeroAsiento();
     }
+    
+    public List<Asiento> getAsientosLibro(int numeroDiario, int periodo) {
+        Query query = this.em.createNamedQuery(Asiento.findByNumeroDiarioPeriodo);
+        query.setParameter("periodo",periodo);
+        query.setParameter("numeroDiario",numeroDiario);
+        return query.getResultList();
+    }
 }

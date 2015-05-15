@@ -42,10 +42,13 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Cuenta.findByDescripcion", query = "SELECT c FROM Cuenta c WHERE c.descripcion = :descripcion"),
     @NamedQuery(name = "Cuenta.findByCategoria", query = "SELECT c FROM Cuenta c WHERE c.categoria = :categoria"),
     @NamedQuery(name = "Cuenta.findBySaldoInicial", query = "SELECT c FROM Cuenta c WHERE c.saldoInicial = :saldoInicial"),
-    @NamedQuery(name = "Cuenta.findBySaldoFinal", query = "SELECT c FROM Cuenta c WHERE c.saldoFinal = :saldoFinal")})
+    @NamedQuery(name = "Cuenta.findBySaldoFinal", query = "SELECT c FROM Cuenta c WHERE c.saldoFinal = :saldoFinal"),
+    //Personalizadas    
+    @NamedQuery(name = "Cuenta.findLikeCuentaDetalle", query = "SELECT c FROM Cuenta c WHERE c.numeroCuenta LIKE :numeroCuenta AND c.categoria = :categoria")})
 public class Cuenta implements Serializable {
     private static final long serialVersionUID = 1L;
-    public static String findByCatgoria="Cuenta.findByCategoria";
+    public static String findByCatgoria="Cuenta.findByCategoria";    
+    public static String findLikeCuentaDetalle="Cuenta.findLikeCuentaDetalle";
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
