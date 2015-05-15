@@ -18,7 +18,20 @@
                 <p:panel header="Libro Mayor">
                     <h:panelGrid columns="3" cellpadding="5">
                         <h:outputLabel for="numerob" value="# Cuenta:" style="font-weight:bold" />
-                        <p:inputText id="numerob" value="#{transaccionController.numcuenta}"  />
+                        <p:inputText id="numerob" value="#{transaccionController.numcuenta}"  />        
+                    </h:panelGrid>
+                     
+                     <h:panelGrid columns="4" cellpadding="5">
+                        <h:outputLabel for="periodo" value="Periodo:" style="font-weight:bold" />
+                        <p:selectOneMenu id="periodo" value="#{asientoController.selectedperiodo}" required="true" requiredMessage="Seleccione un periodo." >
+                            <p:ajax event="valueChange" update="LibroMayor" />
+                            <f:selectItems value="#{asientoController.periodos}"
+                                           var="periodos"
+                                           itemValue="#{periodos}" itemLabel="#{periodos}"/>
+                        </p:selectOneMenu>
+                    </h:panelGrid>
+                    
+                    <h:panelGrid columns="1" cellpadding="5">
                         <p:commandButton value="Buscar" icon="ui-icon-search" update="LibroMayor" />
                     </h:panelGrid>
                     <h:panelGrid columns="2" cellpadding="5">
@@ -29,12 +42,13 @@
                         <h:outputLabel for="Nombre" value="Nombre :" style="font-weight:bold" />
                         <p:inputText id="nombre" value="#{cuentaController.getNombreCuentaByNumero(transaccionController.numcuenta)}" disabled="true"/>
                     </h:panelGrid>
-                    <p:dataTable id="datalist" value="#{transaccionController.itemsByCuenta}" var="item"
+                    <p:dataTable id="datalist" value="#{transaccionController.getItemsByCuentaAndPeriodo(asientoController.selectedperiodo)}" var="item"
                                  selectionMode="single" 
                                  paginator="true"
                                  rowKey="#{item.idTransaccion}"
                                  rows="10"
                                  rowsPerPageTemplate="10,20,30,40,50"
+                                 widgetVar="mayorTable"  
                                  >
 
                      

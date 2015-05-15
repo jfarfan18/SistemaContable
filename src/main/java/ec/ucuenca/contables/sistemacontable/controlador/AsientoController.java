@@ -48,6 +48,9 @@ public class AsientoController implements Serializable {
     private char tipoValor;
     private Transaccion transaccionSeleccion;
 
+    private Integer selectedperiodo;
+    private Integer selecteddiario;
+    
     public AsientoController() {
     }
 
@@ -363,5 +366,53 @@ public class AsientoController implements Serializable {
         }
 
     }
+    
+    public List<Integer> getPeriodos(){
+        this.items=this.getItems();
+        List<Integer> periodos=new ArrayList();
+        for(int i=0;i<items.size();i++){
+            if(!periodos.contains(items.get(i).getPeriodo())){
+                periodos.add(items.get(i).getPeriodo());
+                System.out.println(i);
+            }
+            System.out.println(i);
+        }
 
+        return periodos;
+    }
+    
+    public List<Integer> getDiariosByPeriodos(){
+        this.items=this.getItems();
+        List<Integer> diarios=new ArrayList();
+        for(int i=0;i<items.size();i++){
+            if(items.get(i).getPeriodo()==this.selectedperiodo){
+                if(!diarios.contains(items.get(i).getNumeroDiario())){
+                    diarios.add(items.get(i).getNumeroDiario());
+                    System.out.println(i);
+                }
+            }
+            System.out.println(i);
+        }
+
+        return diarios;
+    }
+
+    public Integer getSelectedperiodo() {
+        return selectedperiodo;
+    }
+
+    public void setSelectedperiodo(Integer selectedperiodo) {
+        this.selectedperiodo = selectedperiodo;
+    }
+
+    public Integer getSelecteddiario() {
+        return selecteddiario;
+    }
+
+    public void setSelecteddiario(Integer selecteddiario) {
+        this.selecteddiario = selecteddiario;
+    }
+
+    
+    
 }
