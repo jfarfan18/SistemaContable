@@ -205,6 +205,17 @@ public class CuentaController implements Serializable {
         return totaldebe;
     }
     
+    public float getTotalSumasDebeByPeriodo(Integer periodo){
+        float totaldebe=0;
+        this.items=this.getFacade().findAll();
+        FacesContext facesContext= FacesContext.getCurrentInstance();
+        TransaccionController beanTransaccion = (TransaccionController)facesContext.getApplication().createValueBinding("#{transaccionController}").getValue(facesContext);
+        for(int i=0;i<items.size();i++){
+            totaldebe=totaldebe+beanTransaccion.getSumaDebeByCuentaAndPeriodo(items.get(i).getNumeroCuenta(),periodo);
+        }
+        return totaldebe;
+    }
+    
     public float getTotalSumasHaber(){
         float totalhaber=0;
         this.items=this.getFacade().findAll();
@@ -212,6 +223,17 @@ public class CuentaController implements Serializable {
         TransaccionController beanTransaccion = (TransaccionController)facesContext.getApplication().createValueBinding("#{transaccionController}").getValue(facesContext);
         for(int i=0;i<items.size();i++){
             totalhaber=totalhaber+beanTransaccion.getSumaHaberByCuenta(items.get(i).getNumeroCuenta());
+        }
+        return totalhaber;
+    }
+    
+    public float getTotalSumasHaberByPeriodo(Integer periodo){
+        float totalhaber=0;
+        this.items=this.getFacade().findAll();
+        FacesContext facesContext= FacesContext.getCurrentInstance();
+        TransaccionController beanTransaccion = (TransaccionController)facesContext.getApplication().createValueBinding("#{transaccionController}").getValue(facesContext);
+        for(int i=0;i<items.size();i++){
+            totalhaber=totalhaber+beanTransaccion.getSumaHaberByCuentaAndPeriodo(items.get(i).getNumeroCuenta(),periodo);
         }
         return totalhaber;
     }
@@ -227,6 +249,17 @@ public class CuentaController implements Serializable {
         return totaldebe;
     }
     
+    public float getTotalSaldosDebeByPeriodo(Integer periodo){
+        float totaldebe=0;
+        this.items=this.getFacade().findAll();
+        FacesContext facesContext= FacesContext.getCurrentInstance();
+        TransaccionController beanTransaccion = (TransaccionController)facesContext.getApplication().createValueBinding("#{transaccionController}").getValue(facesContext);
+        for(int i=0;i<items.size();i++){
+            totaldebe=totaldebe+beanTransaccion.getSaldoDebeByCuentaAndPeriodo(items.get(i).getNumeroCuenta(),periodo);
+        }
+        return totaldebe;
+    }
+    
     public float getTotalSaldosHaber(){
         float totalhaber=0;
         this.items=this.getFacade().findAll();
@@ -236,5 +269,275 @@ public class CuentaController implements Serializable {
             totalhaber=totalhaber+beanTransaccion.getSaldoHaberByCuenta(items.get(i).getNumeroCuenta());
         }
         return totalhaber;
+    }
+    
+    public float getTotalSaldosHaberByPeriodo(Integer periodo){
+        float totalhaber=0;
+        this.items=this.getFacade().findAll();
+        FacesContext facesContext= FacesContext.getCurrentInstance();
+        TransaccionController beanTransaccion = (TransaccionController)facesContext.getApplication().createValueBinding("#{transaccionController}").getValue(facesContext);
+        for(int i=0;i<items.size();i++){
+            totalhaber=totalhaber+beanTransaccion.getSaldoHaberByCuentaAndPeriodo(items.get(i).getNumeroCuenta(),periodo);
+        }
+        return totalhaber;
+    }
+    
+    public List<Cuenta> getCuentasResultadosConSaldo(){
+        this.items=this.getFacade().findAll();
+        char d='D';
+        List<Cuenta> cres=new ArrayList();
+        FacesContext facesContext= FacesContext.getCurrentInstance();
+        TransaccionController beanTransaccion = (TransaccionController)facesContext.getApplication().createValueBinding("#{transaccionController}").getValue(facesContext);
+        for(int i=0;i<items.size();i++){
+            if(items.get(i).getIdTipoCuenta().getIdTipoCuenta()>=4){
+                if(items.get(i).getCategoria()=='G'){
+                    cres.add(items.get(i));
+                }
+                if(beanTransaccion.getSaldoByCuenta(items.get(i).getNumeroCuenta())!=0){
+                    cres.add(items.get(i));
+                }
+            }
+        }
+        return cres;
+    }
+    
+    public List<Cuenta> getCuentasIngresoOpConSaldo(){
+        this.items=this.getFacade().findAll(); // cambiar consulta
+        char d='D';
+        List<Cuenta> cres=new ArrayList();
+        FacesContext facesContext= FacesContext.getCurrentInstance();
+        TransaccionController beanTransaccion = (TransaccionController)facesContext.getApplication().createValueBinding("#{transaccionController}").getValue(facesContext);
+        for(int i=0;i<items.size();i++){
+            if(items.get(i).getIdTipoCuenta().getIdTipoCuenta()==4){
+                if(items.get(i).getNumeroCuenta().startsWith("4.1.")){
+                    if(items.get(i).getCategoria()=='D'){
+                        //if(beanTransaccion.getSaldoByCuenta(items.get(i).getNumeroCuenta())!=0){
+                            cres.add(items.get(i));
+                        //}
+                    }
+                }
+            }
+        }
+        return cres;
+    }
+    
+    public List<Cuenta> getCuentasIngresonoOpConSaldo(){
+        this.items=this.getFacade().findAll(); // cambiar consulta
+        char d='D';
+        List<Cuenta> cres=new ArrayList();
+        FacesContext facesContext= FacesContext.getCurrentInstance();
+        TransaccionController beanTransaccion = (TransaccionController)facesContext.getApplication().createValueBinding("#{transaccionController}").getValue(facesContext);
+        for(int i=0;i<items.size();i++){
+            if(items.get(i).getIdTipoCuenta().getIdTipoCuenta()==4){
+                if(!items.get(i).getNumeroCuenta().startsWith("4.1.")){
+                    if(items.get(i).getCategoria()=='D'){
+                        //if(beanTransaccion.getSaldoByCuenta(items.get(i).getNumeroCuenta())!=0){
+                            cres.add(items.get(i));
+                        //}
+                    }
+                }
+            }
+        }
+        return cres;
+    }
+    
+    public List<Cuenta> getCuentasGastosOpConSaldo(){
+        this.items=this.getFacade().findAll(); // cambiar consulta
+        char d='D';
+        List<Cuenta> cres=new ArrayList();
+        FacesContext facesContext= FacesContext.getCurrentInstance();
+        TransaccionController beanTransaccion = (TransaccionController)facesContext.getApplication().createValueBinding("#{transaccionController}").getValue(facesContext);
+        for(int i=0;i<items.size();i++){
+            if(items.get(i).getIdTipoCuenta().getIdTipoCuenta()==5){
+                if(items.get(i).getNumeroCuenta().startsWith("5.1.")){
+                    if(items.get(i).getCategoria()=='D'){
+                        //if(beanTransaccion.getSaldoByCuenta(items.get(i).getNumeroCuenta())!=0){
+                            cres.add(items.get(i));
+                        //}
+                    }
+                }
+            }
+        }
+        return cres;
+    }
+    
+    public List<Cuenta> getCuentasGastosnoOpConSaldo(){
+        this.items=this.getFacade().findAll(); // cambiar consulta
+        char d='D';
+        List<Cuenta> cres=new ArrayList();
+        FacesContext facesContext= FacesContext.getCurrentInstance();
+        TransaccionController beanTransaccion = (TransaccionController)facesContext.getApplication().createValueBinding("#{transaccionController}").getValue(facesContext);
+        for(int i=0;i<items.size();i++){
+            if(items.get(i).getIdTipoCuenta().getIdTipoCuenta()==5){
+                if(!items.get(i).getNumeroCuenta().startsWith("5.1.")){
+                    if(items.get(i).getCategoria()=='D'){
+                        //if(beanTransaccion.getSaldoByCuenta(items.get(i).getNumeroCuenta())!=0){
+                            cres.add(items.get(i));
+                        //}
+                    }
+                }
+            }
+        }
+        return cres;
+    }
+    
+    public float getTotalSaldosIngresosOp(){
+        float total=0;
+        this.items=this.getFacade().findAll();
+        FacesContext facesContext= FacesContext.getCurrentInstance();
+        TransaccionController beanTransaccion = (TransaccionController)facesContext.getApplication().createValueBinding("#{transaccionController}").getValue(facesContext);
+        for(int i=0;i<items.size();i++){
+            if(items.get(i).getIdTipoCuenta().getIdTipoCuenta()==4){
+                if(items.get(i).getNumeroCuenta().startsWith("4.1.")){
+                    if(items.get(i).getCategoria()=='D'){
+                        total=total+beanTransaccion.getSaldoHaberByCuenta(items.get(i).getNumeroCuenta());
+                    }
+                }
+            }
+        }
+        return total;
+    }
+    
+    public float getTotalSaldosIngresosOpByPeriodo(Integer periodo){
+        float total=0;
+        this.items=this.getFacade().findAll();
+        FacesContext facesContext= FacesContext.getCurrentInstance();
+        TransaccionController beanTransaccion = (TransaccionController)facesContext.getApplication().createValueBinding("#{transaccionController}").getValue(facesContext);
+        for(int i=0;i<items.size();i++){
+            if(items.get(i).getIdTipoCuenta().getIdTipoCuenta()==4){
+                if(items.get(i).getNumeroCuenta().startsWith("4.1.")){
+                    if(items.get(i).getCategoria()=='D'){
+                        total=total+beanTransaccion.getSaldoHaberByCuentaAndPeriodo(items.get(i).getNumeroCuenta(), periodo);
+                    }
+                }
+            }
+        }
+        return total;
+    }
+    
+    public float getTotalSaldosGastosOp(){
+        float total=0;
+        this.items=this.getFacade().findAll();
+        FacesContext facesContext= FacesContext.getCurrentInstance();
+        TransaccionController beanTransaccion = (TransaccionController)facesContext.getApplication().createValueBinding("#{transaccionController}").getValue(facesContext);
+        for(int i=0;i<items.size();i++){
+            if(items.get(i).getIdTipoCuenta().getIdTipoCuenta()==5){
+                if(items.get(i).getNumeroCuenta().startsWith("5.1.")){
+                    if(items.get(i).getCategoria()=='D'){
+                        total=total+beanTransaccion.getSaldoDebeByCuenta(items.get(i).getNumeroCuenta());
+                    }
+                }
+            }
+        }
+        return total;
+    }
+    
+    public float getTotalSaldosGastosOpByPeriodo(Integer periodo){
+        float total=0;
+        this.items=this.getFacade().findAll();
+        FacesContext facesContext= FacesContext.getCurrentInstance();
+        TransaccionController beanTransaccion = (TransaccionController)facesContext.getApplication().createValueBinding("#{transaccionController}").getValue(facesContext);
+        for(int i=0;i<items.size();i++){
+            if(items.get(i).getIdTipoCuenta().getIdTipoCuenta()==5){
+                if(items.get(i).getNumeroCuenta().startsWith("5.1.")){
+                    if(items.get(i).getCategoria()=='D'){
+                        total=total+beanTransaccion.getSaldoDebeByCuentaAndPeriodo(items.get(i).getNumeroCuenta(),periodo);
+                    }
+                }
+            }
+        }
+        return total;
+    }
+    
+    public float getTotalSaldosIngresosnoOp(){
+        float total=0;
+        this.items=this.getFacade().findAll();
+        FacesContext facesContext= FacesContext.getCurrentInstance();
+        TransaccionController beanTransaccion = (TransaccionController)facesContext.getApplication().createValueBinding("#{transaccionController}").getValue(facesContext);
+        for(int i=0;i<items.size();i++){
+            if(items.get(i).getIdTipoCuenta().getIdTipoCuenta()==4){
+                if(!items.get(i).getNumeroCuenta().startsWith("4.1.")){
+                    if(items.get(i).getCategoria()=='D'){
+                        total=total+beanTransaccion.getSaldoHaberByCuenta(items.get(i).getNumeroCuenta());
+                    }
+                }
+            }
+        }
+        return total;
+    }
+    
+    public float getTotalSaldosIngresosnoOpByPeriodo(Integer periodo){
+        float total=0;
+        this.items=this.getFacade().findAll();
+        FacesContext facesContext= FacesContext.getCurrentInstance();
+        TransaccionController beanTransaccion = (TransaccionController)facesContext.getApplication().createValueBinding("#{transaccionController}").getValue(facesContext);
+        for(int i=0;i<items.size();i++){
+            if(items.get(i).getIdTipoCuenta().getIdTipoCuenta()==4){
+                if(!items.get(i).getNumeroCuenta().startsWith("4.1.")){
+                    if(items.get(i).getCategoria()=='D'){
+                        total=total+beanTransaccion.getSaldoHaberByCuentaAndPeriodo(items.get(i).getNumeroCuenta(),periodo);
+                    }
+                }
+            }
+        }
+        return total;
+    }
+    
+    public float getTotalSaldosGastosnoOp(){
+        float total=0;
+        this.items=this.getFacade().findAll();
+        FacesContext facesContext= FacesContext.getCurrentInstance();
+        TransaccionController beanTransaccion = (TransaccionController)facesContext.getApplication().createValueBinding("#{transaccionController}").getValue(facesContext);
+        for(int i=0;i<items.size();i++){
+            if(items.get(i).getIdTipoCuenta().getIdTipoCuenta()==5){
+                if(!items.get(i).getNumeroCuenta().startsWith("5.1.")){
+                    if(items.get(i).getCategoria()=='D'){
+                        total=total+beanTransaccion.getSaldoDebeByCuenta(items.get(i).getNumeroCuenta());
+                    }
+                }
+            }
+        }
+        return total;
+    }
+    
+    public float getTotalSaldosGastosnoOpByPeriodo(Integer periodo){
+        float total=0;
+        this.items=this.getFacade().findAll();
+        FacesContext facesContext= FacesContext.getCurrentInstance();
+        TransaccionController beanTransaccion = (TransaccionController)facesContext.getApplication().createValueBinding("#{transaccionController}").getValue(facesContext);
+        for(int i=0;i<items.size();i++){
+            if(items.get(i).getIdTipoCuenta().getIdTipoCuenta()==5){
+                if(!items.get(i).getNumeroCuenta().startsWith("5.1.")){
+                    if(items.get(i).getCategoria()=='D'){
+                        total=total+beanTransaccion.getSaldoDebeByCuentaAndPeriodo(items.get(i).getNumeroCuenta(), periodo);
+                    }
+                }
+            }
+        }
+        return total;
+    }
+    
+    public float getUtilidadOperacional(){
+        float utilidad=0;
+        utilidad=this.getTotalSaldosIngresosOp()-this.getTotalSaldosGastosOp();
+        return utilidad;
+    }
+    
+    public float getUtilidadOperacionalByPeriodo(Integer periodo){
+        float utilidad=0;
+        utilidad=this.getTotalSaldosIngresosOpByPeriodo(periodo)-this.getTotalSaldosGastosOpByPeriodo(periodo);
+        return utilidad;
+    }
+    
+    public float getUtilidad(){
+        float utilidad=0;
+        utilidad=this.getUtilidadOperacional()+this.getTotalSaldosIngresosnoOp()-this.getTotalSaldosGastosnoOp();
+        return utilidad;
+    }
+    
+    public float getUtilidadByPeriodo(Integer periodo){
+        float utilidad=0;
+        utilidad=this.getUtilidadOperacionalByPeriodo(periodo)+this.getTotalSaldosIngresosnoOpByPeriodo(periodo)-this.getTotalSaldosGastosnoOpByPeriodo(periodo);
+        return utilidad;
     }
 }

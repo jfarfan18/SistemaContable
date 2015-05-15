@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition template="/template.xhtml">
+
+
+        <ui:define name="title">
+            <h:outputText value="Estado de Resultados"></h:outputText>
+        </ui:define>
+
+        <ui:define name="body">
+            <h:form id="EstadoResultados">
+                <p:panel header="Estado de Resultados">
+                    
+                    <h:panelGrid columns="4" cellpadding="5">
+                        <h:outputLabel for="periodo" value="Periodo:" style="font-weight:bold" />
+                        <p:selectOneMenu id="periodo" value="#{asientoController.selectedperiodo}" required="true" requiredMessage="Seleccione un periodo." >
+                            <f:selectItems value="#{asientoController.periodos}"
+                                           var="periodos"
+                                           itemValue="#{periodos}" itemLabel="#{periodos}"/>
+                        </p:selectOneMenu>
+                        <p:commandButton value="Generar" icon="ui-icon-search" update="EstadoResultados" />
+                    </h:panelGrid>
+
+                    <p:panel id="titulo" header="ESTADO DE RESULTADOS" style="text-align: center">
+                        <h:outputText
+                            value="PERIODO: #{asientoController.selectedperiodo}" />
+                    </p:panel>
+                    
+                    <h:panelGrid>
+                    <f:facet name="header">
+                        <h:outputLabel value="INGRESOS OPERACIONALES" />
+                    </f:facet>
+                    <p:dataTable id="tablaingop" value="#{cuentaController.cuentasIngresoOpConSaldo}" var="item"
+                                 selectionMode="single" 
+                                 rowKey="#{item.numeroCuenta}"
+                                 >
+
+                     
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="CODIGO"/>
+                            </f:facet>
+                            <h:outputText value="#{item.numeroCuenta}"/>
+                        </p:column>                        
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="CUENTA"/>
+                            </f:facet>
+                            <h:outputText value="#{item.descripcion}"/>
+                        </p:column>                        
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="SALDO"/>
+                            </f:facet>
+                            <h:outputText value="#{transaccionController.getSaldoByCuentaAndPeriodo(item.numeroCuenta,asientoController.selectedperiodo)}"/>
+                        </p:column>
+                        
+                        <p:columnGroup type="footer">  
+                            <p:row>  
+                                <p:column colspan="2" footerText="TOTAL:"  
+                                        style="text-align:right"  />  
+      
+                                <p:column footerText="#{cuentaController.getTotalSaldosIngresosOpByPeriodo(asientoController.selectedperiodo)}" style="text-align:right" />  
+       
+                            </p:row>  
+                        </p:columnGroup>  
+                        
+                    </p:dataTable>
+                    </h:panelGrid>
+                    
+                        
+                    <h:panelGrid>
+                    <f:facet name="header">
+                        <h:outputLabel value="GASTOS OPERACIONALES" />
+                    </f:facet>
+                    <p:dataTable id="tablagasop" value="#{cuentaController.cuentasGastosOpConSaldo}" var="item"
+                                 selectionMode="single" 
+                                 rowKey="#{item.numeroCuenta}"
+                                 >                  
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="CODIGO"/>
+                            </f:facet>
+                            <h:outputText value="#{item.numeroCuenta}"/>
+                        </p:column>                        
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="CUENTA"/>
+                            </f:facet>
+                            <h:outputText value="#{item.descripcion}"/>
+                        </p:column>                        
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="SALDO"/>
+                            </f:facet>
+                            <h:outputText value="#{transaccionController.getSaldoByCuentaAndPeriodo(item.numeroCuenta,asientoController.selectedperiodo)}"/>
+                        </p:column>  
+                        
+                        <p:columnGroup type="footer">  
+                            <p:row>  
+                                <p:column colspan="2" footerText="TOTAL:"  
+                                        style="text-align:right"  />  
+      
+                                <p:column footerText="#{cuentaController.getTotalSaldosGastosOpByPeriodo(asientoController.selectedperiodo)}" style="text-align:right" />  
+       
+                            </p:row>  
+                        </p:columnGroup> 
+                        
+                    </p:dataTable>
+                    </h:panelGrid>
+                    
+                    <p:panel id="basic" header="UTILIDAD (PERDIDA) OPERACIONAL  =  #{cuentaController.getUtilidadOperacionalByPeriodo(asientoController.selectedperiodo)}" style="text-align:right"/>
+
+                    <h:panelGrid>
+                    <f:facet name="header">
+                        <h:outputLabel value="INGRESOS NO OPERACIONALES" />
+                    </f:facet>
+                    <p:dataTable id="tablaingnoop" value="#{cuentaController.cuentasIngresonoOpConSaldo}" var="item"
+                                 selectionMode="single" 
+                                 rowKey="#{item.numeroCuenta}"
+                                 >                  
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="CODIGO"/>
+                            </f:facet>
+                            <h:outputText value="#{item.numeroCuenta}"/>
+                        </p:column>                        
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="CUENTA"/>
+                            </f:facet>
+                            <h:outputText value="#{item.descripcion}"/>
+                        </p:column>                        
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="SALDO"/>
+                            </f:facet>
+                            <h:outputText value="#{transaccionController.getSaldoByCuentaAndPeriodo(item.numeroCuenta,asientoController.selectedperiodo)}"/>
+                        </p:column>  
+                        
+                        <p:columnGroup type="footer">  
+                            <p:row>  
+                                <p:column colspan="2" footerText="TOTAL:"  
+                                        style="text-align:right"  />  
+      
+                                <p:column footerText="#{cuentaController.getTotalSaldosIngresosnoOpByPeriodo(asientoController.selectedperiodo)}" style="text-align:right" />  
+       
+                            </p:row>  
+                        </p:columnGroup> 
+                        
+                    </p:dataTable>
+                    </h:panelGrid>
+                     
+                    <h:panelGrid>
+                    <f:facet name="header">
+                        <h:outputLabel value="GASTOS NO OPERACIONALES" />
+                    </f:facet>
+                    <p:dataTable id="tablagasnoop" value="#{cuentaController.cuentasGastosnoOpConSaldo}" var="item"
+                                 selectionMode="single" 
+                                 rowKey="#{item.numeroCuenta}"
+                                 >                  
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="CODIGO"/>
+                            </f:facet>
+                            <h:outputText value="#{item.numeroCuenta}"/>
+                        </p:column>                        
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="CUENTA"/>
+                            </f:facet>
+                            <h:outputText value="#{item.descripcion}"/>
+                        </p:column>                        
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="SALDO"/>
+                            </f:facet>
+                            <h:outputText value="#{transaccionController.getSaldoByCuentaAndPeriodo(item.numeroCuenta,asientoController.selectedperiodo)}"/>
+                        </p:column>  
+                        
+                        <p:columnGroup type="footer">  
+                            <p:row>  
+                                <p:column colspan="2" footerText="TOTAL:"  
+                                        style="text-align:right"  />  
+      
+                                <p:column footerText="#{cuentaController.getTotalSaldosGastosnoOpByPeriodo(asientoController.selectedperiodo)}" style="text-align:right" />  
+       
+                            </p:row>  
+                        </p:columnGroup> 
+                        
+                    </p:dataTable>
+                    </h:panelGrid>
+                        
+                    <p:panel id="basic1" header="UTILIDAD (PERDIDA) ANTES DE IMPUESTOS  =  #{cuentaController.getUtilidadByPeriodo(asientoController.selectedperiodo)}" style="text-align:right"/>
+                    
+                </p:panel>
+            </h:form>
+
+            
+        </ui:define>
+    </ui:composition>
+
+</html>

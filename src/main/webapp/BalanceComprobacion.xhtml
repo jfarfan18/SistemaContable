@@ -15,8 +15,20 @@
 
         <ui:define name="body">
 
-        <h:form>  
-            <p:dataTable var="cuentas" value="#{cuentaController.cuentasDetalle}">  
+        <h:form> 
+            
+            <h:panelGrid columns="4" cellpadding="5">
+                        <h:outputLabel for="periodo" value="Periodo:" style="font-weight:bold" />
+                        <p:selectOneMenu id="periodo" value="#{asientoController.selectedperiodo}" required="true" requiredMessage="Seleccione un periodo." >
+                            <f:selectItems value="#{asientoController.periodos}"
+                                           var="periodos"
+                                           itemValue="#{periodos}" itemLabel="#{periodos}"/>
+                        </p:selectOneMenu>
+                        <p:commandButton value="Generar" icon="ui-icon-search" update="balancetable" />
+            </h:panelGrid>
+                    
+            
+            <p:dataTable id="balancetable" var="cuentas" value="#{cuentaController.cuentasDetalle}">  
       
                 <f:facet name="header">  
                     <h:outputText value="BALANCE DE COMPROBACION"></h:outputText>
@@ -49,19 +61,19 @@
                 </p:column>  
       
                 <p:column style="text-align:right">  
-                    #{transaccionController.getSumaDebeByCuenta(cuentas.numeroCuenta)}  
+                    #{transaccionController.getSumaDebeByCuentaAndPeriodo(cuentas.numeroCuenta,asientoController.selectedperiodo)}  
                 </p:column>  
       
                 <p:column style="text-align:right">  
-                    #{transaccionController.getSumaHaberByCuenta(cuentas.numeroCuenta)}  
+                    #{transaccionController.getSumaHaberByCuentaAndPeriodo(cuentas.numeroCuenta,asientoController.selectedperiodo)}  
                 </p:column>  
       
                 <p:column style="text-align:right">  
-                    #{transaccionController.getSaldoDebeByCuenta(cuentas.numeroCuenta)}   
+                    #{transaccionController.getSaldoDebeByCuentaAndPeriodo(cuentas.numeroCuenta,asientoController.selectedperiodo)}   
                 </p:column>  
                 
                 <p:column style="text-align:right">  
-                    #{transaccionController.getSaldoHaberByCuenta(cuentas.numeroCuenta)} 
+                    #{transaccionController.getSaldoHaberByCuentaAndPeriodo(cuentas.numeroCuenta,asientoController.selectedperiodo)} 
                 </p:column>
       
                 <p:columnGroup type="footer">  
@@ -69,13 +81,13 @@
                         <p:column colspan="2" footerText="TOTALES:"  
                                     style="text-align:right"  />  
       
-                        <p:column footerText="#{cuentaController.totalSumasDebe}" style="text-align:right" />  
+                        <p:column footerText="#{cuentaController.getTotalSumasDebeByPeriodo(asientoController.selectedperiodo)}" style="text-align:right" />  
       
-                        <p:column footerText="#{cuentaController.totalSumasHaber}" style="text-align:right"/>  
+                        <p:column footerText="#{cuentaController.getTotalSumasHaberByPeriodo(asientoController.selectedperiodo)}" style="text-align:right"/>  
                         
-                        <p:column footerText="#{cuentaController.totalSaldosDebe}" style="text-align:right"/>  
+                        <p:column footerText="#{cuentaController.getTotalSaldosDebeByPeriodo(asientoController.selectedperiodo)}" style="text-align:right"/>  
       
-                        <p:column footerText="#{cuentaController.totalSaldosHaber}" style="text-align:right"/>  
+                        <p:column footerText="#{cuentaController.getTotalSaldosHaberByPeriodo(asientoController.selectedperiodo)}" style="text-align:right"/>  
                     </p:row>  
                 </p:columnGroup>  
        

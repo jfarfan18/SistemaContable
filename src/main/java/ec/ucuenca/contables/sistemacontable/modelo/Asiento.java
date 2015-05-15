@@ -48,9 +48,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Asiento.findByConcepto", query = "SELECT a FROM Asiento a WHERE a.concepto = :concepto"),
     @NamedQuery(name = "Asiento.findByNumeroDocumento", query = "SELECT a FROM Asiento a WHERE a.numeroDocumento = :numeroDocumento"),
 //personalizadas
-    @NamedQuery(name = "Asiento.findByNumeroDiarioPeriodo", query = "SELECT a FROM Asiento a WHERE a.numeroDiario = :numeroDiario AND a.periodo = :periodo ORDER BY a.numeroAsiento")
-
-})
+    @NamedQuery(name = "Asiento.findByNumeroDiarioPeriodo", query = "SELECT a FROM Asiento a WHERE a.numeroDiario = :numeroDiario AND a.periodo = :periodo ORDER BY a.numeroAsiento")})
 public class Asiento implements Serializable {
     @Column(name = "numeroDiario")
     private Integer numeroDiario;
