@@ -19,9 +19,9 @@
                     <h:outputLabel value="#{asientoController.mensaje}" style="font-weight:bold; color: red;" />
                     <h:panelGrid columns="2" cellpadding="5">
                         <h:outputLabel for="periodo" value="Periodo:" style="font-weight:bold;" />
-                        <p:inputText id="periodo" value="#{asientoController.periodo}"  />
+                        <p:inputText id="periodo" value="#{asientoController.selectedperiodo}"  />
                         <h:outputLabel for="numeroDiario" value="Número Diario:" style="font-weight:bold" />
-                        <p:inputText id="numeroDiario" value="#{asientoController.numeroDiario}"  />
+                        <p:inputText id="numeroDiario" value="#{asientoController.selecteddiario}"  />
                         <p:commandButton value="Cargar" icon="ui-icon-search" update="LibroDiario" />
                     </h:panelGrid>
 

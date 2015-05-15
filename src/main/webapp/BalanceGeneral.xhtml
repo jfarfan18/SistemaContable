@@ -41,12 +41,14 @@
                                     </f:facet>
                                     <p:inputText readonly="true" value="#{cuentaActivoCorriente.descripcion}" style="width: 250px" />
                                     <p:inputText readonly="true" value="#{cuentaController.getSaldoCuenta(cuentaActivoCorriente)}" style="width: 100px" />
-                                    
+
                                 </p:dataList>
-                                
+
                                 <p:dataList value="#{cuentaController.activoFijoList}" var="cuentaActivoFijo"  type="unordered">
                                     <f:facet name="header">
-                                        ACTIVO FIJO
+                                        <h:outputLabel  value="ACTIVO FIJO" style="font-weight:bold" /> 
+                                        <p:spacer width="150px" height="0px"/>
+                                        <h:outputLabel value="#{cuentaController.totalActivoFijo}"  />
                                     </f:facet>
                                     <p:inputText readonly="true" value="#{cuentaActivoFijo.descripcion}" style="width: 250px" />
                                     <p:inputText readonly="true" value="#{cuentaController.getSaldoCuenta(cuentaActivoFijo)}" style="width: 100px" />
@@ -62,7 +64,9 @@
                                 </f:facet>
                                 <p:dataList value="#{cuentaController.pasivoCorrienteList}" var="cuentaPasivoCorriente"  type="unordered">
                                     <f:facet name="header">
-                                        PASIVO CORRIENTE
+                                        <h:outputLabel  value="PASIVO CORRIENTE" style="font-weight:bold" /> 
+                                        <p:spacer width="150px" height="0px"/>
+                                        <h:outputLabel value="#{cuentaController.totalPasivoCorriente}"  />
                                     </f:facet>
                                     <p:inputText readonly="true" value="#{cuentaPasivoCorriente.descripcion}" style="width: 250px" />
                                     <p:inputText readonly="true" value="#{cuentaController.getSaldoCuenta(cuentaPasivoCorriente)}" style="width: 100px" />
@@ -75,13 +79,22 @@
                                 </f:facet>
                                 <p:dataList value="#{cuentaController.patrimonioList}" var="cuentaPatrimonio"  type="unordered">
                                     <f:facet name="header">
-                                        PATRIMONIO
+                                        <h:outputLabel  value="Patrimonio" style="font-weight:bold" /> 
+                                        <p:spacer width="150px" height="0px"/>
+                                        <h:outputLabel value="#{cuentaController.totalPatrimonio}"  />
                                     </f:facet>
                                     <p:inputText readonly="true" value="#{cuentaPatrimonio.descripcion}" style="width: 250px" />
                                     <p:inputText readonly="true" value="#{cuentaController.getSaldoCuenta(cuentaPatrimonio)}" style="width: 100px" />
                                 </p:dataList>
                             </p:panelGrid>
                         </h:panelGrid>
+                        <f:facet name="footer">
+                            <h:outputLabel  value="TOTAL ACTIVO: " style="font-weight:bold" /> 
+                            <h:outputLabel value="#{cuentaController.totalAcivo}"  />
+                            <p:spacer width="300px" height="0px"/>
+                            <h:outputLabel  value="TOTAL PASIVO + PATRIMONIO: " style="font-weight:bold" /> 
+                            <h:outputLabel value="#{cuentaController.totalPasivoPatrimonio}"  />
+                        </f:facet>
                     </p:panelGrid>
 
                 </p:panel>
