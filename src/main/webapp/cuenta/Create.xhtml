@@ -8,37 +8,46 @@
 
     <ui:composition>
 
-        <p:dialog id="CuentaCreateDlg" widgetVar="CuentaCreateDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.CreateCuentaTitle}">
+        <p:dialog id="CuentaCreateDlg" widgetVar="CuentaCreateDialog" modal="true" resizable="false" appendTo="@(body)" header="NUEVA CUENTA CONTABLE">
             <h:form id="CuentaCreateForm">
                 <h:panelGroup id="display">
                     <p:panelGrid columns="2" rendered="#{cuentaController.selected != null}">
-                        <p:outputLabel value="#{bundle.CreateCuentaLabel_idCuenta}" for="idCuenta" />
-                        <p:inputText id="idCuenta" value="#{cuentaController.selected.idCuenta}" title="#{bundle.CreateCuentaTitle_idCuenta}" required="true" requiredMessage="#{bundle.CreateCuentaRequiredMessage_idCuenta}"/>
-                        <p:outputLabel value="#{bundle.CreateCuentaLabel_numeroCuenta}" for="numeroCuenta" />
+                        <p:outputLabel value="Número Cuenta" for="numeroCuenta" />
                         <p:inputText id="numeroCuenta" value="#{cuentaController.selected.numeroCuenta}" title="#{bundle.CreateCuentaTitle_numeroCuenta}" required="true" requiredMessage="#{bundle.CreateCuentaRequiredMessage_numeroCuenta}"/>
-                        <p:outputLabel value="#{bundle.CreateCuentaLabel_descripcion}" for="descripcion" />
+                        <p:outputLabel value="Descripcion" for="descripcion" />
                         <p:inputText id="descripcion" value="#{cuentaController.selected.descripcion}" title="#{bundle.CreateCuentaTitle_descripcion}" required="true" requiredMessage="#{bundle.CreateCuentaRequiredMessage_descripcion}"/>
-                        <p:outputLabel value="#{bundle.CreateCuentaLabel_categoria}" for="categoria" />
-                        <p:inputText id="categoria" value="#{cuentaController.selected.categoria}" title="#{bundle.CreateCuentaTitle_categoria}" required="true" requiredMessage="#{bundle.CreateCuentaRequiredMessage_categoria}"/>
-                        <p:outputLabel value="#{bundle.CreateCuentaLabel_saldoInicial}" for="saldoInicial" />
+                        <p:outputLabel value="Categoría" for="categoria" />
+                        <p:selectOneMenu id="categoria" 
+                                         value="#{cuentaController.selected.categoria}">
+                            <f:selectItem itemLabel="Grupo" itemValue="G" />
+                            <f:selectItem itemLabel="Detalle" itemValue="D" />
+                        </p:selectOneMenu>
+                        <p:outputLabel value="Saldo Inicial" for="saldoInicial" />
                         <p:inputText id="saldoInicial" value="#{cuentaController.selected.saldoInicial}" title="#{bundle.CreateCuentaTitle_saldoInicial}" required="true" requiredMessage="#{bundle.CreateCuentaRequiredMessage_saldoInicial}"/>
-                        <p:outputLabel value="#{bundle.CreateCuentaLabel_saldoFinal}" for="saldoFinal" />
+                        <p:outputLabel value="Saldo Final" for="saldoFinal" />
                         <p:inputText id="saldoFinal" value="#{cuentaController.selected.saldoFinal}" title="#{bundle.CreateCuentaTitle_saldoFinal}" required="true" requiredMessage="#{bundle.CreateCuentaRequiredMessage_saldoFinal}"/>
-                        <p:outputLabel value="#{bundle.CreateCuentaLabel_idTipoCuenta}" for="idTipoCuenta" />
+                        <p:outputLabel value="Tipo Cuenta" for="idTipoCuenta" />
                         <p:selectOneMenu id="idTipoCuenta" value="#{cuentaController.selected.idTipoCuenta}" required="true" requiredMessage="#{bundle.EditCuentaRequiredMessage_idTipoCuenta}">
                             <f:selectItems value="#{tipocuentaController.itemsAvailableSelectOne}"
                                            var="idTipoCuentaItem"
-                                           itemValue="#{idTipoCuentaItem}"/>
+                                           itemValue="#{idTipoCuentaItem}"
+                                           itemLabel="#{idTipoCuentaItem.nombreTipo}"/>
                         </p:selectOneMenu>
-                        <p:outputLabel value="#{bundle.CreateCuentaLabel_idCuentaPadre}" for="idCuentaPadre" />
-                        <p:selectOneMenu id="idCuentaPadre" value="#{cuentaController.selected.idCuentaPadre}" >
-                            <f:selectItems value="#{cuentaController.itemsAvailableSelectOne}"
-                                           var="idCuentaPadreItem"
-                                           itemValue="#{idCuentaPadreItem}"/>
+                        <p:outputLabel value="Cuenta Padre" for="idCuentaPadre" />
+                        <p:selectOneMenu id="idCuentaPadre" 
+                                         value="#{cuentaController.selected.idCuentaPadre}" effect="fade"
+                                         filter="true" 
+                                         filterMatchMode="startsWith">
+                            <f:selectItem itemLabel="Ninguno" />
+                            <f:selectItems value="#{cuentaController.itemsAvailableSelectOneGrupo}"
+                                           var="cuenta"
+                                           itemValue="#{cuenta}"
+                                           itemLabel="#{cuenta.descripcion} (#{cuenta.numeroCuenta})"
+                                           itemDescription="#{cuenta.numeroCuenta}"/>
                         </p:selectOneMenu>
                     </p:panelGrid>
-                    <p:commandButton actionListener="#{cuentaController.create}" value="#{bundle.Save}" update="display,:CuentaListForm:datalist,:growl" oncomplete="handleSubmit(args,'CuentaCreateDialog');"/>
-                    <p:commandButton value="#{bundle.Cancel}" onclick="CuentaCreateDialog.hide()"/>
+                    <p:commandButton actionListener="#{cuentaController.create}" value="Guardar" update="display,:CuentaListForm:datalist,:growl" />
+                    <p:commandButton value="Cancelar" onclick="CuentaCreateDialog.hide()"/>
                 </h:panelGroup>
             </h:form>
         </p:dialog>

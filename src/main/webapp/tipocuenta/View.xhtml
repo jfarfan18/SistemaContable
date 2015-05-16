@@ -8,16 +8,16 @@
 
     <ui:composition>
 
-        <p:dialog id="TipocuentaViewDlg" widgetVar="TipocuentaViewDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.ViewTipocuentaTitle}">
+        <p:dialog id="TipocuentaViewDlg" widgetVar="TipocuentaViewDialog" modal="true" resizable="false" appendTo="@(body)" header="VER TIPO CUENTA">
             <h:form id="TipocuentaViewForm">
                 <h:panelGroup id="display">
                     <p:panelGrid columns="2" rendered="#{tipocuentaController.selected != null}">
-                        <h:outputText value="#{bundle.ViewTipocuentaLabel_idTipoCuenta}"/>
+                        <h:outputText value="Codigo"/>
                         <h:outputText value="#{tipocuentaController.selected.idTipoCuenta}" title="#{bundle.ViewTipocuentaTitle_idTipoCuenta}"/>
-                        <h:outputText value="#{bundle.ViewTipocuentaLabel_nombreTipo}"/>
+                        <h:outputText value="Nombre"/>
                         <h:outputText value="#{tipocuentaController.selected.nombreTipo}" title="#{bundle.ViewTipocuentaTitle_nombreTipo}"/>
                     </p:panelGrid>
-                    <p:commandButton value="#{bundle.Close}" onclick="TipocuentaViewDialog.hide()"/>
+                    <p:commandButton value="Cerrar" onclick="TipocuentaViewDialog.hide()"/>
                 </h:panelGroup>
             </h:form>
         </p:dialog>

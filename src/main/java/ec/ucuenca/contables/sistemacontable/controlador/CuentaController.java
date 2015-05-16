@@ -1,10 +1,11 @@
 package ec.ucuenca.contables.sistemacontable.controlador;
 
-import ec.ucuenca.contables.sistemacontable.modelo.Cuenta;
 import ec.ucuenca.contables.sistemacontable.controlador.util.JsfUtil;
 import ec.ucuenca.contables.sistemacontable.controlador.util.JsfUtil.PersistAction;
+import ec.ucuenca.contables.sistemacontable.modelo.Cuenta;
+import ec.ucuenca.contables.sistemacontable.modelo.Transaccion;
 import ec.ucuenca.contables.sistemacontable.negocio.CuentaFacade;
-
+import ec.ucuenca.contables.sistemacontable.negocio.TransaccionFacade;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,12 +14,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
-import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
+import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
+import javax.inject.Named;
 import org.primefaces.context.RequestContext;
 
 @Named("cuentaController")
@@ -27,10 +29,66 @@ public class CuentaController implements Serializable {
 
     @EJB
     private ec.ucuenca.contables.sistemacontable.negocio.CuentaFacade ejbFacade;
+    @EJB
+    private TransaccionFacade ejbFacadeTransaccion;
     private List<Cuenta> items = null;
     private Cuenta selected;
+    private String mensaje;
+    private int periodo;
+    private int numeroDiario;
+    private List<Cuenta> activoCorrienteList;
+     private List<Cuenta> activoFijoList;
+      private List<Cuenta> pasivoCorrienteList;
+       private List<Cuenta> patrimonioList;
+       private double totalActivoCorriente;
+       private double totalActivoFijo;
+       private double totalPasivoCorriente;
+       private double totalPatrimonio;
 
     public CuentaController() {
+    }
+    
+    public void cargarCuentas(){
+        activoFijoList=ejbFacade.getCuentasLikeCuentaDetalle("1.2.");
+        totalActivoFijo=0;
+        for (Cuenta cuenta:activoFijoList){
+            totalActivoFijo=totalActivoFijo+getSaldoCuenta(cuenta);
+        }
+        activoCorrienteList=ejbFacade.getCuentasLikeCuentaDetalle("1.1.");
+        totalActivoCorriente=0;
+        for (Cuenta cuenta:activoCorrienteList){
+            totalActivoCorriente=totalActivoCorriente+getSaldoCuenta(cuenta);
+        }
+        pasivoCorrienteList=ejbFacade.getCuentasLikeCuentaDetalle("2.1.");
+        totalPasivoCorriente=0;
+        for (Cuenta cuenta:pasivoCorrienteList){
+            totalPasivoCorriente=totalPasivoCorriente+getSaldoCuenta(cuenta);
+        }
+        patrimonioList=ejbFacade.getCuentasLikeCuentaDetalle("3.1.");
+        totalPatrimonio=0;
+        for (Cuenta cuenta:patrimonioList){
+            totalPatrimonio=totalPatrimonio+getSaldoCuenta(cuenta);
+        }
+    }
+    
+    
+    
+    public double getTotalAcivo(){
+        return totalActivoCorriente+totalActivoFijo;
+    }
+    
+    public double getTotalPasivoPatrimonio(){
+        return totalPasivoCorriente+totalPatrimonio;
+    }
+    
+    public double getSaldoCuenta(Cuenta cuenta){
+        double res=0;
+        List<Transaccion> lista=ejbFacadeTransaccion.getTransaccionPeriodo(cuenta.getIdCuenta(), numeroDiario, periodo);
+        for (Transaccion tra:lista){
+            res=res+tra.getDebe().doubleValue();
+            res=res-tra.getHaber().doubleValue();
+        }
+        return Math.abs(res);
     }
 
     public Cuenta getSelected() {
@@ -58,6 +116,28 @@ public class CuentaController implements Serializable {
     }
 
     public void create() {
+        boolean tieneError=false;
+        String hija=selected.getNumeroCuenta();
+        String padre;
+        if (selected.getIdCuentaPadre()!=null)padre=selected.getIdCuentaPadre().getNumeroCuenta();else padre="";
+        if (this.selected.getCategoria()=='G' && !selected.getNumeroCuenta().endsWith(".")) {
+                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "Una cuenta de categoria Grupo debe debe terminar con un punto");
+                FacesContext.getCurrentInstance().addMessage(null, msg);
+                tieneError = true;
+        }
+        if (this.selected.getCategoria()=='D' && selected.getNumeroCuenta().endsWith(".")) {
+                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "Una cuenta de categoria Detalle no debe debe terminar con un punto");
+                FacesContext.getCurrentInstance().addMessage(null, msg);
+                tieneError = true;
+        }
+        if (padre!=""){
+            if (!(hija.startsWith(padre))){
+                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "El numero de cuenta debe empezar por el numero de cuenta del padre. Ejemplo NumeroCuentaPadre.01");
+                FacesContext.getCurrentInstance().addMessage(null, msg);
+                tieneError = true;
+            }
+        }
+        if (tieneError) return;
         persist(PersistAction.CREATE, ResourceBundle.getBundle("/Bundle").getString("CuentaCreated"));
         if (!JsfUtil.isValidationFailed()) {
             items = null;    // Invalidate list of items to trigger re-query.
@@ -121,6 +201,169 @@ public class CuentaController implements Serializable {
 
     public List<Cuenta> getItemsAvailableSelectOne() {
         return getFacade().getCuentasDetale();
+    }
+    
+    public List<Cuenta> getItemsAvailableSelectOneGrupo() {
+        return getFacade().getCuentasDetale();
+    }
+
+    /**
+     * @return the mensaje
+     */
+    public String getMensaje() {
+        if (getTotalAcivo()!=getTotalPasivoPatrimonio()){
+            mensaje= "ERROR en el Balance, los totales no son iguales";
+        }else{
+            mensaje= "";
+        }
+        return mensaje;
+    }
+
+    /**
+     * @param mensaje the mensaje to set
+     */
+    public void setMensaje(String mensaje) {
+        this.mensaje = mensaje;
+    }
+
+    /**
+     * @return the periodo
+     */
+    public int getPeriodo() {
+        return periodo;
+    }
+
+    /**
+     * @param periodo the periodo to set
+     */
+    public void setPeriodo(int periodo) {
+        this.periodo = periodo;
+    }
+
+    /**
+     * @return the numeroDiario
+     */
+    public int getNumeroDiario() {
+        return numeroDiario;
+    }
+
+    /**
+     * @param numeroDiario the numeroDiario to set
+     */
+    public void setNumeroDiario(int numeroDiario) {
+        this.numeroDiario = numeroDiario;
+    }
+
+    /**
+     * @return the pasivoCorrienteList
+     */
+    public List<Cuenta> getPasivoCorrienteList() {
+        return pasivoCorrienteList;
+    }
+
+    /**
+     * @param pasivoCorrienteList the pasivoCorrienteList to set
+     */
+    public void setPasivoCorrienteList(List<Cuenta> pasivoCorrienteList) {
+        this.pasivoCorrienteList = pasivoCorrienteList;
+    }
+
+    /**
+     * @return the activoCorrienteList
+     */
+    public List<Cuenta> getActivoCorrienteList() {
+        return activoCorrienteList;
+    }
+
+    /**
+     * @param activoCorrienteList the activoCorrienteList to set
+     */
+    public void setActivoCorrienteList(List<Cuenta> activoCorrienteList) {
+        this.activoCorrienteList = activoCorrienteList;
+    }
+
+    /**
+     * @return the activoFijoList
+     */
+    public List<Cuenta> getActivoFijoList() {
+        return activoFijoList;
+    }
+
+    /**
+     * @param activoFijoList the activoFijoList to set
+     */
+    public void setActivoFijoList(List<Cuenta> activoFijoList) {
+        this.activoFijoList = activoFijoList;
+    }
+
+    /**
+     * @return the patrimonioList
+     */
+    public List<Cuenta> getPatrimonioList() {
+        return patrimonioList;
+    }
+
+    /**
+     * @param patrimonioList the patrimonioList to set
+     */
+    public void setPatrimonioList(List<Cuenta> patrimonioList) {
+        this.patrimonioList = patrimonioList;
+    }
+
+    /**
+     * @return the totalActivoCorriente
+     */
+    public double getTotalActivoCorriente() {
+        return totalActivoCorriente;
+    }
+
+    /**
+     * @param totalActivoCorriente the totalActivoCorriente to set
+     */
+    public void setTotalActivoCorriente(double totalActivoCorriente) {
+        this.totalActivoCorriente = totalActivoCorriente;
+    }
+
+    /**
+     * @return the totalActivoFijo
+     */
+    public double getTotalActivoFijo() {
+        return totalActivoFijo;
+    }
+
+    /**
+     * @param totalActivoFijo the totalActivoFijo to set
+     */
+    public void setTotalActivoFijo(double totalActivoFijo) {
+        this.totalActivoFijo = totalActivoFijo;
+    }
+
+    /**
+     * @return the totalPasivoCorriente
+     */
+    public double getTotalPasivoCorriente() {
+        return totalPasivoCorriente;
+    }
+
+    /**
+     * @param totalPasivoCorriente the totalPasivoCorriente to set
+     */
+    public void setTotalPasivoCorriente(double totalPasivoCorriente) {
+        this.totalPasivoCorriente = totalPasivoCorriente;
+    }
+
+    /**
+     * @return the totalPatrimonio
+     */
+    public double getTotalPatrimonio() {
+        return totalPatrimonio;
+    }
+
+    /**
+     * @param totalPatrimonio the totalPatrimonio to set
+     */
+    public void setTotalPatrimonio(double totalPatrimonio) {
+        this.totalPatrimonio = totalPatrimonio;
     }
 
     @FacesConverter(forClass = Cuenta.class)

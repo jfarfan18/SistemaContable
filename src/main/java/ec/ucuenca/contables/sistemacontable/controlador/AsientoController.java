@@ -48,13 +48,31 @@ public class AsientoController implements Serializable {
     private char tipoValor;
     private Transaccion transaccionSeleccion;
 
+    private String mensaje;
     private Integer selectedperiodo;
     private Integer selecteddiario;
+    private double totalDebeDiario;
+    private double totalHaberDiario;
     
     public AsientoController() {
     }
 
-    
+    public List<Asiento> getItemsLibroDiario(){
+        if (selecteddiario==null)selecteddiario=0;
+        if (selectedperiodo==null)selectedperiodo=0;
+        List<Asiento> listaAsientos=ejbFacade.getAsientosLibro(this.selecteddiario, selectedperiodo);
+        totalDebeDiario=0;
+        totalHaberDiario=0;
+        for (Asiento asiento:listaAsientos){
+            for (Transaccion tra:asiento.getTransaccionList()){
+                totalDebeDiario=totalDebeDiario+tra.getDebe().doubleValue();
+                totalHaberDiario=totalHaberDiario+tra.getHaber().doubleValue();
+            }
+        }
+        if (totalDebeDiario!=totalHaberDiario)mensaje="Totales Debe y Haber no son iguales";else mensaje="";
+        return listaAsientos;
+        
+    }
     
     public void quitarTransaccion(){
         System.out.println("Quitar");
@@ -189,7 +207,7 @@ public class AsientoController implements Serializable {
             tieneError = true;
         }
         for (int i=0;i<selected.getTransaccionList().size()-1;i++){
-            for (int j=i;j<selected.getTransaccionList().size();j++){
+            for (int j=i+1;j<selected.getTransaccionList().size();j++){
                 if (selected.getTransaccionList().get(i).getIdCuenta().getIdCuenta()==selected.getTransaccionList().get(j).getIdCuenta().getIdCuenta()){
                     FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "La cuenta "+selected.getTransaccionList().get(j).getIdCuenta().getDescripcion()+" se encuentra duplicada en el asiento");
                     FacesContext.getCurrentInstance().addMessage(null, msg);
@@ -324,6 +342,48 @@ public class AsientoController implements Serializable {
      */
     public void setTransaccionSeleccion(Transaccion transaccionSeleccion) {
         this.transaccionSeleccion = transaccionSeleccion;
+    }
+
+    /**
+     * @return the mensaje
+     */
+    public String getMensaje() {
+        return mensaje;
+    }
+
+    /**
+     * @param mensaje the mensaje to set
+     */
+    public void setMensaje(String mensaje) {
+        this.mensaje = mensaje;
+    }
+
+    /**
+     * @return the totalDebeDiario
+     */
+    public double getTotalDebeDiario() {
+        return totalDebeDiario;
+    }
+
+    /**
+     * @param totalDebeDiario the totalDebeDiario to set
+     */
+    public void setTotalDebeDiario(double totalDebeDiario) {
+        this.totalDebeDiario = totalDebeDiario;
+    }
+
+    /**
+     * @return the totalHaberDiario
+     */
+    public double getTotalHaberDiario() {
+        return totalHaberDiario;
+    }
+
+    /**
+     * @param totalHaberDiario the totalHaberDiario to set
+     */
+    public void setTotalHaberDiario(double totalHaberDiario) {
+        this.totalHaberDiario = totalHaberDiario;
     }
 
     @FacesConverter(forClass = Asiento.class)

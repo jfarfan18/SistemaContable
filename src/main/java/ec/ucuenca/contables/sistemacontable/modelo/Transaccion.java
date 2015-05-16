@@ -36,9 +36,11 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Transaccion.findByIdTransaccion", query = "SELECT t FROM Transaccion t WHERE t.idTransaccion = :idTransaccion"),
     @NamedQuery(name = "Transaccion.findByDebe", query = "SELECT t FROM Transaccion t WHERE t.debe = :debe"),
     @NamedQuery(name = "Transaccion.findByHaber", query = "SELECT t FROM Transaccion t WHERE t.haber = :haber"),
+    @NamedQuery(name = "Transaccion.findByIdCuenta", query = "SELECT t FROM Transaccion t WHERE t.idCuenta.idCuenta = :idCuenta AND t.idAsiento.numeroDiario = :numeroDiario AND t.idAsiento.periodo = :periodo"),
     @NamedQuery(name = "Transaccion.findByReferencia", query = "SELECT t FROM Transaccion t WHERE t.referencia = :referencia")})
 public class Transaccion implements Serializable {
     private static final long serialVersionUID = 1L;
+    public static String findByIdCuenta="Transaccion.findByIdCuenta";
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
