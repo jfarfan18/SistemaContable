@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="AutorizacionesCreateDlg" widgetVar="AutorizacionesCreateDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.CreateAutorizacionesTitle}">
+            <h:form id="AutorizacionesCreateForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{autorizacionesController.selected != null}">
+                        <p:outputLabel value="#{bundle.CreateAutorizacionesLabel_idautorizaciones}" for="idautorizaciones" />
+                        <p:inputText id="idautorizaciones" value="#{autorizacionesController.selected.idautorizaciones}" title="#{bundle.CreateAutorizacionesTitle_idautorizaciones}" required="true" requiredMessage="#{bundle.CreateAutorizacionesRequiredMessage_idautorizaciones}"/>
+                        <p:outputLabel value="#{bundle.CreateAutorizacionesLabel_establecimeinto}" for="establecimeinto" />
+                        <p:inputText id="establecimeinto" value="#{autorizacionesController.selected.establecimeinto}" title="#{bundle.CreateAutorizacionesTitle_establecimeinto}" />
+                        <p:outputLabel value="#{bundle.CreateAutorizacionesLabel_puntoEmision}" for="puntoEmision" />
+                        <p:inputText id="puntoEmision" value="#{autorizacionesController.selected.puntoEmision}" title="#{bundle.CreateAutorizacionesTitle_puntoEmision}" />
+                        <p:outputLabel value="#{bundle.CreateAutorizacionesLabel_numeroInicialDoc}" for="numeroInicialDoc" />
+                        <p:inputText id="numeroInicialDoc" value="#{autorizacionesController.selected.numeroInicialDoc}" title="#{bundle.CreateAutorizacionesTitle_numeroInicialDoc}" />
+                        <p:outputLabel value="#{bundle.CreateAutorizacionesLabel_numeroFinalDoc}" for="numeroFinalDoc" />
+                        <p:inputText id="numeroFinalDoc" value="#{autorizacionesController.selected.numeroFinalDoc}" title="#{bundle.CreateAutorizacionesTitle_numeroFinalDoc}" />
+                        <p:outputLabel value="#{bundle.CreateAutorizacionesLabel_numeroActual}" for="numeroActual" />
+                        <p:inputText id="numeroActual" value="#{autorizacionesController.selected.numeroActual}" title="#{bundle.CreateAutorizacionesTitle_numeroActual}" />
+                        <p:outputLabel value="#{bundle.CreateAutorizacionesLabel_fechaCaducudad}" for="fechaCaducudad" />
+                        <p:calendar id="fechaCaducudad" pattern="MM/dd/yyyy" value="#{autorizacionesController.selected.fechaCaducudad}" title="#{bundle.EditAutorizacionesTitle_fechaCaducudad}"  showOn="button"/>
+                        <p:outputLabel value="#{bundle.CreateAutorizacionesLabel_idTipoDocumento}" for="idTipoDocumento" />
+                        <p:selectOneMenu id="idTipoDocumento" value="#{autorizacionesController.selected.idTipoDocumento}" >
+                            <f:selectItems value="#{documentoController.itemsAvailableSelectOne}"
+                                           var="idTipoDocumentoItem"
+                                           itemValue="#{idTipoDocumentoItem}"/>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{autorizacionesController.create}" value="#{bundle.Save}" update="display,:AutorizacionesListForm:datalist,:growl" oncomplete="handleSubmit(args,'AutorizacionesCreateDialog');"/>
+                    <p:commandButton value="#{bundle.Cancel}" onclick="AutorizacionesCreateDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

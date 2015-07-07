@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="DetallefactucEditDlg" widgetVar="DetallefactucEditDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.EditDetallefactucTitle}">
+            <h:form id="DetallefactucEditForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{detallefactucController.selected != null}">
+                        <p:outputLabel value="#{bundle.EditDetallefactucLabel_iddetalleFactuC}" for="iddetalleFactuC" />
+                        <p:inputText id="iddetalleFactuC" value="#{detallefactucController.selected.iddetalleFactuC}" title="#{bundle.EditDetallefactucTitle_iddetalleFactuC}" required="true" requiredMessage="#{bundle.EditDetallefactucRequiredMessage_iddetalleFactuC}"/>
+                        <p:outputLabel value="#{bundle.EditDetallefactucLabel_cantidad}" for="cantidad" />
+                        <p:inputText id="cantidad" value="#{detallefactucController.selected.cantidad}" title="#{bundle.EditDetallefactucTitle_cantidad}" />
+                        <p:outputLabel value="#{bundle.EditDetallefactucLabel_precioUnitario}" for="precioUnitario" />
+                        <p:inputText id="precioUnitario" value="#{detallefactucController.selected.precioUnitario}" title="#{bundle.EditDetallefactucTitle_precioUnitario}" />
+                        <p:outputLabel value="#{bundle.EditDetallefactucLabel_total}" for="total" />
+                        <p:inputText id="total" value="#{detallefactucController.selected.total}" title="#{bundle.EditDetallefactucTitle_total}" />
+                        <p:outputLabel value="#{bundle.EditDetallefactucLabel_idCabeceraFactura}" for="idCabeceraFactura" />
+                        <p:selectOneMenu id="idCabeceraFactura" value="#{detallefactucController.selected.idCabeceraFactura}" >
+                            <f:selectItem itemLabel="#{bundle.SelectOneMessage}"/>
+                            <f:selectItems value="#{cabecerafacturacController.itemsAvailableSelectOne}"
+                                           var="idCabeceraFacturaItem"
+                                           itemValue="#{idCabeceraFacturaItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundle.EditDetallefactucLabel_idProducto}" for="idProducto" />
+                        <p:selectOneMenu id="idProducto" value="#{detallefactucController.selected.idProducto}" >
+                            <f:selectItem itemLabel="#{bundle.SelectOneMessage}"/>
+                            <f:selectItems value="#{productoController.itemsAvailableSelectOne}"
+                                           var="idProductoItem"
+                                           itemValue="#{idProductoItem}"/>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{detallefactucController.update}" value="#{bundle.Save}" update="display,:DetallefactucListForm:datalist,:growl" oncomplete="handleSubmit(args, 'DetallefactucEditDialog');"/>
+                    <p:commandButton value="#{bundle.Cancel}" onclick="DetallefactucEditDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

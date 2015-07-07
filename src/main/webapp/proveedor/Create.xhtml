@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="ProveedorCreateDlg" widgetVar="ProveedorCreateDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.CreateProveedorTitle}">
+            <h:form id="ProveedorCreateForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{proveedorController.selected != null}">
+                        <p:outputLabel value="#{bundle.CreateProveedorLabel_idproveedor}" for="idproveedor" />
+                        <p:inputText id="idproveedor" value="#{proveedorController.selected.idproveedor}" title="#{bundle.CreateProveedorTitle_idproveedor}" required="true" requiredMessage="#{bundle.CreateProveedorRequiredMessage_idproveedor}"/>
+                        <p:outputLabel value="#{bundle.CreateProveedorLabel_tipoIdentificacion}" for="tipoIdentificacion" />
+                        <p:inputText id="tipoIdentificacion" value="#{proveedorController.selected.tipoIdentificacion}" title="#{bundle.CreateProveedorTitle_tipoIdentificacion}" />
+                        <p:outputLabel value="#{bundle.CreateProveedorLabel_identificacion}" for="identificacion" />
+                        <p:inputText id="identificacion" value="#{proveedorController.selected.identificacion}" title="#{bundle.CreateProveedorTitle_identificacion}" />
+                        <p:outputLabel value="#{bundle.CreateProveedorLabel_nombre}" for="nombre" />
+                        <p:inputText id="nombre" value="#{proveedorController.selected.nombre}" title="#{bundle.CreateProveedorTitle_nombre}" />
+                        <p:outputLabel value="#{bundle.CreateProveedorLabel_direccion}" for="direccion" />
+                        <p:inputText id="direccion" value="#{proveedorController.selected.direccion}" title="#{bundle.CreateProveedorTitle_direccion}" />
+                        <p:outputLabel value="#{bundle.CreateProveedorLabel_telefono}" for="telefono" />
+                        <p:inputText id="telefono" value="#{proveedorController.selected.telefono}" title="#{bundle.CreateProveedorTitle_telefono}" />
+                        <p:outputLabel value="#{bundle.CreateProveedorLabel_autorizacion}" for="autorizacion" />
+                        <p:inputText id="autorizacion" value="#{proveedorController.selected.autorizacion}" title="#{bundle.CreateProveedorTitle_autorizacion}" />
+                        <p:outputLabel value="#{bundle.CreateProveedorLabel_fachaCaducidadAutorizacion}" for="fachaCaducidadAutorizacion" />
+                        <p:calendar id="fachaCaducidadAutorizacion" pattern="MM/dd/yyyy" value="#{proveedorController.selected.fachaCaducidadAutorizacion}" title="#{bundle.EditProveedorTitle_fachaCaducidadAutorizacion}"  showOn="button"/>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{proveedorController.create}" value="#{bundle.Save}" update="display,:ProveedorListForm:datalist,:growl" oncomplete="handleSubmit(args,'ProveedorCreateDialog');"/>
+                    <p:commandButton value="#{bundle.Cancel}" onclick="ProveedorCreateDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>
