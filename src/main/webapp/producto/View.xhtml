@@ -8,11 +8,11 @@
 
     <ui:composition>
 
-        <p:dialog id="ProductoViewDlg" widgetVar="ProductoViewDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.ViewProductoTitle}">
+        <p:dialog id="ProductoViewDlg" widgetVar="ProductoViewDialog" modal="true" resizable="false" appendTo="@(body)" header="VER PRODUCTO">
             <h:form id="ProductoViewForm">
                 <h:panelGroup id="display">
                     <p:panelGrid columns="2" rendered="#{productoController.selected != null}">
-                        <h:outputText value="#{bundle.ViewProductoLabel_idproducto}"/>
+                        <h:outputText value="Codigo: "/>
                         <h:outputText value="#{productoController.selected.idproducto}" title="#{bundle.ViewProductoTitle_idproducto}"/>
                         <h:outputText value="#{bundle.ViewProductoLabel_nombre}"/>
                         <h:outputText value="#{productoController.selected.nombre}" title="#{bundle.ViewProductoTitle_nombre}"/>
@@ -22,10 +22,10 @@
                         <h:outputText value="#{productoController.selected.precio}" title="#{bundle.ViewProductoTitle_precio}"/>
                         <h:outputText value="#{bundle.ViewProductoLabel_stock}"/>
                         <h:outputText value="#{productoController.selected.stock}" title="#{bundle.ViewProductoTitle_stock}"/>
-                        <h:outputText value="#{bundle.ViewProductoLabel_idImpuesto}"/>
-                        <h:outputText value="#{productoController.selected.idImpuesto}" title="#{bundle.ViewProductoTitle_idImpuesto}"/>
+                        <h:outputText value="Impuesto:"/>
+                        <h:outputText value="#{productoController.selected.idImpuesto.descripcion}" title="#{bundle.ViewProductoTitle_idImpuesto}"/>
                     </p:panelGrid>
-                    <p:commandButton value="#{bundle.Close}" onclick="ProductoViewDialog.hide()"/>
+                    <p:commandButton value="Cerrar" onclick="ProductoViewDialog.hide()"/>
                 </h:panelGroup>
             </h:form>
         </p:dialog>

@@ -44,8 +44,8 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Cuenta.findBySaldoInicial", query = "SELECT c FROM Cuenta c WHERE c.saldoInicial = :saldoInicial"),
     @NamedQuery(name = "Cuenta.findBySaldoFinal", query = "SELECT c FROM Cuenta c WHERE c.saldoFinal = :saldoFinal"),
     //Personalizadas    
-    @NamedQuery(name = "Cuenta.findLikeCuentaDetalle", query = "SELECT c FROM Cuenta c WHERE c.numeroCuenta LIKE :numeroCuenta AND c.categoria = :categoria")})
-public class Cuenta implements Serializable {
+    @NamedQuery(name = "Cuenta.findLikeCuentaDetalle", query = "SELECT c FROM Cuenta c WHERE c.numeroCuenta LIKE :numeroCuenta AND c.categoria = :categoria ORDER BY c.numeroCuenta")})
+    public class Cuenta implements Serializable {
     @OneToMany(mappedBy = "idcuentaInventario", fetch = FetchType.LAZY)
     private List<Producto> productoList;
     private static final long serialVersionUID = 1L;

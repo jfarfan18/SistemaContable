@@ -7,9 +7,11 @@
 package ec.ucuenca.contables.sistemacontable.negocio;
 
 import ec.ucuenca.contables.sistemacontable.modelo.Cliente;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 /**
  *
@@ -28,5 +30,15 @@ public class ClienteFacade extends AbstractFacade<Cliente> {
     public ClienteFacade() {
         super(Cliente.class);
     }
-    
+ 
+    public Cliente getClientebycedula(String identificacion) {
+        List<Cliente>lista;
+        Query query = this.em.createNamedQuery(Cliente.findByIdentificacion);
+        query.setParameter("identificacion",identificacion);
+        lista=query.getResultList();
+        if (lista.isEmpty())
+            return null;
+        else
+            return lista.get(0);
+    }
 }

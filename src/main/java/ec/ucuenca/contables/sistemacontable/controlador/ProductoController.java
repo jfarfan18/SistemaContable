@@ -1,23 +1,29 @@
 package ec.ucuenca.contables.sistemacontable.controlador;
 
-import ec.ucuenca.contables.sistemacontable.modelo.Producto;
 import ec.ucuenca.contables.sistemacontable.controlador.util.JsfUtil;
 import ec.ucuenca.contables.sistemacontable.controlador.util.JsfUtil.PersistAction;
+import ec.ucuenca.contables.sistemacontable.modelo.Cuenta;
+import ec.ucuenca.contables.sistemacontable.modelo.Producto;
+import ec.ucuenca.contables.sistemacontable.modelo.Tipocuenta;
+import ec.ucuenca.contables.sistemacontable.modelo.Transaccion;
+import ec.ucuenca.contables.sistemacontable.negocio.CuentaFacade;
 import ec.ucuenca.contables.sistemacontable.negocio.ProductoFacade;
-
+import ec.ucuenca.contables.sistemacontable.negocio.TipocuentaFacade;
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
-import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
+import javax.inject.Named;
 
 @Named("productoController")
 @SessionScoped
@@ -25,6 +31,10 @@ public class ProductoController implements Serializable {
 
     @EJB
     private ec.ucuenca.contables.sistemacontable.negocio.ProductoFacade ejbFacade;
+    @EJB
+    private CuentaFacade ejbCuentaFacade;
+    @EJB
+    private TipocuentaFacade ejbTipoCuentaFacade;
     private List<Producto> items = null;
     private Producto selected;
 
@@ -55,7 +65,40 @@ public class ProductoController implements Serializable {
         return selected;
     }
 
+    private Cuenta craerCuentaInventario(String nombre){
+        Cuenta cuenta=new Cuenta();
+        cuenta.setDescripcion(nombre);
+        List<Cuenta> cuentasInventario=ejbCuentaFacade.getCuentasLikeCuentaDetalle("1.1.4.1.");
+        Cuenta padre=ejbCuentaFacade.find(21);
+        Tipocuenta tipo=ejbTipoCuentaFacade.find(1);
+        int numCue=cuentasInventario.size()+1;
+        String nuevaCuenta="1.1.4.1.";
+        if (numCue<10)
+            nuevaCuenta=nuevaCuenta+"0"+numCue;
+        else
+            nuevaCuenta=nuevaCuenta+numCue;
+        cuenta.setNumeroCuenta(nuevaCuenta);
+        cuenta.setCategoria('D');
+        cuenta.setIdTipoCuenta(tipo);
+        cuenta.setIdCuentaPadre(padre); 
+        cuenta.setCuentaList(new ArrayList<Cuenta>());
+        cuenta.setProductoList(new ArrayList<Producto>());
+        cuenta.setTransaccionList(new ArrayList<Transaccion>());
+        cuenta.setSaldoInicial(new BigDecimal(0));
+        cuenta.setSaldoFinal(BigDecimal.ZERO);
+        return cuenta;
+    }
+    
     public void create() {
+        selected.setIdcuentaInventario(this.craerCuentaInventario("Inventario "+selected.getNombre()));
+        System.out.println(selected.getIdcuentaInventario().getCategoria());
+        System.out.println(selected.getIdcuentaInventario().getDescripcion());
+        System.out.println(selected.getIdcuentaInventario().getIdCuentaPadre());
+        System.out.println(selected.getIdcuentaInventario().getIdTipoCuenta());
+        System.out.println(selected.getIdcuentaInventario().getNumeroCuenta());
+        System.out.println(selected.getIdcuentaInventario().getSaldoFinal());
+        System.out.println(selected.getIdcuentaInventario().getSaldoInicial());
+        ejbCuentaFacade.create(selected.getIdcuentaInventario());
         persist(PersistAction.CREATE, ResourceBundle.getBundle("/Bundle").getString("ProductoCreated"));
         if (!JsfUtil.isValidationFailed()) {
             items = null;    // Invalidate list of items to trigger re-query.
