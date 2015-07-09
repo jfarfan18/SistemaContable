@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="KardexCreateDlg" widgetVar="KardexCreateDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.CreateKardexTitle}">
+            <h:form id="KardexCreateForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{kardexController.selected != null}">
+                        <p:outputLabel value="#{bundle.CreateKardexLabel_idkardex}" for="idkardex" />
+                        <p:inputText id="idkardex" value="#{kardexController.selected.idkardex}" title="#{bundle.CreateKardexTitle_idkardex}" required="true" requiredMessage="#{bundle.CreateKardexRequiredMessage_idkardex}"/>
+                        <p:outputLabel value="#{bundle.CreateKardexLabel_fecha}" for="fecha" />
+                        <p:calendar id="fecha" pattern="MM/dd/yyyy" value="#{kardexController.selected.fecha}" title="#{bundle.EditKardexTitle_fecha}"  showOn="button"/>
+                        <p:outputLabel value="#{bundle.CreateKardexLabel_tipo}" for="tipo" />
+                        <p:inputText id="tipo" value="#{kardexController.selected.tipo}" title="#{bundle.CreateKardexTitle_tipo}" />
+                        <p:outputLabel value="#{bundle.CreateKardexLabel_detalle}" for="detalle" />
+                        <p:inputText id="detalle" value="#{kardexController.selected.detalle}" title="#{bundle.CreateKardexTitle_detalle}" />
+                        <p:outputLabel value="#{bundle.CreateKardexLabel_cantidad}" for="cantidad" />
+                        <p:inputText id="cantidad" value="#{kardexController.selected.cantidad}" title="#{bundle.CreateKardexTitle_cantidad}" />
+                        <p:outputLabel value="#{bundle.CreateKardexLabel_costo}" for="costo" />
+                        <p:inputText id="costo" value="#{kardexController.selected.costo}" title="#{bundle.CreateKardexTitle_costo}" />
+                        <p:outputLabel value="#{bundle.CreateKardexLabel_subtotal}" for="subtotal" />
+                        <p:inputText id="subtotal" value="#{kardexController.selected.subtotal}" title="#{bundle.CreateKardexTitle_subtotal}" />
+                        <p:outputLabel value="#{bundle.CreateKardexLabel_totalCantidad}" for="totalCantidad" />
+                        <p:inputText id="totalCantidad" value="#{kardexController.selected.totalCantidad}" title="#{bundle.CreateKardexTitle_totalCantidad}" />
+                        <p:outputLabel value="#{bundle.CreateKardexLabel_totalCosto}" for="totalCosto" />
+                        <p:inputText id="totalCosto" value="#{kardexController.selected.totalCosto}" title="#{bundle.CreateKardexTitle_totalCosto}" />
+                        <p:outputLabel value="#{bundle.CreateKardexLabel_totalSubtotal}" for="totalSubtotal" />
+                        <p:inputText id="totalSubtotal" value="#{kardexController.selected.totalSubtotal}" title="#{bundle.CreateKardexTitle_totalSubtotal}" />
+                        <p:outputLabel value="#{bundle.CreateKardexLabel_idFactura}" for="idFactura" />
+                        <p:selectOneMenu id="idFactura" value="#{kardexController.selected.idFactura}" >
+                            <f:selectItems value="#{cabecerafacturacController.itemsAvailableSelectOne}"
+                                           var="idFacturaItem"
+                                           itemValue="#{idFacturaItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundle.CreateKardexLabel_idProducto}" for="idProducto" />
+                        <p:selectOneMenu id="idProducto" value="#{kardexController.selected.idProducto}" >
+                            <f:selectItems value="#{productoController.itemsAvailableSelectOne}"
+                                           var="idProductoItem"
+                                           itemValue="#{idProductoItem}"/>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{kardexController.create}" value="#{bundle.Save}" update="display,:KardexListForm:datalist,:growl" oncomplete="handleSubmit(args,'KardexCreateDialog');"/>
+                    <p:commandButton value="#{bundle.Cancel}" onclick="KardexCreateDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>
