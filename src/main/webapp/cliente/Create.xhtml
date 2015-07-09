@@ -8,27 +8,41 @@
 
     <ui:composition>
 
-        <p:dialog id="ClienteCreateDlg" widgetVar="ClienteCreateDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.CreateClienteTitle}">
+        <p:dialog id="ClienteCreateDlg" widgetVar="ClienteCreateDialog" modal="true" resizable="false" appendTo="@(body)" header="NUEVO CLIENTE">
             <h:form id="ClienteCreateForm">
                 <h:panelGroup id="display">
                     <p:panelGrid columns="2" rendered="#{clienteController.selected != null}">
-                        <p:outputLabel value="#{bundle.CreateClienteLabel_idcliente}" for="idcliente" />
-                        <p:inputText id="idcliente" value="#{clienteController.selected.idcliente}" title="#{bundle.CreateClienteTitle_idcliente}" required="true" requiredMessage="#{bundle.CreateClienteRequiredMessage_idcliente}"/>
-                        <p:outputLabel value="#{bundle.CreateClienteLabel_tipoIdentificacion}" for="tipoIdentificacion" />
-                        <p:inputText id="tipoIdentificacion" value="#{clienteController.selected.tipoIdentificacion}" title="#{bundle.CreateClienteTitle_tipoIdentificacion}" />
-                        <p:outputLabel value="#{bundle.CreateClienteLabel_identificacion}" for="identificacion" />
-                        <p:inputText id="identificacion" value="#{clienteController.selected.identificacion}" title="#{bundle.CreateClienteTitle_identificacion}" />
-                        <p:outputLabel value="#{bundle.CreateClienteLabel_nombre}" for="nombre" />
-                        <p:inputText id="nombre" value="#{clienteController.selected.nombre}" title="#{bundle.CreateClienteTitle_nombre}" />
-                        <p:outputLabel value="#{bundle.CreateClienteLabel_apellido}" for="apellido" />
-                        <p:inputText id="apellido" value="#{clienteController.selected.apellido}" title="#{bundle.CreateClienteTitle_apellido}" />
-                        <p:outputLabel value="#{bundle.CreateClienteLabel_telefono}" for="telefono" />
-                        <p:inputText id="telefono" value="#{clienteController.selected.telefono}" title="#{bundle.CreateClienteTitle_telefono}" />
-                        <p:outputLabel value="#{bundle.CreateClienteLabel_direccion}" for="direccion" />
-                        <p:inputText id="direccion" value="#{clienteController.selected.direccion}" title="#{bundle.CreateClienteTitle_direccion}" />
+                        <p:outputLabel value="Tipo Identificacion " 
+                                       for="tipoIdentificacion" />
+                        <p:selectOneMenu id="tipoIdentificacion" 
+                                         value="#{clienteController.selected.tipoIdentificacion}">
+                            <f:selectItem itemLabel="Cedula" itemValue="C" />
+                            <f:selectItem itemLabel="RUC" itemValue="R" />
+                            <f:selectItem itemLabel="Pasaporte" itemValue="P" />
+                        </p:selectOneMenu>
+                        <p:outputLabel value="Identificacion" for="identificacion" />
+                        <p:inputText id="identificacion" 
+                                     value="#{clienteController.selected.identificacion}" 
+                                     title="#{bundle.CreateClienteTitle_identificacion}" />
+                        <p:outputLabel value="Nombre" for="nombre" />
+                        <p:inputText id="nombre" 
+                                     value="#{clienteController.selected.nombre}" 
+                                     title="#{bundle.CreateClienteTitle_nombre}" />
+                        <p:outputLabel value="Apellido" for="apellido" />
+                        <p:inputText id="apellido" 
+                                     value="#{clienteController.selected.apellido}" 
+                                     title="#{bundle.CreateClienteTitle_apellido}" />
+                        <p:outputLabel value="Telefono" for="telefono" />
+                        <p:inputText id="telefono" 
+                                     value="#{clienteController.selected.telefono}" 
+                                     title="#{bundle.CreateClienteTitle_telefono}" />
+                        <p:outputLabel value="Direccion" for="direccion" />
+                        <p:inputText id="direccion" 
+                                     value="#{clienteController.selected.direccion}" 
+                                     title="#{bundle.CreateClienteTitle_direccion}" />
                     </p:panelGrid>
-                    <p:commandButton actionListener="#{clienteController.create}" value="#{bundle.Save}" update="display,:ClienteListForm:datalist,:growl" oncomplete="handleSubmit(args,'ClienteCreateDialog');"/>
-                    <p:commandButton value="#{bundle.Cancel}" onclick="ClienteCreateDialog.hide()"/>
+                    <p:commandButton actionListener="#{clienteController.create}" value="Guardar" update="display,:ClienteListForm:datalist,:growl"/>
+                    <p:commandButton value="Cancelar" onclick="ClienteCreateDialog.hide()"/>
                 </h:panelGroup>
             </h:form>
         </p:dialog>

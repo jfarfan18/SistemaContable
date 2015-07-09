@@ -41,6 +41,9 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Producto.findByPrecio", query = "SELECT p FROM Producto p WHERE p.precio = :precio"),
     @NamedQuery(name = "Producto.findByStock", query = "SELECT p FROM Producto p WHERE p.stock = :stock")})
 public class Producto implements Serializable {
+    @JoinColumn(name = "idcuentaInventario", referencedColumnName = "idCuenta")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Cuenta idcuentaInventario;
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -172,6 +175,14 @@ public class Producto implements Serializable {
     @Override
     public String toString() {
         return "ec.ucuenca.contables.sistemacontable.modelo.Producto[ idproducto=" + idproducto + " ]";
+    }
+
+    public Cuenta getIdcuentaInventario() {
+        return idcuentaInventario;
+    }
+
+    public void setIdcuentaInventario(Cuenta idcuentaInventario) {
+        this.idcuentaInventario = idcuentaInventario;
     }
     
 }

@@ -46,6 +46,8 @@ import javax.xml.bind.annotation.XmlTransient;
     //Personalizadas    
     @NamedQuery(name = "Cuenta.findLikeCuentaDetalle", query = "SELECT c FROM Cuenta c WHERE c.numeroCuenta LIKE :numeroCuenta AND c.categoria = :categoria")})
 public class Cuenta implements Serializable {
+    @OneToMany(mappedBy = "idcuentaInventario", fetch = FetchType.LAZY)
+    private List<Producto> productoList;
     private static final long serialVersionUID = 1L;
     public static String findByCatgoria="Cuenta.findByCategoria";    
     public static String findLikeCuentaDetalle="Cuenta.findLikeCuentaDetalle";
@@ -209,6 +211,15 @@ public class Cuenta implements Serializable {
     @Override
     public String toString() {
         return "ec.ucuenca.contables.sistemacontable.modelo.Cuenta[ idCuenta=" + idCuenta + " ]";
+    }
+
+    @XmlTransient
+    public List<Producto> getProductoList() {
+        return productoList;
+    }
+
+    public void setProductoList(List<Producto> productoList) {
+        this.productoList = productoList;
     }
     
 }
