@@ -51,23 +51,59 @@ public class CuentaController implements Serializable {
     public void cargarCuentas(){
         activoFijoList=ejbFacade.getCuentasLikeCuentaDetalle("1.2.");
         totalActivoFijo=0;
+        List <Cuenta> quitar=new ArrayList<>();
         for (Cuenta cuenta:activoFijoList){
-            totalActivoFijo=totalActivoFijo+getSaldoCuenta(cuenta);
+            double saldo=getSaldoCuenta(cuenta);
+            if (saldo==0)
+                quitar.add(cuenta);
+            else
+                totalActivoFijo=totalActivoFijo+saldo;
+        }
+        for (Cuenta cuenta:quitar){
+            activoFijoList.remove(cuenta);
         }
         activoCorrienteList=ejbFacade.getCuentasLikeCuentaDetalle("1.1.");
         totalActivoCorriente=0;
+        quitar=new ArrayList<>();
         for (Cuenta cuenta:activoCorrienteList){
-            totalActivoCorriente=totalActivoCorriente+getSaldoCuenta(cuenta);
+            double saldo=getSaldoCuenta(cuenta);
+            if (saldo==0)
+                quitar.add(cuenta);
+            else
+                totalActivoCorriente=totalActivoCorriente+saldo;
+        }
+        for (Cuenta cuenta:quitar){
+            activoCorrienteList.remove(cuenta);
         }
         pasivoCorrienteList=ejbFacade.getCuentasLikeCuentaDetalle("2.1.");
         totalPasivoCorriente=0;
+        quitar=new ArrayList<>();
         for (Cuenta cuenta:pasivoCorrienteList){
-            totalPasivoCorriente=totalPasivoCorriente+getSaldoCuenta(cuenta);
+            double saldo=getSaldoCuenta(cuenta);
+            if (saldo==0)
+                quitar.add(cuenta);
+            else
+                totalPasivoCorriente=totalPasivoCorriente+saldo;
+        }
+        for (Cuenta cuenta:quitar){
+            pasivoCorrienteList.remove(cuenta);
         }
         patrimonioList=ejbFacade.getCuentasLikeCuentaDetalle("3.1.");
         totalPatrimonio=0;
+        quitar=new ArrayList<>();
         for (Cuenta cuenta:patrimonioList){
-            totalPatrimonio=totalPatrimonio+getSaldoCuenta(cuenta);
+            double saldo=getSaldoCuenta(cuenta);
+            if (saldo==0)
+                quitar.add(cuenta);
+            else
+                totalPatrimonio=totalPatrimonio+saldo;
+        }
+        Cuenta utilidad=new Cuenta();
+        utilidad.setDescripcion("Utilida (Pérdida)");
+        patrimonioList.add(utilidad);
+        totalPatrimonio=+this.getUtilidadByPeriodo(periodo);
+        for (Cuenta cuenta:quitar){
+            patrimonioList.remove(cuenta);
         }
     }
     
@@ -82,13 +118,18 @@ public class CuentaController implements Serializable {
     }
     
     public double getSaldoCuenta(Cuenta cuenta){
+        if (cuenta.getDescripcion().equals("Utilida (Pérdida)"))
+            return this.getUtilidadByPeriodo(this.getPeriodo());
         double res=0;
         List<Transaccion> lista=ejbFacadeTransaccion.getTransaccionPeriodo(cuenta.getIdCuenta(), numeroDiario, periodo);
         for (Transaccion tra:lista){
             res=res+tra.getDebe().doubleValue();
             res=res-tra.getHaber().doubleValue();
         }
-        return Math.abs(res);
+        if (cuenta.getIdTipoCuenta().getIdTipoCuenta()==1)
+            return res;
+        else
+            return res*-1;
     }
 
     public Cuenta getSelected() {
@@ -204,7 +245,7 @@ public class CuentaController implements Serializable {
     }
     
     public List<Cuenta> getItemsAvailableSelectOneGrupo() {
-        return getFacade().getCuentasDetale();
+        return getFacade().getCuentasGrupo();
     }
 
     /**
