@@ -58,6 +58,12 @@ public class ClienteController implements Serializable {
     }
 
     public void create() {
+        if (ejbFacade.getClientebycedula(selected.getIdentificacion())!=null){
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "Ya exste un cliente registrado con ese numero de identificacion");
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+            return;
+        }
+            
         if (selected.getTipoIdentificacion()=='C'){
             if (!this.validadorDeCedula(selected.getIdentificacion())){
                 FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "La cedula ingresada es incorrecta");
@@ -117,7 +123,21 @@ public class ClienteController implements Serializable {
     }
 
     public void update() {
+        if (ejbFacade.getClientebycedula(selected.getIdentificacion())!=null){
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "Ya exste un cliente registrado con ese numero de identificacion");
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+            return;
+        }
+            
+        if (selected.getTipoIdentificacion()=='C'){
+            if (!this.validadorDeCedula(selected.getIdentificacion())){
+                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "La cedula ingresada es incorrecta");
+                FacesContext.getCurrentInstance().addMessage(null, msg);
+                return;
+            }
+        }
         persist(PersistAction.UPDATE, ResourceBundle.getBundle("/Bundle").getString("ClienteUpdated"));
+        RequestContext.getCurrentInstance().execute("ClienteCreateDialog.hide()");
     }
 
     public void destroy() {

@@ -10,12 +10,12 @@
 
 
         <ui:define name="title">
-            <h:outputText value="#{bundle.ListProductoTitle}"></h:outputText>
+            <h:outputText value="Productos"></h:outputText>
         </ui:define>
 
         <ui:define name="body">
             <h:form id="ProductoListForm">
-                <p:panel header="#{bundle.ListProductoTitle}">
+                <p:panel header="LISTA DE PRODUCTOS">
                     <p:dataTable id="datalist" value="#{productoController.items}" var="item"
                                  selectionMode="single" selection="#{productoController.selected}"
                                  paginator="true"
@@ -29,45 +29,45 @@
 
                         <p:column>
                             <f:facet name="header">
-                                <h:outputText value="#{bundle.ListProductoTitle_idproducto}"/>
+                                <h:outputText value="CODIGO"/>
                             </f:facet>
                             <h:outputText value="#{item.idproducto}"/>
                         </p:column>
                         <p:column>
                             <f:facet name="header">
-                                <h:outputText value="#{bundle.ListProductoTitle_nombre}"/>
+                                <h:outputText value="PRODUCTO"/>
                             </f:facet>
                             <h:outputText value="#{item.nombre}"/>
                         </p:column>
                         <p:column>
                             <f:facet name="header">
-                                <h:outputText value="#{bundle.ListProductoTitle_costo}"/>
+                                <h:outputText value="COSTO"/>
                             </f:facet>
                             <h:outputText value="#{item.costo}"/>
                         </p:column>
                         <p:column>
                             <f:facet name="header">
-                                <h:outputText value="#{bundle.ListProductoTitle_precio}"/>
+                                <h:outputText value="PRECIO"/>
                             </f:facet>
                             <h:outputText value="#{item.precio}"/>
                         </p:column>
                         <p:column>
                             <f:facet name="header">
-                                <h:outputText value="#{bundle.ListProductoTitle_stock}"/>
+                                <h:outputText value="STOCK"/>
                             </f:facet>
                             <h:outputText value="#{item.stock}"/>
                         </p:column>
                         <p:column>
                             <f:facet name="header">
-                                <h:outputText value="#{bundle.ListProductoTitle_idImpuesto}"/>
+                                <h:outputText value="IMPUESTO"/>
                             </f:facet>
-                            <h:outputText value="#{item.idImpuesto}"/>
+                            <h:outputText value="#{item.idImpuesto.descripcion}"/>
                         </p:column>
                         <f:facet name="footer">
-                            <p:commandButton id="createButton" icon="ui-icon-plus"   value="#{bundle.Create}" actionListener="#{productoController.prepareCreate}" update=":ProductoCreateForm" oncomplete="PF('ProductoCreateDialog').show()"/>
-                            <p:commandButton id="viewButton"   icon="ui-icon-search" value="#{bundle.View}" update=":ProductoViewForm" oncomplete="PF('ProductoViewDialog').show()" disabled="#{empty productoController.selected}"/>
-                            <p:commandButton id="editButton"   icon="ui-icon-pencil" value="#{bundle.Edit}" update=":ProductoEditForm" oncomplete="PF('ProductoEditDialog').show()" disabled="#{empty productoController.selected}"/>
-                            <p:commandButton id="deleteButton" icon="ui-icon-trash"  value="#{bundle.Delete}" actionListener="#{productoController.destroy}" update=":growl,datalist" disabled="#{empty productoController.selected}"/>
+                            <p:commandButton id="createButton" icon="ui-icon-plus"   value="Crear" actionListener="#{productoController.prepareCreate}" update=":ProductoCreateForm" oncomplete="PF('ProductoCreateDialog').show()"/>
+                            <p:commandButton id="viewButton"   icon="ui-icon-search" value="Ver" update=":ProductoViewForm" oncomplete="PF('ProductoViewDialog').show()" disabled="#{empty productoController.selected}"/>
+                            <p:commandButton id="editButton"   icon="ui-icon-pencil" value="Editar" update=":ProductoEditForm" oncomplete="PF('ProductoEditDialog').show()" disabled="#{empty productoController.selected}"/>
+                            <p:commandButton id="deleteButton" icon="ui-icon-trash"  value="Eliminar" actionListener="#{productoController.destroy}" update=":growl,datalist" disabled="#{empty productoController.selected}"/>
                         </f:facet>
                     </p:dataTable>
                 </p:panel>

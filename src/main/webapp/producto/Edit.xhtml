@@ -8,30 +8,26 @@
 
     <ui:composition>
 
-        <p:dialog id="ProductoEditDlg" widgetVar="ProductoEditDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.EditProductoTitle}">
+        <p:dialog id="ProductoEditDlg" widgetVar="ProductoEditDialog" modal="true" resizable="false" appendTo="@(body)" header="EDITAR PRODUCTO">
             <h:form id="ProductoEditForm">
                 <h:panelGroup id="display">
                     <p:panelGrid columns="2" rendered="#{productoController.selected != null}">
-                        <p:outputLabel value="#{bundle.EditProductoLabel_idproducto}" for="idproducto" />
-                        <p:inputText id="idproducto" value="#{productoController.selected.idproducto}" title="#{bundle.EditProductoTitle_idproducto}" required="true" requiredMessage="#{bundle.EditProductoRequiredMessage_idproducto}"/>
-                        <p:outputLabel value="#{bundle.EditProductoLabel_nombre}" for="nombre" />
-                        <p:inputText id="nombre" value="#{productoController.selected.nombre}" title="#{bundle.EditProductoTitle_nombre}" />
-                        <p:outputLabel value="#{bundle.EditProductoLabel_costo}" for="costo" />
-                        <p:inputText id="costo" value="#{productoController.selected.costo}" title="#{bundle.EditProductoTitle_costo}" />
-                        <p:outputLabel value="#{bundle.EditProductoLabel_precio}" for="precio" />
-                        <p:inputText id="precio" value="#{productoController.selected.precio}" title="#{bundle.EditProductoTitle_precio}" />
-                        <p:outputLabel value="#{bundle.EditProductoLabel_stock}" for="stock" />
-                        <p:inputText id="stock" value="#{productoController.selected.stock}" title="#{bundle.EditProductoTitle_stock}" />
-                        <p:outputLabel value="#{bundle.EditProductoLabel_idImpuesto}" for="idImpuesto" />
-                        <p:selectOneMenu id="idImpuesto" value="#{productoController.selected.idImpuesto}" >
-                            <f:selectItem itemLabel="#{bundle.SelectOneMessage}"/>
+                        <p:outputLabel value="#{bundle.CreateProductoLabel_nombre}" for="nombre" />
+                        <p:inputText id="nombre" value="#{productoController.selected.nombre}" title="#{bundle.CreateProductoTitle_nombre}" />
+                        <p:outputLabel value="#{bundle.CreateProductoLabel_precio}" for="precio" />
+                        <p:inputText id="precio" value="#{productoController.selected.precio}" title="#{bundle.CreateProductoTitle_precio}" />
+                        <p:outputLabel value="Impuesto:" for="idImpuesto" />
+                        <p:selectOneMenu id="idImpuesto" 
+                                         value="#{productoController.selected.idImpuesto}" >
+                            <f:selectItem itemLabel="Ninguno" />
                             <f:selectItems value="#{impuestoController.itemsAvailableSelectOne}"
                                            var="idImpuestoItem"
-                                           itemValue="#{idImpuestoItem}"/>
+                                           itemValue="#{idImpuestoItem}"
+                                           itemLabel="#{idImpuestoItem.descripcion} (#{idImpuestoItem.valor})"/>
                         </p:selectOneMenu>
                     </p:panelGrid>
-                    <p:commandButton actionListener="#{productoController.update}" value="#{bundle.Save}" update="display,:ProductoListForm:datalist,:growl" oncomplete="handleSubmit(args, 'ProductoEditDialog');"/>
-                    <p:commandButton value="#{bundle.Cancel}" onclick="ProductoEditDialog.hide()"/>
+                    <p:commandButton actionListener="#{productoController.update}" value="Guardar" update="display,:ProductoListForm:datalist,:growl" oncomplete="handleSubmit(args, 'ProductoEditDialog');"/>
+                    <p:commandButton value="Cancelar" onclick="ProductoEditDialog.hide()"/>
                 </h:panelGroup>
             </h:form>
         </p:dialog>
