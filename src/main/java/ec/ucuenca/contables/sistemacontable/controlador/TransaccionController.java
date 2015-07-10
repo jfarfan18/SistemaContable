@@ -186,6 +186,17 @@ public class TransaccionController implements Serializable {
         }
         return transcta;
     }
+    
+    public List<Transaccion> getItemsByCuentaPeriodoDiario(Integer periodo, Integer diario){
+        this.items=this.getItems();
+        List<Transaccion> transcta=new ArrayList();
+        for(int i=0;i<items.size();i++){
+            if(items.get(i).getIdCuenta().getNumeroCuenta().equals(this.numcuenta) && items.get(i).getIdAsiento().getPeriodo().equals(periodo) && items.get(i).getIdAsiento().getNumeroDiario().equals(diario)){
+                transcta.add(items.get(i));
+            }
+        }
+        return transcta;
+    }
 
     public String getNumcuenta() {
         return numcuenta;

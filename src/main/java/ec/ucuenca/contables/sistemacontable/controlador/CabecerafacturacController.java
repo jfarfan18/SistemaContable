@@ -3,6 +3,7 @@ package ec.ucuenca.contables.sistemacontable.controlador;
 import ec.ucuenca.contables.sistemacontable.modelo.Cabecerafacturac;
 import ec.ucuenca.contables.sistemacontable.controlador.util.JsfUtil;
 import ec.ucuenca.contables.sistemacontable.controlador.util.JsfUtil.PersistAction;
+import ec.ucuenca.contables.sistemacontable.modelo.Kardex;
 import ec.ucuenca.contables.sistemacontable.negocio.CabecerafacturacFacade;
 
 import java.io.Serializable;
@@ -159,6 +160,8 @@ public class CabecerafacturacController implements Serializable {
                 return null;
             }
         }
+        
+        
 
     }
 

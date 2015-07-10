@@ -3,9 +3,16 @@ package ec.ucuenca.contables.sistemacontable.controlador;
 import ec.ucuenca.contables.sistemacontable.modelo.Kardex;
 import ec.ucuenca.contables.sistemacontable.controlador.util.JsfUtil;
 import ec.ucuenca.contables.sistemacontable.controlador.util.JsfUtil.PersistAction;
+import ec.ucuenca.contables.sistemacontable.modelo.Cabecerafacturac;
+import ec.ucuenca.contables.sistemacontable.modelo.Cabecerafacturav;
+import ec.ucuenca.contables.sistemacontable.modelo.Detallefactuc;
+import ec.ucuenca.contables.sistemacontable.modelo.Detallefacturav;
 import ec.ucuenca.contables.sistemacontable.negocio.KardexFacade;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -27,6 +34,9 @@ public class KardexController implements Serializable {
     private ec.ucuenca.contables.sistemacontable.negocio.KardexFacade ejbFacade;
     private List<Kardex> items = null;
     private Kardex selected;
+    String producto;
+    private List<Kardex> resultItems = null;
+    Date selectedfecha;
 
     public KardexController() {
     }
@@ -162,4 +172,118 @@ public class KardexController implements Serializable {
 
     }
 
+    public String getProducto() {
+        return producto;
+    }
+
+    public void setProducto(String producto) {
+        this.producto = producto;
+    }
+
+    public List<Kardex> getResultItems() {
+        return resultItems;
+    }
+
+    public void setResultItems(List<Kardex> resultItems) {
+        this.resultItems = resultItems;
+    }
+
+    public void kardexByProducto(){
+        this.resultItems=new ArrayList();
+        this.items=this.ejbFacade.getKardexOrderedByFecha();
+        for(int i=0;i<items.size();i++){
+            if(items.get(i).getIdProducto().getNombre().equals(this.producto)){
+                resultItems.add(items.get(i));
+            } 
+        }
+    }
+    
+    public void kardexByProductoAndDate(){
+        this.resultItems=new ArrayList();
+        this.items=this.ejbFacade.getKardexOrderedByFecha();
+        for(int i=0;i<items.size();i++){
+            if(items.get(i).getIdProducto().getNombre().equals(this.producto)){
+                if(items.get(i).getFecha().before(selectedfecha) || items.get(i).getFecha().equals(selectedfecha))
+                    resultItems.add(items.get(i));
+            } 
+        }
+    }
+    
+    public String getNombreProducto(){
+        if(resultItems!=null && resultItems.size()>0){
+            return resultItems.get(0).getIdProducto().getNombre();
+        }
+        return "";
+    }
+    
+    public void setKardexDataFromCompra(Detallefactuc detalle, Cabecerafacturac cabecera){
+        this.selected=new Kardex();
+        this.selected.setCantidad(detalle.getCantidad());
+        this.selected.setCosto(detalle.getPrecioUnitario());
+        this.selected.setDetalle("Compra");
+        this.selected.setFecha(cabecera.getFecha());
+        this.selected.setIdFactura(cabecera);
+        this.selected.setIdProducto(detalle.getIdProducto());
+        //this.selected.setIdkardex(Integer.SIZE);
+        this.selected.setSubtotal(detalle.getTotal());
+        this.selected.setTipo('E');
+        this.selected.setTotalCantidad(this.getCantidadByProducto(detalle.getIdProducto().getIdproducto())+detalle.getCantidad());
+        this.selected.setTotalSubtotal(this.getSubtotalByProducto(detalle.getIdProducto().getIdproducto()).subtract(detalle.getTotal()));
+        this.selected.setTotalCosto(this.selected.getTotalSubtotal().divide(new BigDecimal(this.selected.getTotalCantidad())));
+    }
+    
+    public void setKardexDataFromVenta(Detallefacturav detalle, Cabecerafacturav cabecera){
+        this.selected=new Kardex();
+        this.selected.setCantidad(detalle.getCantidad());
+        this.selected.setCosto(detalle.getPrecioUnitario());
+        this.selected.setDetalle("Venta");
+        this.selected.setFecha(cabecera.getFecha());
+        //this.selected.setIdFactura(cabecera);
+        this.selected.setIdProducto(detalle.getIdProducto());
+        this.selected.setSubtotal(detalle.getTotal());
+        this.selected.setTipo('S');
+        this.selected.setTotalCantidad(this.getCantidadByProducto(detalle.getIdProducto().getIdproducto())-detalle.getCantidad());
+        this.selected.setTotalSubtotal(this.getSubtotalByProducto(detalle.getIdProducto().getIdproducto()).subtract(detalle.getTotal()));
+        this.selected.setTotalCosto(this.selected.getTotalSubtotal().divide(new BigDecimal(this.selected.getTotalCantidad())));
+    }
+    
+    public Integer getCantidadByProducto(Integer producto){
+        Integer cantidad=0;
+        this.items=this.ejbFacade.getKardexOrderedByFecha();
+        for(int i=0;i<items.size();i++){
+            if(items.get(i).getIdProducto().getIdproducto().equals(producto)){
+                if(items.get(i).getTipo()=='E'){
+                    cantidad=cantidad+items.get(i).getCantidad();
+                }else{
+                    cantidad=cantidad-items.get(i).getCantidad(); 
+                }
+            }
+        }
+        return cantidad;
+    }
+    
+    public BigDecimal getSubtotalByProducto(Integer producto){
+        BigDecimal total=new BigDecimal(0);
+        this.items=this.ejbFacade.getKardexOrderedByFecha();
+        for(int i=0;i<items.size();i++){
+            if(items.get(i).getIdProducto().getIdproducto().equals(producto)){
+                if(items.get(i).getTipo()=='E'){
+                    total.add(items.get(i).getTotalSubtotal());
+                }else{
+                    total.subtract(items.get(i).getTotalSubtotal());
+                }
+            }
+        }
+        return total;
+    }
+
+    public Date getSelectedfecha() {
+        return selectedfecha;
+    }
+
+    public void setSelectedfecha(Date selectedfecha) {
+        this.selectedfecha = selectedfecha;
+    }
+    
+    
 }
