@@ -49,7 +49,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Cabecerafacturav.findBySubtotalBaseIva", query = "SELECT c FROM Cabecerafacturav c WHERE c.subtotalBaseIva = :subtotalBaseIva"),
     @NamedQuery(name = "Cabecerafacturav.findByDescuento", query = "SELECT c FROM Cabecerafacturav c WHERE c.descuento = :descuento"),
     @NamedQuery(name = "Cabecerafacturav.findByIva", query = "SELECT c FROM Cabecerafacturav c WHERE c.iva = :iva"),
-    @NamedQuery(name = "Cabecerafacturav.findByTotal82", query = "SELECT c FROM Cabecerafacturav c WHERE c.total82 = :total82")})
+    @NamedQuery(name = "Cabecerafacturav.findByTotal", query = "SELECT c FROM Cabecerafacturav c WHERE c.total = :total")})
 public class Cabecerafacturav implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -83,9 +83,8 @@ public class Cabecerafacturav implements Serializable {
     private BigDecimal descuento;
     @Column(name = "iva")
     private BigDecimal iva;
-    @Size(max = 45)
-    @Column(name = "total(8,2)")
-    private String total82;
+    @Column(name = "total")
+    private BigDecimal total;
     @JoinColumn(name = "idCliente", referencedColumnName = "idcliente")
     @ManyToOne(fetch = FetchType.LAZY)
     private Cliente idCliente;
@@ -190,12 +189,12 @@ public class Cabecerafacturav implements Serializable {
         this.iva = iva;
     }
 
-    public String getTotal82() {
-        return total82;
+    public BigDecimal getTotal() {
+        return total;
     }
 
-    public void setTotal82(String total82) {
-        this.total82 = total82;
+    public void setTotal(BigDecimal total) {
+        this.total = total;
     }
 
     public Cliente getIdCliente() {
