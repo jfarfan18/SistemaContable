@@ -47,7 +47,6 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Cabecerafacturac.findBySubtotal", query = "SELECT c FROM Cabecerafacturac c WHERE c.subtotal = :subtotal"),
     @NamedQuery(name = "Cabecerafacturac.findBySubtotalBase0", query = "SELECT c FROM Cabecerafacturac c WHERE c.subtotalBase0 = :subtotalBase0"),
     @NamedQuery(name = "Cabecerafacturac.findBySubtotalBaseIva", query = "SELECT c FROM Cabecerafacturac c WHERE c.subtotalBaseIva = :subtotalBaseIva"),
-    @NamedQuery(name = "Cabecerafacturac.findByDecimal", query = "SELECT c FROM Cabecerafacturac c WHERE c.decimal = :decimal"),
     @NamedQuery(name = "Cabecerafacturac.findByIva", query = "SELECT c FROM Cabecerafacturac c WHERE c.iva = :iva"),
     @NamedQuery(name = "Cabecerafacturac.findByTotal", query = "SELECT c FROM Cabecerafacturac c WHERE c.total = :total")})
 public class Cabecerafacturac implements Serializable {
@@ -79,8 +78,6 @@ public class Cabecerafacturac implements Serializable {
     private BigDecimal subtotalBase0;
     @Column(name = "subtotalBaseIva")
     private BigDecimal subtotalBaseIva;
-    @Column(name = "decimal")
-    private BigDecimal decimal;
     @Column(name = "iva")
     private BigDecimal iva;
     @Column(name = "total")
@@ -173,14 +170,6 @@ public class Cabecerafacturac implements Serializable {
 
     public void setSubtotalBaseIva(BigDecimal subtotalBaseIva) {
         this.subtotalBaseIva = subtotalBaseIva;
-    }
-
-    public BigDecimal getDecimal() {
-        return decimal;
-    }
-
-    public void setDecimal(BigDecimal decimal) {
-        this.decimal = decimal;
     }
 
     public BigDecimal getIva() {

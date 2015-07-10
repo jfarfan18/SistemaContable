@@ -7,9 +7,11 @@
 package ec.ucuenca.contables.sistemacontable.negocio;
 
 import ec.ucuenca.contables.sistemacontable.modelo.Kardex;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 /**
  *
@@ -29,4 +31,8 @@ public class KardexFacade extends AbstractFacade<Kardex> {
         super(Kardex.class);
     }
     
+    public List<Kardex> getKardexOrderedByFecha(){
+        Query query = this.em.createNamedQuery(Kardex.findAllOrderedByFecha);
+        return query.getResultList();
+    }
 }

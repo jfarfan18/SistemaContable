@@ -44,7 +44,10 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Kardex.findBySubtotal", query = "SELECT k FROM Kardex k WHERE k.subtotal = :subtotal"),
     @NamedQuery(name = "Kardex.findByTotalCantidad", query = "SELECT k FROM Kardex k WHERE k.totalCantidad = :totalCantidad"),
     @NamedQuery(name = "Kardex.findByTotalCosto", query = "SELECT k FROM Kardex k WHERE k.totalCosto = :totalCosto"),
-    @NamedQuery(name = "Kardex.findByTotalSubtotal", query = "SELECT k FROM Kardex k WHERE k.totalSubtotal = :totalSubtotal")})
+    @NamedQuery(name = "Kardex.findByTotalSubtotal", query = "SELECT k FROM Kardex k WHERE k.totalSubtotal = :totalSubtotal"),
+    //personalizadas
+    @NamedQuery(name = "Kardex.findAllOrderedByFecha", query = "SELECT k FROM Kardex k ORDER BY k.fecha")
+})
 public class Kardex implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -52,6 +55,7 @@ public class Kardex implements Serializable {
     @Basic(optional = false)
     @Column(name = "idkardex")
     private Integer idkardex;
+    public static String findAllOrderedByFecha="Kardex.findAllOrderedByFecha";
     @Column(name = "fecha")
     @Temporal(TemporalType.DATE)
     private Date fecha;
@@ -208,4 +212,45 @@ public class Kardex implements Serializable {
         return "ec.ucuenca.contables.sistemacontable.modelo.Kardex[ idkardex=" + idkardex + " ]";
     }
     
+    public String getCantEntradas(){
+        if(this.tipo=='E'){
+            return this.cantidad+"";
+        }
+        return "-";
+    }
+    
+    public String getCostoEntradas(){
+        if(this.tipo=='E'){
+            return this.costo+"";
+        }
+        return "-";
+    }
+    
+    public String getSubtotalEntradas(){
+        if(this.tipo=='E'){
+            return this.subtotal+"";
+        }
+        return "-";
+    }
+    
+    public String getCantSalidas(){
+        if(this.tipo=='S'){
+            return this.cantidad+"";
+        }
+        return "-";
+    }
+    
+    public String getCostoSalidas(){
+        if(this.tipo=='S'){
+            return this.costo+"";
+        }
+        return "-";
+    }
+    
+    public String getSubtotalSalidas(){
+        if(this.tipo=='S'){
+            return this.subtotal+"";
+        }
+        return "-";
+    }
 }

@@ -29,11 +29,11 @@
                                            var="periodos"
                                            itemValue="#{periodos}" itemLabel="#{periodos}"/>
                         </p:selectOneMenu>
+                        <h:outputLabel for="numeroDiario" value="Número Diario:" style="font-weight:bold" />
+                        <p:inputText id="numeroDiario" value="#{asientoController.selecteddiario}"  />
+                        <p:commandButton value="Cargar" icon="ui-icon-search" update="LibroMayor" />
                     </h:panelGrid>
                     
-                    <h:panelGrid columns="1" cellpadding="5">
-                        <p:commandButton value="Buscar" icon="ui-icon-search" update="LibroMayor" />
-                    </h:panelGrid>
                     <h:panelGrid columns="2" cellpadding="5">
                         <h:outputLabel for="# Cuenta" value="# Cuenta:" style="font-weight:bold" />
                         <p:inputText id="numero" value="#{cuentaController.getNumeroCuentaByNumero(transaccionController.numcuenta)}" disabled="true"/>
@@ -42,7 +42,7 @@
                         <h:outputLabel for="Nombre" value="Nombre :" style="font-weight:bold" />
                         <p:inputText id="nombre" value="#{cuentaController.getNombreCuentaByNumero(transaccionController.numcuenta)}" disabled="true"/>
                     </h:panelGrid>
-                    <p:dataTable id="datalist" value="#{transaccionController.getItemsByCuentaAndPeriodo(asientoController.selectedperiodo)}" var="item"
+                    <p:dataTable id="datalist" value="#{transaccionController.getItemsByCuentaPeriodoDiario(asientoController.selectedperiodo,asientoController.selecteddiario)}" var="item"
                                  selectionMode="single" 
                                  paginator="true"
                                  rowKey="#{item.idTransaccion}"
