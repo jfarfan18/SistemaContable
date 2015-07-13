@@ -7,6 +7,7 @@ import ec.ucuenca.contables.sistemacontable.modelo.Cabecerafacturac;
 import ec.ucuenca.contables.sistemacontable.modelo.Cabecerafacturav;
 import ec.ucuenca.contables.sistemacontable.modelo.Detallefactuc;
 import ec.ucuenca.contables.sistemacontable.modelo.Detallefacturav;
+import ec.ucuenca.contables.sistemacontable.modelo.Producto;
 import ec.ucuenca.contables.sistemacontable.negocio.KardexFacade;
 
 import java.io.Serializable;
@@ -235,15 +236,15 @@ public class KardexController implements Serializable {
     public void setKardexDataFromVenta(Detallefacturav detalle, Cabecerafacturav cabecera){
         this.selected=new Kardex();
         this.selected.setCantidad(detalle.getCantidad());
-        this.selected.setCosto(detalle.getPrecioUnitario());
+        this.selected.setCosto(this.getCostoActualByProducto(detalle.getIdProducto().getIdproducto()));
         this.selected.setDetalle("Venta");
         this.selected.setFecha(cabecera.getFecha());
         //this.selected.setIdFactura(cabecera);
         this.selected.setIdProducto(detalle.getIdProducto());
-        this.selected.setSubtotal(detalle.getTotal());
+        this.selected.setSubtotal(selected.getCosto().multiply(new BigDecimal(selected.getCantidad())));
         this.selected.setTipo('S');
         this.selected.setTotalCantidad(this.getCantidadByProducto(detalle.getIdProducto().getIdproducto())-detalle.getCantidad());
-        this.selected.setTotalSubtotal(this.getSubtotalByProducto(detalle.getIdProducto().getIdproducto()).subtract(detalle.getTotal()));
+        this.selected.setTotalSubtotal(this.getSubtotalByProducto(detalle.getIdProducto().getIdproducto()).subtract(selected.getSubtotal()));
         this.selected.setTotalCosto(this.selected.getTotalSubtotal().divide(new BigDecimal(this.selected.getTotalCantidad())));
     }
     
@@ -251,7 +252,7 @@ public class KardexController implements Serializable {
         Integer cantidad=0;
         this.items=this.ejbFacade.getKardexOrderedByFecha();
         for(int i=0;i<items.size();i++){
-            if(items.get(i).getIdProducto().getIdproducto().equals(producto)){
+            if(items.get(i).getIdProducto().getIdproducto()==producto){
                 if(items.get(i).getTipo()=='E'){
                     cantidad=cantidad+items.get(i).getCantidad();
                 }else{
@@ -265,14 +266,17 @@ public class KardexController implements Serializable {
     public BigDecimal getSubtotalByProducto(Integer producto){
         BigDecimal total=new BigDecimal(0);
         this.items=this.ejbFacade.getKardexOrderedByFecha();
-        for(int i=0;i<items.size();i++){
-            if(items.get(i).getIdProducto().getIdproducto().equals(producto)){
-                if(items.get(i).getTipo()=='E'){
-                    total.add(items.get(i).getTotalSubtotal());
-                }else{
-                    total.subtract(items.get(i).getTotalSubtotal());
-                }
-            }
+        if(items.size()>0){
+            total=items.get(items.size()-1).getTotalSubtotal();
+        }
+        return total;
+    }
+    
+    public BigDecimal getCostoActualByProducto(Integer producto){
+        BigDecimal total=new BigDecimal(0);
+        this.items=this.ejbFacade.getKardexOrderedByFecha();
+        if(items.size()>0){
+            total=items.get(items.size()-1).getTotalCosto();
         }
         return total;
     }
