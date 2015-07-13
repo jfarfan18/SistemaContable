@@ -15,6 +15,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -40,6 +42,12 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Cliente.findByTelefono", query = "SELECT c FROM Cliente c WHERE c.telefono = :telefono"),
     @NamedQuery(name = "Cliente.findByDireccion", query = "SELECT c FROM Cliente c WHERE c.direccion = :direccion")})
 public class Cliente implements Serializable {
+    @JoinColumn(name = "idCuentaCobrar", referencedColumnName = "idCuenta")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Cuenta idCuentaCobrar;
+    @JoinColumn(name = "idDocumentoCobrar", referencedColumnName = "idCuenta")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Cuenta idDocumentoCobrar;
     private static final long serialVersionUID = 1L;
     public static String findByIdentificacion="Cliente.findByIdentificacion";
     @Id
@@ -162,6 +170,22 @@ public class Cliente implements Serializable {
     @Override
     public String toString() {
         return "ec.ucuenca.contables.sistemacontable.modelo.Cliente[ idcliente=" + idcliente + " ]";
+    }
+
+    public Cuenta getIdCuentaCobrar() {
+        return idCuentaCobrar;
+    }
+
+    public void setIdCuentaCobrar(Cuenta idCuentaCobrar) {
+        this.idCuentaCobrar = idCuentaCobrar;
+    }
+
+    public Cuenta getIdDocumentoCobrar() {
+        return idDocumentoCobrar;
+    }
+
+    public void setIdDocumentoCobrar(Cuenta idDocumentoCobrar) {
+        this.idDocumentoCobrar = idDocumentoCobrar;
     }
     
 }
