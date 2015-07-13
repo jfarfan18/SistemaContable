@@ -8,6 +8,7 @@ import ec.ucuenca.contables.sistemacontable.modelo.Detallefacturav;
 import ec.ucuenca.contables.sistemacontable.modelo.Producto;
 import ec.ucuenca.contables.sistemacontable.negocio.CabecerafacturavFacade;
 import ec.ucuenca.contables.sistemacontable.negocio.ClienteFacade;
+import ec.ucuenca.contables.sistemacontable.negocio.KardexFacade;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -34,6 +35,8 @@ public class CabecerafacturavController implements Serializable {
 
     @EJB
     private ec.ucuenca.contables.sistemacontable.negocio.CabecerafacturavFacade ejbFacade;
+    @EJB
+    private KardexFacade ejbKardexFacade;
     @EJB
     private ClienteFacade ejbClienteFacade;
     private List<Cabecerafacturav> items = null;
@@ -191,6 +194,7 @@ public class CabecerafacturavController implements Serializable {
 
     public void create() {
         persist(PersistAction.CREATE, ResourceBundle.getBundle("/Bundle").getString("CabecerafacturavCreated"));
+        this.updateKardex();
         if (!JsfUtil.isValidationFailed()) {
             items = null;    // Invalidate list of items to trigger re-query.
         }
@@ -338,4 +342,13 @@ public class CabecerafacturavController implements Serializable {
 
     }
 
+    public void updateKardex(){
+        FacesContext facesContext= FacesContext.getCurrentInstance();
+        KardexController beanKardex = (KardexController)facesContext.getApplication().createValueBinding("#{kardexController}").getValue(facesContext);
+        for(int i=0;i<this.selected.getDetallefacturavList().size();i++){
+            beanKardex.setKardexDataFromVenta(selected.getDetallefacturavList().get(i), selected);
+            ejbKardexFacade.create(beanKardex.getSelected());
+            //RequestContext.getCurrentInstance().execute("ClienteCreateDialog.hide()");
+        }
+    }
 }
