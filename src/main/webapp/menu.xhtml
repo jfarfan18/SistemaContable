@@ -10,51 +10,74 @@
     <h:form>
 
         <p:outputPanel id="menuPanel" layout="block">
-            <p:menu>
-                <p:submenu label="MENU" icon="ui-icon ui-icon-refresh">
+
+            <p:menu >
+                <p:submenu label="FINANCIERO" icon="ui-icon ui-icon-refresh">
                     <p:menuitem  value="Plan de Cuentas"
                                  outcome="/cuenta/List.xhtml"
                                  />
-                    <p:menuitem  value="Tipo Cuenta"
-                                 outcome="/tipocuenta/List.xhtml"
-                                  />
                     <p:menuitem  value="Generar Asiento"
                                  outcome="/asiento/List.xhtml"
-                                  />
+                                 />
                     <p:menuitem  value="Libro Diario"
                                  outcome="/LibroDiario.xhtml"
-                                  />                    
+                                 />                    
                     <p:menuitem  value="Libro Mayor"
                                  outcome="/LibroMayor.xhtml"
-                                  />
+                                 />
                     <p:menuitem  value="Balance de Comprobacion"
                                  outcome="/BalanceComprobacion.xhtml"
-                                  />
-                    <p:menuitem  value="Balance General"
-                                 outcome="/BalanceGeneral.xhtml"
-                                  />
-                    
+                                 />
                     <p:menuitem  value="Estado de Resultados"
                                  outcome="/EstadoResultados.xhtml"
-                                  />
-                    <p:menuitem  value="Cliente"
-                                 outcome="/cliente/List.xhtml"
-                                  />
-                    <p:menuitem  value="Productos"
-                                 outcome="/producto/List.xhtml"
-                                  />
-                    <p:menuitem  value="Proveedores"
-                                 outcome="/proveedor/List.xhtml"
-                                  />
-                    <p:menuitem  value="Kardex"
-                                 outcome="/Kardex.xhtml"
-                                  />
+                                 />
+                    <p:menuitem  value="Balance General"
+                                 outcome="/BalanceGeneral.xhtml"
+                                 />                    
+                </p:submenu>
+                <p:submenu label="INVENTARIOS" icon="ui-icon ui-icon-refresh">
+
+                    
+                    <p:menuitem  value="Factura Compra"
+                                 
+                                 />
                     <p:menuitem  value="Factura Venta"
                                  outcome="/cabecerafacturav/List.xhtml"
-                                  />
+                                 />
+                    <p:menuitem  value="Kardex"
+                                 outcome="/Kardex.xhtml"
+                                 />
                 </p:submenu>
+                <p:submenu label="CONFIGURACION" icon="ui-icon ui-icon-refresh">
+                    <p:menuitem  value="Tipo Cuenta"
+                                 outcome="/tipocuenta/List.xhtml"
+                                 />
+                    <p:menuitem  value="Clientes"
+                                 outcome="/cliente/List.xhtml"
+                                 />
+                    <p:menuitem  value="Productos"
+                                 outcome="/producto/List.xhtml"
+                                 />
+                    <p:menuitem  value="Proveedores"
+                                 outcome="/proveedor/List.xhtml"
+                                 />
+                    <p:menuitem  value="Impuestos"
+                                 outcome="/impuesto/List.xhtml"
+                                 />
+                    <p:menuitem  value="Documentos"
+                                 outcome="/documento/List.xhtml"
+                                 />
+                    <p:menuitem  value="Forma de Pago"
+                                 outcome="/formapago/List.xhtml"
+                                 />
+                    <p:menuitem  value="Autorizaciones"
+                                 outcome="/autorizaciones/List.xhtml"
+                                 />
+                </p:submenu>
+
             </p:menu>
         </p:outputPanel>
+       
 
     </h:form>
 </ui:composition>
