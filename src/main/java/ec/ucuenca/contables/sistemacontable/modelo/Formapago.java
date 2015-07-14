@@ -15,6 +15,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -35,6 +37,9 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Formapago.findByIdformaPago", query = "SELECT f FROM Formapago f WHERE f.idformaPago = :idformaPago"),
     @NamedQuery(name = "Formapago.findByDescripcion", query = "SELECT f FROM Formapago f WHERE f.descripcion = :descripcion")})
 public class Formapago implements Serializable {
+    @JoinColumn(name = "idCuentaAsiento", referencedColumnName = "idCuenta")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Cuenta idCuentaAsiento;
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -113,6 +118,14 @@ public class Formapago implements Serializable {
     @Override
     public String toString() {
         return "ec.ucuenca.contables.sistemacontable.modelo.Formapago[ idformaPago=" + idformaPago + " ]";
+    }
+
+    public Cuenta getIdCuentaAsiento() {
+        return idCuentaAsiento;
+    }
+
+    public void setIdCuentaAsiento(Cuenta idCuentaAsiento) {
+        this.idCuentaAsiento = idCuentaAsiento;
     }
     
 }

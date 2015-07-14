@@ -51,6 +51,8 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Cabecerafacturav.findByIva", query = "SELECT c FROM Cabecerafacturav c WHERE c.iva = :iva"),
     @NamedQuery(name = "Cabecerafacturav.findByTotal", query = "SELECT c FROM Cabecerafacturav c WHERE c.total = :total")})
 public class Cabecerafacturav implements Serializable {
+    @OneToMany(mappedBy = "idFacturaV", fetch = FetchType.LAZY)
+    private List<Kardex> kardexList;
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -245,6 +247,15 @@ public class Cabecerafacturav implements Serializable {
     @Override
     public String toString() {
         return "ec.ucuenca.contables.sistemacontable.modelo.Cabecerafacturav[ idcabeceraFacturaV=" + idcabeceraFacturaV + " ]";
+    }
+
+    @XmlTransient
+    public List<Kardex> getKardexList() {
+        return kardexList;
+    }
+
+    public void setKardexList(List<Kardex> kardexList) {
+        this.kardexList = kardexList;
     }
     
 }

@@ -46,6 +46,12 @@ import javax.xml.bind.annotation.XmlTransient;
     //Personalizadas    
     @NamedQuery(name = "Cuenta.findLikeCuentaDetalle", query = "SELECT c FROM Cuenta c WHERE c.numeroCuenta LIKE :numeroCuenta AND c.categoria = :categoria ORDER BY c.numeroCuenta")})
     public class Cuenta implements Serializable {
+    @OneToMany(mappedBy = "idCuentaCobrar", fetch = FetchType.LAZY)
+    private List<Cliente> clienteList;
+    @OneToMany(mappedBy = "idDocumentoCobrar", fetch = FetchType.LAZY)
+    private List<Cliente> clienteList1;
+    @OneToMany(mappedBy = "idCuentaAsiento", fetch = FetchType.LAZY)
+    private List<Formapago> formapagoList;
     @OneToMany(mappedBy = "idcuentaInventario", fetch = FetchType.LAZY)
     private List<Producto> productoList;
     private static final long serialVersionUID = 1L;
@@ -220,6 +226,33 @@ import javax.xml.bind.annotation.XmlTransient;
 
     public void setProductoList(List<Producto> productoList) {
         this.productoList = productoList;
+    }
+
+    @XmlTransient
+    public List<Cliente> getClienteList() {
+        return clienteList;
+    }
+
+    public void setClienteList(List<Cliente> clienteList) {
+        this.clienteList = clienteList;
+    }
+
+    @XmlTransient
+    public List<Cliente> getClienteList1() {
+        return clienteList1;
+    }
+
+    public void setClienteList1(List<Cliente> clienteList1) {
+        this.clienteList1 = clienteList1;
+    }
+
+    @XmlTransient
+    public List<Formapago> getFormapagoList() {
+        return formapagoList;
+    }
+
+    public void setFormapagoList(List<Formapago> formapagoList) {
+        this.formapagoList = formapagoList;
     }
     
 }

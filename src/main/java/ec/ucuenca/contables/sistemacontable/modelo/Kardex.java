@@ -49,6 +49,12 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Kardex.findAllOrderedByFecha", query = "SELECT k FROM Kardex k ORDER BY k.fecha")
 })
 public class Kardex implements Serializable {
+    @JoinColumn(name = "idFacturaC", referencedColumnName = "idcabeceraFacturaC")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Cabecerafacturac idFacturaC;
+    @JoinColumn(name = "idFacturaV", referencedColumnName = "idcabeceraFacturaV")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Cabecerafacturav idFacturaV;
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -252,5 +258,21 @@ public class Kardex implements Serializable {
             return this.subtotal+"";
         }
         return "-";
+    }
+
+    public Cabecerafacturac getIdFacturaC() {
+        return idFacturaC;
+    }
+
+    public void setIdFacturaC(Cabecerafacturac idFacturaC) {
+        this.idFacturaC = idFacturaC;
+    }
+
+    public Cabecerafacturav getIdFacturaV() {
+        return idFacturaV;
+    }
+
+    public void setIdFacturaV(Cabecerafacturav idFacturaV) {
+        this.idFacturaV = idFacturaV;
     }
 }
