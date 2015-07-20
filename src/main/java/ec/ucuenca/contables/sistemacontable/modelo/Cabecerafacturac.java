@@ -11,6 +11,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -84,7 +85,7 @@ public class Cabecerafacturac implements Serializable {
     private BigDecimal total;
     @OneToMany(mappedBy = "idCabeceraFactura", fetch = FetchType.LAZY)
     private List<Detallefactuc> detallefactucList;
-    @OneToMany(mappedBy = "idFactura", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "idFacturaC", fetch = FetchType.LAZY, cascade= CascadeType.PERSIST)
     private List<Kardex> kardexList;
     @JoinColumn(name = "idFormaPago", referencedColumnName = "idformaPago")
     @ManyToOne(fetch = FetchType.LAZY)
@@ -197,14 +198,14 @@ public class Cabecerafacturac implements Serializable {
         this.detallefactucList = detallefactucList;
     }
 
-    @XmlTransient
+   /* @XmlTransient
     public List<Kardex> getKardexList() {
         return kardexList;
     }
 
     public void setKardexList(List<Kardex> kardexList) {
         this.kardexList = kardexList;
-    }
+    }*/
 
     public Formapago getIdFormaPago() {
         return idFormaPago;
@@ -246,5 +247,15 @@ public class Cabecerafacturac implements Serializable {
     public String toString() {
         return "ec.ucuenca.contables.sistemacontable.modelo.Cabecerafacturac[ idcabeceraFacturaC=" + idcabeceraFacturaC + " ]";
     }
+
+    public List<Kardex> getKardexList() {
+        return kardexList;
+    }
+
+    public void setKardexList(List<Kardex> kardexList) {
+        this.kardexList = kardexList;
+    }
+    
     
 }
+

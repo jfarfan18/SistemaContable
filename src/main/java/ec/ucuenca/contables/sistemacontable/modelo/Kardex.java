@@ -83,9 +83,9 @@ public class Kardex implements Serializable {
     private BigDecimal totalCosto;
     @Column(name = "totalSubtotal")
     private BigDecimal totalSubtotal;
-    @JoinColumn(name = "idFactura", referencedColumnName = "idcabeceraFacturaC")
+    /*@JoinColumn(name = "idFactura", referencedColumnName = "idcabeceraFacturaC")
     @ManyToOne(fetch = FetchType.LAZY)
-    private Cabecerafacturac idFactura;
+    private Cabecerafacturac idFactura;*/
     @JoinColumn(name = "idProducto", referencedColumnName = "idproducto")
     @ManyToOne(fetch = FetchType.LAZY)
     private Producto idProducto;
@@ -177,13 +177,13 @@ public class Kardex implements Serializable {
         this.totalSubtotal = totalSubtotal;
     }
 
-    public Cabecerafacturac getIdFactura() {
+    /*public Cabecerafacturac getIdFactura() {
         return idFactura;
     }
 
     public void setIdFactura(Cabecerafacturac idFactura) {
         this.idFactura = idFactura;
-    }
+    }*/
 
     public Producto getIdProducto() {
         return idProducto;

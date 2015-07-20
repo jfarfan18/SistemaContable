@@ -9,6 +9,7 @@ import ec.ucuenca.contables.sistemacontable.modelo.Detallefactuc;
 import ec.ucuenca.contables.sistemacontable.modelo.Detallefacturav;
 import ec.ucuenca.contables.sistemacontable.modelo.Producto;
 import ec.ucuenca.contables.sistemacontable.negocio.KardexFacade;
+import ec.ucuenca.contables.sistemacontable.negocio.ProductoFacade;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -35,9 +36,11 @@ public class KardexController implements Serializable {
     private ec.ucuenca.contables.sistemacontable.negocio.KardexFacade ejbFacade;
     private List<Kardex> items = null;
     private Kardex selected;
-    String producto;
+    Producto producto;
     private List<Kardex> resultItems = null;
     Date selectedfecha;
+    @EJB
+    private ProductoFacade ejbProductoFacade;
 
     public KardexController() {
     }
@@ -173,11 +176,11 @@ public class KardexController implements Serializable {
 
     }
 
-    public String getProducto() {
+    public Producto getProducto() {
         return producto;
     }
 
-    public void setProducto(String producto) {
+    public void setProducto(Producto producto) {
         this.producto = producto;
     }
 
@@ -193,22 +196,26 @@ public class KardexController implements Serializable {
         this.resultItems=new ArrayList();
         this.items=this.ejbFacade.getKardexOrderedByFecha();
         for(int i=0;i<items.size();i++){
-            if(items.get(i).getIdProducto().getNombre().equals(this.producto)){
+            if(items.get(i).getIdProducto().getIdproducto()==this.producto.getIdproducto()){
                 resultItems.add(items.get(i));
             } 
         }
     }
     
     public void kardexByProductoAndDate(){
+        if(selectedfecha==null){
+            selectedfecha=new Date();
+        }
         this.resultItems=new ArrayList();
         this.items=this.ejbFacade.getKardexOrderedByFecha();
         for(int i=0;i<items.size();i++){
-            if(items.get(i).getIdProducto().getNombre().equals(this.producto)){
+            if(items.get(i).getIdProducto().getIdproducto()==this.producto.getIdproducto()){
                 if(items.get(i).getFecha().before(selectedfecha) || items.get(i).getFecha().equals(selectedfecha))
                     resultItems.add(items.get(i));
             } 
         }
     }
+    
     
     public String getNombreProducto(){
         if(resultItems!=null && resultItems.size()>0){
@@ -223,13 +230,12 @@ public class KardexController implements Serializable {
         this.selected.setCosto(detalle.getPrecioUnitario());
         this.selected.setDetalle("Compra");
         this.selected.setFecha(cabecera.getFecha());
-        this.selected.setIdFactura(cabecera);
+        this.selected.setIdFacturaC(cabecera);
         this.selected.setIdProducto(detalle.getIdProducto());
-        //this.selected.setIdkardex(Integer.SIZE);
         this.selected.setSubtotal(detalle.getTotal());
         this.selected.setTipo('E');
         this.selected.setTotalCantidad(this.getCantidadByProducto(detalle.getIdProducto().getIdproducto())+detalle.getCantidad());
-        this.selected.setTotalSubtotal(this.getSubtotalByProducto(detalle.getIdProducto().getIdproducto()).subtract(detalle.getTotal()));
+        this.selected.setTotalSubtotal(this.getSubtotalByProducto(detalle.getIdProducto().getIdproducto()).add(detalle.getTotal()));
         this.selected.setTotalCosto(this.selected.getTotalSubtotal().divide(new BigDecimal(this.selected.getTotalCantidad())));
     }
     
@@ -239,7 +245,7 @@ public class KardexController implements Serializable {
         this.selected.setCosto(this.getCostoActualByProducto(detalle.getIdProducto().getIdproducto()));
         this.selected.setDetalle("Venta");
         this.selected.setFecha(cabecera.getFecha());
-        //this.selected.setIdFactura(cabecera);
+        this.selected.setIdFacturaV(cabecera);
         this.selected.setIdProducto(detalle.getIdProducto());
         this.selected.setSubtotal(selected.getCosto().multiply(new BigDecimal(selected.getCantidad())));
         this.selected.setTipo('S');
@@ -265,7 +271,7 @@ public class KardexController implements Serializable {
     
     public BigDecimal getSubtotalByProducto(Integer producto){
         BigDecimal total=new BigDecimal(0);
-        this.items=this.ejbFacade.getKardexOrderedByFecha();
+        this.items=this.findKardexByProducto(producto);
         if(items.size()>0){
             total=items.get(items.size()-1).getTotalSubtotal();
         }
@@ -273,7 +279,7 @@ public class KardexController implements Serializable {
     }
     
     public BigDecimal getCostoActualByProducto(Integer producto){
-        BigDecimal total=new BigDecimal(0);
+        BigDecimal total=new BigDecimal(-1);
         this.items=this.ejbFacade.getKardexOrderedByFecha();
         if(items.size()>0){
             total=items.get(items.size()-1).getTotalCosto();
@@ -289,5 +295,35 @@ public class KardexController implements Serializable {
         this.selectedfecha = selectedfecha;
     }
     
+    public boolean hayExistencias(Integer cantidad,Integer producto){
+        this.resultItems=this.findKardexByProducto(producto);
+        if(resultItems.size()>0){
+            if(resultItems.get(resultItems.size()-1).getTotalCantidad()>cantidad){
+                return true;
+            }
+        }
+        return false;
+    }
     
+     public List<Kardex> findKardexByProducto(Integer producto){
+        List result=new ArrayList();
+        this.items=this.ejbFacade.getKardexOrderedByFecha();
+        for(int i=0;i<items.size();i++){
+            if(items.get(i).getIdProducto().getIdproducto()==producto){
+                result.add(items.get(i));
+            } 
+        }
+        return result;
+    }
+     
+    public void updateCostoPrecioProducto(Producto idproducto, BigDecimal costo){
+        idproducto.setCosto(costo);
+        idproducto.setPrecio(costo.multiply(new BigDecimal(1.3)));
+        ejbProductoFacade.edit(idproducto);
+    }
+    
+    public void updateCantidadProducto(Producto idproducto, Integer cantidad){
+        idproducto.setStock(cantidad);
+        ejbProductoFacade.edit(idproducto);
+    }
 }

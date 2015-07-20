@@ -8,45 +8,168 @@
 
     <ui:composition>
 
-        <p:dialog id="CabecerafacturacCreateDlg" widgetVar="CabecerafacturacCreateDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.CreateCabecerafacturacTitle}">
+        <p:dialog id="CabecerafacturacCreateDlg" widgetVar="CabecerafacturacCreateDialog" modal="true" resizable="false" appendTo="@(body)" header="NUEVA FACTURA COMPRA">
             <h:form id="CabecerafacturacCreateForm">
                 <h:panelGroup id="display">
-                    <p:panelGrid columns="2" rendered="#{cabecerafacturacController.selected != null}">
-                        <p:outputLabel value="#{bundle.CreateCabecerafacturacLabel_idcabeceraFacturaC}" for="idcabeceraFacturaC" />
-                        <p:inputText id="idcabeceraFacturaC" value="#{cabecerafacturacController.selected.idcabeceraFacturaC}" title="#{bundle.CreateCabecerafacturacTitle_idcabeceraFacturaC}" required="true" requiredMessage="#{bundle.CreateCabecerafacturacRequiredMessage_idcabeceraFacturaC}"/>
-                        <p:outputLabel value="#{bundle.CreateCabecerafacturacLabel_numeroFacturaC}" for="numeroFacturaC" />
-                        <p:inputText id="numeroFacturaC" value="#{cabecerafacturacController.selected.numeroFacturaC}" title="#{bundle.CreateCabecerafacturacTitle_numeroFacturaC}" />
-                        <p:outputLabel value="#{bundle.CreateCabecerafacturacLabel_fecha}" for="fecha" />
-                        <p:calendar id="fecha" pattern="MM/dd/yyyy" value="#{cabecerafacturacController.selected.fecha}" title="#{bundle.EditCabecerafacturacTitle_fecha}"  showOn="button"/>
-                        <p:outputLabel value="#{bundle.CreateCabecerafacturacLabel_autorizacionSri}" for="autorizacionSri" />
-                        <p:inputText id="autorizacionSri" value="#{cabecerafacturacController.selected.autorizacionSri}" title="#{bundle.CreateCabecerafacturacTitle_autorizacionSri}" />
-                        <p:outputLabel value="#{bundle.CreateCabecerafacturacLabel_establecimiento}" for="establecimiento" />
-                        <p:inputText id="establecimiento" value="#{cabecerafacturacController.selected.establecimiento}" title="#{bundle.CreateCabecerafacturacTitle_establecimiento}" />
-                        <p:outputLabel value="#{bundle.CreateCabecerafacturacLabel_puntoEmision}" for="puntoEmision" />
-                        <p:inputText id="puntoEmision" value="#{cabecerafacturacController.selected.puntoEmision}" title="#{bundle.CreateCabecerafacturacTitle_puntoEmision}" />
-                        <p:outputLabel value="#{bundle.CreateCabecerafacturacLabel_subtotal}" for="subtotal" />
-                        <p:inputText id="subtotal" value="#{cabecerafacturacController.selected.subtotal}" title="#{bundle.CreateCabecerafacturacTitle_subtotal}" />
-                        <p:outputLabel value="#{bundle.CreateCabecerafacturacLabel_subtotalBase0}" for="subtotalBase0" />
-                        <p:inputText id="subtotalBase0" value="#{cabecerafacturacController.selected.subtotalBase0}" title="#{bundle.CreateCabecerafacturacTitle_subtotalBase0}" />
-                        <p:outputLabel value="#{bundle.CreateCabecerafacturacLabel_subtotalBaseIva}" for="subtotalBaseIva" />
-                        <p:inputText id="subtotalBaseIva" value="#{cabecerafacturacController.selected.subtotalBaseIva}" title="#{bundle.CreateCabecerafacturacTitle_subtotalBaseIva}" />
-                        <p:outputLabel value="#{bundle.CreateCabecerafacturacLabel_iva}" for="iva" />
-                        <p:inputText id="iva" value="#{cabecerafacturacController.selected.iva}" title="#{bundle.CreateCabecerafacturacTitle_iva}" />
-                        <p:outputLabel value="#{bundle.CreateCabecerafacturacLabel_total}" for="total" />
-                        <p:inputText id="total" value="#{cabecerafacturacController.selected.total}" title="#{bundle.CreateCabecerafacturacTitle_total}" />
-                        <p:outputLabel value="#{bundle.CreateCabecerafacturacLabel_idFormaPago}" for="idFormaPago" />
-                        <p:selectOneMenu id="idFormaPago" value="#{cabecerafacturacController.selected.idFormaPago}" >
-                            <f:selectItems value="#{formapagoController.itemsAvailableSelectOne}"
-                                           var="idFormaPagoItem"
-                                           itemValue="#{idFormaPagoItem}"/>
-                        </p:selectOneMenu>
-                        <p:outputLabel value="#{bundle.CreateCabecerafacturacLabel_idProveedor}" for="idProveedor" />
-                        <p:selectOneMenu id="idProveedor" value="#{cabecerafacturacController.selected.idProveedor}" >
-                            <f:selectItems value="#{proveedorController.itemsAvailableSelectOne}"
-                                           var="idProveedorItem"
-                                           itemValue="#{idProveedorItem}"/>
-                        </p:selectOneMenu>
-                    </p:panelGrid>
+                    <h:panelGrid columns="1" rendered="#{cabecerafacturacController.selected != null}">
+                        <h:panelGrid columns="6">
+                            <f:facet name="header">
+                                <h:outputText value="DATOS FACTURA"/>
+
+                                <p:separator style="width: 1050px"/>
+                            </f:facet>
+                            <p:outputLabel value="Numero Factura:" for="numeroFactura" />
+                            <p:inputText id="numeroFactura" value="#{cabecerafacturacController.selected.numeroFacturaC}" title="#{bundle.CreateCabecerafacturacTitle_numeroFacturaC}" />
+                            <p:outputLabel value="#{bundle.CreateCabecerafacturacLabel_fecha}" for="fecha" />
+                            <p:calendar id="fecha" pattern="MM/dd/yyyy" value="#{cabecerafacturacController.selected.fecha}" title="#{bundle.EditCabecerafacturacTitle_fecha}"  showOn="button"/>
+                            <p:outputLabel value="Autorizacion SRI:" for="autorizacionSri" />
+                            <p:inputText id="autorizacionSri" readonly="true" value="#{cabecerafacturacController.selected.idProveedor.autorizacion}" title="#{bundle.CreateCabecerafacturacTitle_autorizacionSri}" />
+                            <p:outputLabel value="#{bundle.CreateCabecerafacturacLabel_establecimiento}" for="establecimiento" />
+                            <p:inputText id="establecimiento" value="#{cabecerafacturacController.selected.establecimiento}" title="#{bundle.CreateCabecerafacturacTitle_establecimiento}" />
+                            <p:outputLabel value="Punto Emision:" for="puntoEmision" />
+                            <p:inputText id="puntoEmision" value="#{cabecerafacturacController.selected.puntoEmision}" title="#{bundle.CreateCabecerafacturacTitle_puntoEmision}" />
+
+                        </h:panelGrid>
+                        <h:panelGrid columns="6">
+                            <f:facet name="header">
+                                <h:outputText value="PROVEEDOR"/>
+
+                                <p:separator style="width: 1050px"/>
+                            </f:facet>
+                            <p:outputLabel value="Identificacion" for="identificacion" />
+                            <p:inputText id="identificacion" 
+                                         value="#{cabecerafacturacController.selected.idProveedor.identificacion}" 
+                                         title="#{bundle.CreateProveedorTitle_identificacion}" >
+                                <p:ajax event="blur" listener="#{cabecerafacturacController.cargarProveedor()}" update=":ProveedorCreateForm,nombre,telefono,direccion,autorizacionSri" />
+                            </p:inputText>
+                            <p:outputLabel value="Nombre" for="nombre" />
+                            <p:inputText id="nombre" 
+                                         readonly="true"
+                                         value="#{cabecerafacturacController.selected.idProveedor.nombre}" 
+                                         title="#{bundle.CreateProveedorTitle_nombre}" />
+                            <p:outputLabel value="Telefono" for="telefono" />
+                            <p:inputText id="telefono" 
+                                         readonly="true"
+                                         value="#{cabecerafacturacController.selected.idProveedor.telefono}" 
+                                         title="#{bundle.CreateProveedorTitle_telefono}" />
+                            <p:outputLabel value="Direccion" for="direccion" />
+                            <p:inputText id="direccion" 
+                                         readonly="true"
+                                         value="#{cabecerafacturacController.selected.idProveedor.direccion}" 
+                                         title="#{bundle.CreateProveedorTitle_direccion}" />
+                        </h:panelGrid>
+                        <h:panelGrid columns="7">
+                            <f:facet name="header">
+                                <h:outputText value="DETALLE FACURA"/>
+
+                                <p:separator style="width: 1050px"/>
+                            </f:facet>
+
+                            <p:outputLabel value="Producto:" for="producto" />
+                            <p:selectOneMenu id="producto" 
+                                             value="#{cabecerafacturacController.nuevoItem}" effect="fade"
+                                             filter="true" 
+                                             filterMatchMode="startsWith">
+                                <f:selectItem itemLabel="..." />
+                                <f:selectItems value="#{productoController.itemsAvailableSelectOne}"
+                                               var="cuenta"
+                                               itemValue="#{cuenta}"
+                                               itemLabel="#{cuenta.idproducto}:#{cuenta.nombre}"/>
+                            </p:selectOneMenu>
+                            <p:outputLabel value="Cantidad:" for="cantidad" />
+                            <p:inputText id="cantidad" value="#{cabecerafacturacController.cantidadAgregar}" />
+                            <p:outputLabel value="Costo:" for="costo" />
+                            <p:inputText id="costo" value="#{cabecerafacturacController.costoAgregar}" />
+                            <p:commandButton  value="Agregar" actionListener="#{cabecerafacturacController.agregarItem()}" update="CabecerafacturacCreateForm:subtotal,CabecerafacturacCreateForm:subtotalCero,CabecerafacturacCreateForm:subtotalIva,CabecerafacturacCreateForm:iva,CabecerafacturacCreateForm:total,producto,cantidad,CabecerafacturacCreateForm:detalleTbl,:growl" />
+                        </h:panelGrid>
+                        <p:dataTable id="detalleTbl" 
+                                     var="item" 
+                                     value="#{cabecerafacturacController.selected.detallefactucList}" 
+                                     rowKey="#{item.idProducto}"
+                                     selection="#{cabecerafacturacController.detalleSeleccionado}"
+                                     selectionMode="single"
+                                     editable="true" 
+                                     editMode="cell" 
+                                     widgetVar="cellTrans">
+                            <f:facet name="header">
+                                Detalle Compra
+                            </f:facet>
+                            <p:column headerText="Producto">
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText value="#{item.idProducto.nombre}"  />
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:selectOneMenu id="productoEdit"
+                                                         value="#{item.idProducto}" 
+                                                         effect="fade"
+                                                         filter="true" 
+                                                         filterMatchMode="startsWith">
+                                            <f:selectItems value="#{productoController.itemsAvailableSelectOne}"
+                                                           var="producto"
+                                                           itemValue="#{producto}"
+                                                           itemLabel="#{producto.nombre}"/>
+                                            <p:ajax event="change" listener="#{cabecerafacturacController.calcularTotales()}" update=":CabecerafacturacCreateForm:subtotal,:CabecerafacturacCreateForm:subtotalCero,:CabecerafacturacCreateForm:subtotalIva,:CabecerafacturacCreateForm:iva,:CabecerafacturacCreateForm:total,:CabecerafacturacCreateForm:detalleTbl" />
+                                        </p:selectOneMenu>
+
+                                    </f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="Cantidad">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{item.cantidad}" /></f:facet>
+                                    <f:facet name="input">
+                                        <p:inputText value="#{item.cantidad}" onblur="#{cabecerafacturacController.calcularTotales()}">
+                                            <p:ajax event="change" listener="#{cabecerafacturacController.calcularTotales()}"  update=":CabecerafacturacCreateForm:subtotal,:CabecerafacturacCreateForm:subtotalCero,:CabecerafacturacCreateForm:subtotalIva,:CabecerafacturacCreateForm:iva,:CabecerafacturacCreateForm:total,:CabecerafacturacCreateForm:detalleTbl" />
+                                        </p:inputText>
+                                    </f:facet>
+                                </p:cellEditor>
+                            </p:column>
+
+                            <p:column headerText="Precio Unitario">
+                                <h:outputText value="#{item.precioUnitario}" />
+                            </p:column>
+                            <p:column headerText="Impuesto">
+                                <h:outputText value="#{item.idProducto.idImpuesto.descripcion}" />
+                            </p:column>
+                            <p:column headerText="Precio Total">
+                                <h:outputText value="#{item.precioUnitario * item.cantidad}" />
+                            </p:column>                       
+
+                            <p:column style="width:32px;text-align: center">
+                                <p:commandButton update="detalleTbl" action="#{cabecerafacturacController.quitarItem()}" icon="ui-icon-close" title="Quitar">
+                                    <f:setPropertyActionListener value="#{item}" target="#{cabecerafacturacController.detalleSeleccionado}" />
+                                </p:commandButton>
+                            </p:column>
+                        </p:dataTable>
+                        <h:panelGrid columns="3" columnClasses="mystyle, mystyle">
+                            <h:panelGrid columns="2">
+                                <p:outputLabel value="Forma de Pago:" for="idFormaPago" />
+                                <p:selectOneMenu id="idFormaPago" 
+                                                 value="#{cabecerafacturacController.selected.idFormaPago}" >
+                                    <f:selectItems value="#{formapagoController.itemsAvailableSelectOne}"
+                                                   var="idFormaPagoItem"
+                                                   itemValue="#{idFormaPagoItem}"
+                                                   itemLabel="#{idFormaPagoItem.descripcion}"/>
+                                </p:selectOneMenu>
+                            </h:panelGrid>
+                            <p:spacer width="500" height="0"/>
+                            <h:panelGrid columns="2">
+                                <h:outputText value="Subtotal:"/>
+                                <h:outputText id="subtotal" value="#{cabecerafacturacController.selected.subtotal}" title="#{bundle.ViewCabecerafacturacTitle_subtotal}"/>
+                                <h:outputText value="Subtotal Base Cero:"/>
+                                <h:outputText id="subtotalCero" value="#{cabecerafacturacController.selected.subtotalBase0}" title="#{bundle.ViewCabecerafacturacTitle_subtotalBase0}"/>
+                                <h:outputText value="Subtotal Base IVA: "/>
+                                <h:outputText id="subtotalIva" value="#{cabecerafacturacController.selected.subtotalBaseIva}" title="#{bundle.ViewCabecerafacturacTitle_subtotalBaseIva}"/>
+                                <h:outputText value="IVA: "/>
+                                <h:outputText id="iva" value="#{cabecerafacturacController.selected.iva}" title="#{bundle.ViewCabecerafacturacTitle_iva}"/>
+                                <h:outputText value="Total: "/>
+                                <h:outputText id="total" value="#{cabecerafacturacController.selected.total}" title="#{bundle.ViewCabecerafacturacTitle_total}"/>
+
+                            </h:panelGrid>
+                        </h:panelGrid>
+                    </h:panelGrid>
+                    
                     <p:commandButton actionListener="#{cabecerafacturacController.create}" value="#{bundle.Save}" update="display,:CabecerafacturacListForm:datalist,:growl" oncomplete="handleSubmit(args,'CabecerafacturacCreateDialog');"/>
                     <p:commandButton value="#{bundle.Cancel}" onclick="CabecerafacturacCreateDialog.hide()"/>
                 </h:panelGroup>

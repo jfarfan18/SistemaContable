@@ -3,10 +3,20 @@ package ec.ucuenca.contables.sistemacontable.controlador;
 import ec.ucuenca.contables.sistemacontable.modelo.Cabecerafacturac;
 import ec.ucuenca.contables.sistemacontable.controlador.util.JsfUtil;
 import ec.ucuenca.contables.sistemacontable.controlador.util.JsfUtil.PersistAction;
+import ec.ucuenca.contables.sistemacontable.modelo.Detallefactuc;
 import ec.ucuenca.contables.sistemacontable.modelo.Kardex;
+import ec.ucuenca.contables.sistemacontable.modelo.Producto;
+import ec.ucuenca.contables.sistemacontable.modelo.Proveedor;
 import ec.ucuenca.contables.sistemacontable.negocio.CabecerafacturacFacade;
+import ec.ucuenca.contables.sistemacontable.negocio.KardexFacade;
+import ec.ucuenca.contables.sistemacontable.negocio.ProductoFacade;
+import ec.ucuenca.contables.sistemacontable.negocio.ProveedorFacade;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -15,10 +25,12 @@ import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
+import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
+import org.primefaces.context.RequestContext;
 
 @Named("cabecerafacturacController")
 @SessionScoped
@@ -28,7 +40,20 @@ public class CabecerafacturacController implements Serializable {
     private ec.ucuenca.contables.sistemacontable.negocio.CabecerafacturacFacade ejbFacade;
     private List<Cabecerafacturac> items = null;
     private Cabecerafacturac selected;
+    
+    @EJB
+    private ProveedorFacade ejbProveedorFacade;
 
+    private Producto nuevoItem;
+    private int cantidadAgregar;
+    private BigDecimal costoAgregar;
+    private Detallefactuc detalleSeleccionado;
+    
+    @EJB
+    private KardexFacade ejbKardexFacade;
+    @EJB
+    private ProductoFacade ejbProductoFacade;
+    
     public CabecerafacturacController() {
     }
 
@@ -52,11 +77,18 @@ public class CabecerafacturacController implements Serializable {
 
     public Cabecerafacturac prepareCreate() {
         selected = new Cabecerafacturac();
+        selected.setFecha(new Date());
+        selected.setIdProveedor(new Proveedor());
+        selected.setDetallefactucList(new ArrayList<Detallefactuc>());
+        nuevoItem=null;
+        cantidadAgregar=0;
         initializeEmbeddableKey();
         return selected;
     }
 
     public void create() {
+        this.selected.setAutorizacionSri(this.selected.getIdProveedor().getAutorizacion());
+        this.updateKardex();
         persist(PersistAction.CREATE, ResourceBundle.getBundle("/Bundle").getString("CabecerafacturacCreated"));
         if (!JsfUtil.isValidationFailed()) {
             items = null;    // Invalidate list of items to trigger re-query.
@@ -165,4 +197,203 @@ public class CabecerafacturacController implements Serializable {
 
     }
 
+    public void crearProveedor(){
+    if (ejbProveedorFacade.getProveedorbyidentificacion(selected.getIdProveedor().getIdentificacion())!=null){
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "Ya exste un proveedor registrado con ese numero de identificacion");
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+            return;
+        }
+            
+        if (selected.getIdProveedor().getTipoIdentificacion()=='C'){
+            if (!this.validadorDeCedula(selected.getIdProveedor().getIdentificacion())){
+                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "La cedula ingresada es incorrecta");
+                FacesContext.getCurrentInstance().addMessage(null, msg);
+                return;
+            }
+        }
+        ejbProveedorFacade.create(selected.getIdProveedor());
+        RequestContext.getCurrentInstance().execute("ProveedorCreateDialog.hide()");
+    }
+    
+     public void cargarProveedor(){
+        Proveedor proveedor=ejbProveedorFacade.getProveedorbyidentificacion(selected.getIdProveedor().getIdentificacion());
+        if (proveedor==null){
+            System.out.println(selected.getIdProveedor());
+            RequestContext.getCurrentInstance().execute("PF('ProveedorCreateDialog').show()");
+        }else{
+            selected.setIdProveedor(proveedor);
+        }
+        
+    }
+    
+    private boolean validadorDeCedula(String cedula) {
+        boolean cedulaCorrecta = false;
+
+        try {
+
+            if (cedula.length() == 10) // ConstantesApp.LongitudCedula
+            {
+                int tercerDigito = Integer.parseInt(cedula.substring(2, 3));
+                if (tercerDigito < 6) {
+// Coeficientes de validación cédula
+// El decimo digito se lo considera dígito verificador
+                    int[] coefValCedula = {2, 1, 2, 1, 2, 1, 2, 1, 2};
+                    int verificador = Integer.parseInt(cedula.substring(9, 10));
+                    int suma = 0;
+                    int digito = 0;
+                    for (int i = 0; i < (cedula.length() - 1); i++) {
+                        digito = Integer.parseInt(cedula.substring(i, i + 1)) * coefValCedula[i];
+                        suma += ((digito % 10) + (digito / 10));
+                    }
+
+                    if ((suma % 10 == 0) && (suma % 10 == verificador)) {
+                        cedulaCorrecta = true;
+                    } else if ((10 - (suma % 10)) == verificador) {
+                        cedulaCorrecta = true;
+                    } else {
+                        cedulaCorrecta = false;
+                    }
+                } else {
+                    cedulaCorrecta = false;
+                }
+            } else {
+                cedulaCorrecta = false;
+            }
+        } catch (NumberFormatException nfe) {
+            cedulaCorrecta = false;
+        } catch (Exception err) {
+            cedulaCorrecta = false;
+        }
+
+        if (!cedulaCorrecta) {
+        }
+        return cedulaCorrecta;
+    }
+
+    public Producto getNuevoItem() {
+        return nuevoItem;
+    }
+
+    public void setNuevoItem(Producto nuevoItem) {
+        this.nuevoItem = nuevoItem;
+    }
+
+    public int getCantidadAgregar() {
+        return cantidadAgregar;
+    }
+
+    public void setCantidadAgregar(int cantidadAgregar) {
+        this.cantidadAgregar = cantidadAgregar;
+    }
+    
+    public void agregarItem(){
+        Detallefactuc item=new Detallefactuc();
+        item.setCantidad(cantidadAgregar);
+        item.setPrecioUnitario(costoAgregar);
+        item.setIdCabeceraFactura(selected);
+        item.setIdProducto(nuevoItem);
+        item.setTotal(new BigDecimal(costoAgregar.doubleValue()*cantidadAgregar));
+        selected.getDetallefactucList().add(item);
+        cantidadAgregar=0;
+        nuevoItem=new Producto();
+        calcularTotales();
+    }
+    
+     public void calcularTotales(){
+        double subtotalBaseCero=0,subtotalIva=0,subtotal,iva=0,total;
+        for (Detallefactuc item:selected.getDetallefactucList()){
+            if (item.getIdProducto().getIdImpuesto()==null){
+                subtotalBaseCero=+item.getTotal().doubleValue();
+            }else{
+                subtotalIva=+item.getTotal().doubleValue();
+                iva=+item.getTotal().doubleValue()*item.getIdProducto().getIdImpuesto().getValor().doubleValue()/100;
+            }
+            item.setTotal(new BigDecimal(item.getCantidad()*item.getPrecioUnitario().doubleValue()));
+        }
+        subtotal=subtotalBaseCero+subtotalIva;
+        total=subtotal+iva;
+        selected.setSubtotal(new BigDecimal(subtotal).setScale(2, RoundingMode.HALF_EVEN));
+        selected.setSubtotalBase0(new BigDecimal(subtotalBaseCero).setScale(2, RoundingMode.HALF_EVEN));
+        selected.setSubtotalBaseIva(new BigDecimal(subtotalIva).setScale(2, RoundingMode.HALF_EVEN));
+        selected.setIva(new BigDecimal(iva).setScale(2, RoundingMode.HALF_EVEN));
+        selected.setTotal(new BigDecimal(total).setScale(2, RoundingMode.HALF_EVEN));
+    }
+
+    public Detallefactuc getDetalleSeleccionado() {
+        return detalleSeleccionado;
+    }
+
+    public void setDetalleSeleccionado(Detallefactuc detalleSeleccionado) {
+        this.detalleSeleccionado = detalleSeleccionado;
+    }
+     
+    public void quitarItem(){
+        System.out.println("Quitar");
+        selected.getDetallefactucList().remove(detalleSeleccionado);
+        calcularTotales();
+    }
+
+    /*public void updateKardex(){
+        FacesContext facesContext= FacesContext.getCurrentInstance();
+        KardexController beanKardex = (KardexController)facesContext.getApplication().createValueBinding("#{kardexController}").getValue(facesContext);
+        for(int i=0;i<this.selected.getDetallefactucList().size();i++){
+            beanKardex.setKardexDataFromCompra(selected.getDetallefactucList().get(i), selected);
+            ejbKardexFacade.create(beanKardex.getSelected());
+            //RequestContext.getCurrentInstance().execute("ClienteCreateDialog.hide()");
+        }
+    }*/
+    
+    public void updateKardex(){
+        FacesContext facesContext= FacesContext.getCurrentInstance();
+        KardexController beanKardex = (KardexController)facesContext.getApplication().createValueBinding("#{kardexController}").getValue(facesContext);
+        List <Kardex> kardexlist=new ArrayList();
+        Kardex k;
+        for(int i=0;i<this.selected.getDetallefactucList().size();i++){
+            k=new Kardex();
+            k.setCantidad(this.selected.getDetallefactucList().get(i).getCantidad());
+            k.setCosto(this.selected.getDetallefactucList().get(i).getPrecioUnitario());
+            k.setDetalle("Compra");
+            k.setFecha(this.selected.getFecha());
+            k.setIdFacturaC(selected);
+            k.setIdProducto(this.selected.getDetallefactucList().get(i).getIdProducto());
+            k.setSubtotal(k.getCosto().multiply(new BigDecimal(k.getCantidad())));
+            k.setTipo('E');
+            k.setTotalCantidad(beanKardex.getCantidadByProducto(this.selected.getDetallefactucList().get(i).getIdProducto().getIdproducto())+k.getCantidad());
+            k.setTotalSubtotal(beanKardex.getSubtotalByProducto(this.selected.getDetallefactucList().get(i).getIdProducto().getIdproducto()).add(k.getSubtotal()));
+            k.setTotalCosto(k.getTotalSubtotal().divide(new BigDecimal(k.getTotalCantidad()),3, RoundingMode.HALF_UP));
+            kardexlist.add(k);
+            
+            //beanKardex.setKardexDataFromVenta(selected.getDetallefacturavList().get(i), selected);
+            this.updateCantidadProducto(k.getIdProducto(), k.getTotalCantidad());
+            this.updateCostoPrecioProducto(k.getIdProducto(), k.getTotalCosto());
+        }
+        
+        this.selected.setKardexList(kardexlist);
+        //ejbKardexFacade.create(beanKardex.getSelected());
+    }
+
+    public BigDecimal getCostoAgregar() {
+        return costoAgregar;
+    }
+
+    public void setCostoAgregar(BigDecimal costoAgregar) {
+        this.costoAgregar = costoAgregar;
+    }
+    
+     public void updateCostoPrecioProducto(Producto idproducto, BigDecimal costo){
+        FacesContext facesContext= FacesContext.getCurrentInstance();
+        ProductoController beanProducto = (ProductoController)facesContext.getApplication().createValueBinding("#{productoController}").getValue(facesContext);
+        beanProducto.setSelected(beanProducto.getProducto(idproducto.getIdproducto()));
+        beanProducto.getSelected().setCosto(costo);
+        beanProducto.getSelected().setPrecio(costo.multiply(new BigDecimal(1.3)));
+        beanProducto.update();
+    }
+    
+    public void updateCantidadProducto(Producto idproducto, Integer cantidad){
+        FacesContext facesContext= FacesContext.getCurrentInstance();
+        ProductoController beanProducto = (ProductoController)facesContext.getApplication().createValueBinding("#{productoController}").getValue(facesContext);
+        beanProducto.setSelected(beanProducto.getProducto(idproducto.getIdproducto()));
+        beanProducto.getSelected().setStock(cantidad);
+        beanProducto.update();
+    }
 }

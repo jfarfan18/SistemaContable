@@ -11,6 +11,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -51,7 +52,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Cabecerafacturav.findByIva", query = "SELECT c FROM Cabecerafacturav c WHERE c.iva = :iva"),
     @NamedQuery(name = "Cabecerafacturav.findByTotal", query = "SELECT c FROM Cabecerafacturav c WHERE c.total = :total")})
 public class Cabecerafacturav implements Serializable {
-    @OneToMany(mappedBy = "idFacturaV", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "idFacturaV", fetch = FetchType.LAZY, cascade=CascadeType.PERSIST)
     private List<Kardex> kardexList;
     private static final long serialVersionUID = 1L;
     @Id

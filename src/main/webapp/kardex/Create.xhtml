@@ -32,11 +32,17 @@
                         <p:inputText id="totalCosto" value="#{kardexController.selected.totalCosto}" title="#{bundle.CreateKardexTitle_totalCosto}" />
                         <p:outputLabel value="#{bundle.CreateKardexLabel_totalSubtotal}" for="totalSubtotal" />
                         <p:inputText id="totalSubtotal" value="#{kardexController.selected.totalSubtotal}" title="#{bundle.CreateKardexTitle_totalSubtotal}" />
-                        <p:outputLabel value="#{bundle.CreateKardexLabel_idFactura}" for="idFactura" />
-                        <p:selectOneMenu id="idFactura" value="#{kardexController.selected.idFactura}" >
+                        <p:outputLabel value="#{bundle.CreateKardexLabel_idFactura}" for="idFacturaC" />
+                        <p:selectOneMenu id="idFacturaC" value="#{kardexController.selected.idFacturaC}" >
                             <f:selectItems value="#{cabecerafacturacController.itemsAvailableSelectOne}"
-                                           var="idFacturaItem"
-                                           itemValue="#{idFacturaItem}"/>
+                                           var="idFacturaCItem"
+                                           itemValue="#{idFacturaCItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundle.CreateKardexLabel_idFactura}" for="idFacturaV" />
+                        <p:selectOneMenu id="idFacturaV" value="#{kardexController.selected.idFacturaV}" >
+                            <f:selectItems value="#{cabecerafacturavController.itemsAvailableSelectOne}"
+                                           var="idFacturaVItem"
+                                           itemValue="#{idFacturaVItem}"/>
                         </p:selectOneMenu>
                         <p:outputLabel value="#{bundle.CreateKardexLabel_idProducto}" for="idProducto" />
                         <p:selectOneMenu id="idProducto" value="#{kardexController.selected.idProducto}" >
