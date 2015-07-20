@@ -1,24 +1,31 @@
 package ec.ucuenca.contables.sistemacontable.controlador;
 
-import ec.ucuenca.contables.sistemacontable.modelo.Cliente;
 import ec.ucuenca.contables.sistemacontable.controlador.util.JsfUtil;
 import ec.ucuenca.contables.sistemacontable.controlador.util.JsfUtil.PersistAction;
+import ec.ucuenca.contables.sistemacontable.modelo.Cliente;
+import ec.ucuenca.contables.sistemacontable.modelo.Cuenta;
+import ec.ucuenca.contables.sistemacontable.modelo.Producto;
+import ec.ucuenca.contables.sistemacontable.modelo.Tipocuenta;
+import ec.ucuenca.contables.sistemacontable.modelo.Transaccion;
 import ec.ucuenca.contables.sistemacontable.negocio.ClienteFacade;
-
+import ec.ucuenca.contables.sistemacontable.negocio.CuentaFacade;
+import ec.ucuenca.contables.sistemacontable.negocio.TipocuentaFacade;
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
-import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
+import javax.inject.Named;
 import org.primefaces.context.RequestContext;
 
 @Named("clienteController")
@@ -27,6 +34,10 @@ public class ClienteController implements Serializable {
 
     @EJB
     private ec.ucuenca.contables.sistemacontable.negocio.ClienteFacade ejbFacade;
+    @EJB
+    private CuentaFacade ejbCuentaFacade;
+    @EJB
+    private TipocuentaFacade ejbTipocuentaFacade;
     private List<Cliente> items = null;
     private Cliente selected;
 
@@ -56,8 +67,35 @@ public class ClienteController implements Serializable {
         initializeEmbeddableKey();
         return selected;
     }
+    
+    private Cuenta craerCuentaInventario(String nombre, String cuePadre,int idPadre){
+        Cuenta cuenta=new Cuenta();
+        cuenta.setDescripcion(nombre);
+        List<Cuenta> cuentasInventario=ejbCuentaFacade.getCuentasLikeCuentaDetalle(cuePadre);
+        Cuenta padre=ejbCuentaFacade.find(idPadre);
+        Tipocuenta tipo=ejbTipocuentaFacade.find(1);
+        int numCue=cuentasInventario.size()+1;
+        if (numCue<10)
+            cuePadre=cuePadre+"0"+numCue;
+        else
+            cuePadre=cuePadre+numCue;
+        cuenta.setNumeroCuenta(cuePadre);
+        cuenta.setCategoria('D');
+        cuenta.setIdTipoCuenta(tipo);
+        cuenta.setIdCuentaPadre(padre); 
+        cuenta.setCuentaList(new ArrayList<Cuenta>());
+        cuenta.setProductoList(new ArrayList<Producto>());
+        cuenta.setTransaccionList(new ArrayList<Transaccion>());
+        cuenta.setSaldoInicial(new BigDecimal(0));
+        cuenta.setSaldoFinal(BigDecimal.ZERO);
+        return cuenta;
+    }
 
     public void create() {
+        selected.setIdDocumentoCobrar(this.craerCuentaInventario("Documentos por cobrar cliete "+selected.getIdentificacion(),"1.1.2.1.",11));
+        ejbCuentaFacade.create(selected.getIdDocumentoCobrar());
+        selected.setIdCuentaCobrar(this.craerCuentaInventario("Cuentas por cobrar cliete "+selected.getIdentificacion(),"1.1.2.2.",14));
+        ejbCuentaFacade.create(selected.getIdCuentaCobrar());
         if (ejbFacade.getClientebycedula(selected.getIdentificacion())!=null){
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "Ya exste un cliente registrado con ese numero de identificacion");
             FacesContext.getCurrentInstance().addMessage(null, msg);

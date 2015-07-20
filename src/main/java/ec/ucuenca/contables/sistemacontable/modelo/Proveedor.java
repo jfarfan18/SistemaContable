@@ -16,6 +16,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -64,9 +66,12 @@ public class Proveedor implements Serializable {
     @Size(max = 15)
     @Column(name = "telefono")
     private String telefono;
-    @Size(max = 45)
-    @Column(name = "autorizacion")
-    private String autorizacion;
+//    @Size(max = 45)
+//    @Column(name = "autorizacion")
+//    private String autorizacion1;
+    @JoinColumn(name = "autorizacion", referencedColumnName = "autorizacion")
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    private Autorizaciones autorizacion;
     @Column(name = "fachaCaducidadAutorizacion")
     @Temporal(TemporalType.DATE)
     private Date fachaCaducidadAutorizacion;
@@ -129,11 +134,11 @@ public class Proveedor implements Serializable {
         this.telefono = telefono;
     }
 
-    public String getAutorizacion() {
+    public Autorizaciones getAutorizacion() {
         return autorizacion;
     }
 
-    public void setAutorizacion(String autorizacion) {
+    public void setAutorizacion(Autorizaciones autorizacion) {
         this.autorizacion = autorizacion;
     }
 

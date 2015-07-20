@@ -8,6 +8,7 @@ package ec.ucuenca.contables.sistemacontable.modelo;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -19,11 +20,13 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -42,6 +45,8 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Autorizaciones.findByNumeroActual", query = "SELECT a FROM Autorizaciones a WHERE a.numeroActual = :numeroActual"),
     @NamedQuery(name = "Autorizaciones.findByFechaCaducudad", query = "SELECT a FROM Autorizaciones a WHERE a.fechaCaducudad = :fechaCaducudad")})
 public class Autorizaciones implements Serializable {
+    @OneToMany(mappedBy = "autorizacion", fetch = FetchType.LAZY)
+    private List<Proveedor> proveedorList;
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -161,6 +166,15 @@ public class Autorizaciones implements Serializable {
     @Override
     public String toString() {
         return "ec.ucuenca.contables.sistemacontable.modelo.Autorizaciones[ idautorizaciones=" + idautorizaciones + " ]";
+    }
+
+    @XmlTransient
+    public List<Proveedor> getProveedorList() {
+        return proveedorList;
+    }
+
+    public void setProveedorList(List<Proveedor> proveedorList) {
+        this.proveedorList = proveedorList;
     }
     
 }
