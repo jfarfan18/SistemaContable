@@ -7,9 +7,11 @@
 package ec.ucuenca.contables.sistemacontable.negocio;
 
 import ec.ucuenca.contables.sistemacontable.modelo.Proveedor;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 /**
  *
@@ -29,4 +31,14 @@ public class ProveedorFacade extends AbstractFacade<Proveedor> {
         super(Proveedor.class);
     }
     
+    public Proveedor getProveedorbyidentificacion(String identificacion) {
+        List<Proveedor>lista;
+        Query query = this.em.createNamedQuery(Proveedor.findByIdentificacion);
+        query.setParameter("identificacion",identificacion);
+        lista=query.getResultList();
+        if (lista.isEmpty())
+            return null;
+        else
+            return lista.get(0);
+    }
 }

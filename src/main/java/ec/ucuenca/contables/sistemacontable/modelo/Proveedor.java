@@ -72,6 +72,7 @@ public class Proveedor implements Serializable {
     private Date fachaCaducidadAutorizacion;
     @OneToMany(mappedBy = "idProveedor", fetch = FetchType.LAZY)
     private List<Cabecerafacturac> cabecerafacturacList;
+    public static String findByIdentificacion="Proveedor.findByIdentificacion";
 
     public Proveedor() {
     }

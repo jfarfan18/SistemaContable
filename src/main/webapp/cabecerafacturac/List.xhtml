@@ -10,12 +10,12 @@
 
 
         <ui:define name="title">
-            <h:outputText value="#{bundle.ListCabecerafacturacTitle}"></h:outputText>
+            <h:outputText value="Compras"></h:outputText>
         </ui:define>
 
         <ui:define name="body">
             <h:form id="CabecerafacturacListForm">
-                <p:panel header="#{bundle.ListCabecerafacturacTitle}">
+                <p:panel header="COMPRAS">
                     <p:dataTable id="datalist" value="#{cabecerafacturacController.items}" var="item"
                                  selectionMode="single" selection="#{cabecerafacturacController.selected}"
                                  paginator="true"
@@ -24,101 +24,46 @@
                                  rowsPerPageTemplate="10,20,30,40,50"
                                  >
 
-                        <p:ajax event="rowSelect"   update="createButton viewButton editButton deleteButton"/>
-                        <p:ajax event="rowUnselect" update="createButton viewButton editButton deleteButton"/>
+                        <p:ajax event="rowSelect"   update="createButton viewButton"/>
+                        <p:ajax event="rowUnselect" update="createButton viewButton"/>
 
                         <p:column>
                             <f:facet name="header">
-                                <h:outputText value="#{bundle.ListCabecerafacturacTitle_idcabeceraFacturaC}"/>
-                            </f:facet>
-                            <h:outputText value="#{item.idcabeceraFacturaC}"/>
-                        </p:column>
-                        <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="#{bundle.ListCabecerafacturacTitle_numeroFacturaC}"/>
+                                <h:outputText value="NUMERO FACTURA"/>
                             </f:facet>
                             <h:outputText value="#{item.numeroFacturaC}"/>
                         </p:column>
                         <p:column>
                             <f:facet name="header">
-                                <h:outputText value="#{bundle.ListCabecerafacturacTitle_fecha}"/>
+                                <h:outputText value="FECHA"/>
                             </f:facet>
-                            <h:outputText value="#{item.fecha}">
+                            <h:outputText value="#{item.fecha}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="TOTAL"/>
+                            </f:facet>
+                            <h:outputText value="#{item.total}">
                                 <f:convertDateTime pattern="MM/dd/yyyy" />
                             </h:outputText>
                         </p:column>
                         <p:column>
                             <f:facet name="header">
-                                <h:outputText value="#{bundle.ListCabecerafacturacTitle_autorizacionSri}"/>
+                                <h:outputText value="PROVEEDOR"/>
                             </f:facet>
-                            <h:outputText value="#{item.autorizacionSri}"/>
-                        </p:column>
-                        <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="#{bundle.ListCabecerafacturacTitle_establecimiento}"/>
-                            </f:facet>
-                            <h:outputText value="#{item.establecimiento}"/>
-                        </p:column>
-                        <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="#{bundle.ListCabecerafacturacTitle_puntoEmision}"/>
-                            </f:facet>
-                            <h:outputText value="#{item.puntoEmision}"/>
-                        </p:column>
-                        <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="#{bundle.ListCabecerafacturacTitle_subtotal}"/>
-                            </f:facet>
-                            <h:outputText value="#{item.subtotal}"/>
-                        </p:column>
-                        <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="#{bundle.ListCabecerafacturacTitle_subtotalBase0}"/>
-                            </f:facet>
-                            <h:outputText value="#{item.subtotalBase0}"/>
-                        </p:column>
-                        <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="#{bundle.ListCabecerafacturacTitle_subtotalBaseIva}"/>
-                            </f:facet>
-                            <h:outputText value="#{item.subtotalBaseIva}"/>
-                        </p:column>
-                        <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="#{bundle.ListCabecerafacturacTitle_iva}"/>
-                            </f:facet>
-                            <h:outputText value="#{item.iva}"/>
-                        </p:column>
-                        <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="#{bundle.ListCabecerafacturacTitle_total}"/>
-                            </f:facet>
-                            <h:outputText value="#{item.total}"/>
-                        </p:column>
-                        <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="#{bundle.ListCabecerafacturacTitle_idFormaPago}"/>
-                            </f:facet>
-                            <h:outputText value="#{item.idFormaPago}"/>
-                        </p:column>
-                        <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="#{bundle.ListCabecerafacturacTitle_idProveedor}"/>
-                            </f:facet>
-                            <h:outputText value="#{item.idProveedor}"/>
+                            <h:outputText value="#{item.idProveedor.nombre}"/>
                         </p:column>
                         <f:facet name="footer">
                             <p:commandButton id="createButton" icon="ui-icon-plus"   value="#{bundle.Create}" actionListener="#{cabecerafacturacController.prepareCreate}" update=":CabecerafacturacCreateForm" oncomplete="PF('CabecerafacturacCreateDialog').show()"/>
                             <p:commandButton id="viewButton"   icon="ui-icon-search" value="#{bundle.View}" update=":CabecerafacturacViewForm" oncomplete="PF('CabecerafacturacViewDialog').show()" disabled="#{empty cabecerafacturacController.selected}"/>
-                            <p:commandButton id="editButton"   icon="ui-icon-pencil" value="#{bundle.Edit}" update=":CabecerafacturacEditForm" oncomplete="PF('CabecerafacturacEditDialog').show()" disabled="#{empty cabecerafacturacController.selected}"/>
-                            <p:commandButton id="deleteButton" icon="ui-icon-trash"  value="#{bundle.Delete}" actionListener="#{cabecerafacturacController.destroy}" update=":growl,datalist" disabled="#{empty cabecerafacturacController.selected}"/>
+                          
                         </f:facet>
                     </p:dataTable>
                 </p:panel>
             </h:form>
 
             <ui:include src="Create.xhtml"/>
-            <ui:include src="Edit.xhtml"/>
+            <ui:include src="CreateProveedor.xhtml"/>
             <ui:include src="View.xhtml"/>
         </ui:define>
     </ui:composition>
