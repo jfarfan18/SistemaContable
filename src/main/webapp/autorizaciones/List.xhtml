@@ -10,12 +10,12 @@
 
 
         <ui:define name="title">
-            <h:outputText value="#{bundle.ListAutorizacionesTitle}"></h:outputText>
+            <h:outputText value="Lista Autorizaciones"></h:outputText>
         </ui:define>
 
         <ui:define name="body">
             <h:form id="AutorizacionesListForm">
-                <p:panel header="#{bundle.ListAutorizacionesTitle}">
+                <p:panel header="LISTA AUTORIZACIONES">
                     <p:dataTable id="datalist" value="#{autorizacionesController.items}" var="item"
                                  selectionMode="single" selection="#{autorizacionesController.selected}"
                                  paginator="true"
@@ -29,43 +29,43 @@
 
                         <p:column>
                             <f:facet name="header">
-                                <h:outputText value="#{bundle.ListAutorizacionesTitle_idautorizaciones}"/>
+                                <h:outputText value="Codigo"/>
                             </f:facet>
                             <h:outputText value="#{item.idautorizaciones}"/>
                         </p:column>
                         <p:column>
                             <f:facet name="header">
-                                <h:outputText value="#{bundle.ListAutorizacionesTitle_establecimeinto}"/>
+                                <h:outputText value="Establecimiento"/>
                             </f:facet>
                             <h:outputText value="#{item.establecimeinto}"/>
                         </p:column>
                         <p:column>
                             <f:facet name="header">
-                                <h:outputText value="#{bundle.ListAutorizacionesTitle_puntoEmision}"/>
+                                <h:outputText value="Punto Emision"/>
                             </f:facet>
                             <h:outputText value="#{item.puntoEmision}"/>
                         </p:column>
                         <p:column>
                             <f:facet name="header">
-                                <h:outputText value="#{bundle.ListAutorizacionesTitle_numeroInicialDoc}"/>
+                                <h:outputText value="Numero Inicial"/>
                             </f:facet>
                             <h:outputText value="#{item.numeroInicialDoc}"/>
                         </p:column>
                         <p:column>
                             <f:facet name="header">
-                                <h:outputText value="#{bundle.ListAutorizacionesTitle_numeroFinalDoc}"/>
+                                <h:outputText value="Numero Final"/>
                             </f:facet>
                             <h:outputText value="#{item.numeroFinalDoc}"/>
                         </p:column>
                         <p:column>
                             <f:facet name="header">
-                                <h:outputText value="#{bundle.ListAutorizacionesTitle_numeroActual}"/>
+                                <h:outputText value="Numero Actual"/>
                             </f:facet>
                             <h:outputText value="#{item.numeroActual}"/>
                         </p:column>
                         <p:column>
                             <f:facet name="header">
-                                <h:outputText value="#{bundle.ListAutorizacionesTitle_fechaCaducudad}"/>
+                                <h:outputText value="Fecha Caducidad"/>
                             </f:facet>
                             <h:outputText value="#{item.fechaCaducudad}">
                                 <f:convertDateTime pattern="MM/dd/yyyy" />
@@ -73,9 +73,9 @@
                         </p:column>
                         <p:column>
                             <f:facet name="header">
-                                <h:outputText value="#{bundle.ListAutorizacionesTitle_idTipoDocumento}"/>
+                                <h:outputText value="Tipo Documento"/>
                             </f:facet>
-                            <h:outputText value="#{item.idTipoDocumento}"/>
+                            <h:outputText value="#{item.idTipoDocumento.nombreDocumento}"/>
                         </p:column>
                         <f:facet name="footer">
                             <p:commandButton id="createButton" icon="ui-icon-plus"   value="#{bundle.Create}" actionListener="#{autorizacionesController.prepareCreate}" update=":AutorizacionesCreateForm" oncomplete="PF('AutorizacionesCreateDialog').show()"/>

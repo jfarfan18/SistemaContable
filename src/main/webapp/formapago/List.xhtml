@@ -10,12 +10,12 @@
 
 
         <ui:define name="title">
-            <h:outputText value="#{bundle.ListFormapagoTitle}"></h:outputText>
+            <h:outputText value="Lista Formas de Pago"></h:outputText>
         </ui:define>
 
         <ui:define name="body">
             <h:form id="FormapagoListForm">
-                <p:panel header="#{bundle.ListFormapagoTitle}">
+                <p:panel header="FORMAS DE PAGO">
                     <p:dataTable id="datalist" value="#{formapagoController.items}" var="item"
                                  selectionMode="single" selection="#{formapagoController.selected}"
                                  paginator="true"
@@ -29,7 +29,7 @@
 
                         <p:column>
                             <f:facet name="header">
-                                <h:outputText value="#{bundle.ListFormapagoTitle_idformaPago}"/>
+                                <h:outputText value="Codigo"/>
                             </f:facet>
                             <h:outputText value="#{item.idformaPago}"/>
                         </p:column>
@@ -38,6 +38,12 @@
                                 <h:outputText value="#{bundle.ListFormapagoTitle_descripcion}"/>
                             </f:facet>
                             <h:outputText value="#{item.descripcion}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="Cuenta Vinculada"/>
+                            </f:facet>
+                            <h:outputText value="#{item.idCuentaAsiento.descripcion}"/>
                         </p:column>
                         <f:facet name="footer">
                             <p:commandButton id="createButton" icon="ui-icon-plus"   value="#{bundle.Create}" actionListener="#{formapagoController.prepareCreate}" update=":FormapagoCreateForm" oncomplete="PF('FormapagoCreateDialog').show()"/>

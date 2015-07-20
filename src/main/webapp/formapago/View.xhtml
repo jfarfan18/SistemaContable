@@ -8,14 +8,16 @@
 
     <ui:composition>
 
-        <p:dialog id="FormapagoViewDlg" widgetVar="FormapagoViewDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.ViewFormapagoTitle}">
+        <p:dialog id="FormapagoViewDlg" widgetVar="FormapagoViewDialog" modal="true" resizable="false" appendTo="@(body)" header="VER FORMA DE PAGO">
             <h:form id="FormapagoViewForm">
                 <h:panelGroup id="display">
                     <p:panelGrid columns="2" rendered="#{formapagoController.selected != null}">
-                        <h:outputText value="#{bundle.ViewFormapagoLabel_idformaPago}"/>
+                        <h:outputText value="Codigo:"/>
                         <h:outputText value="#{formapagoController.selected.idformaPago}" title="#{bundle.ViewFormapagoTitle_idformaPago}"/>
                         <h:outputText value="#{bundle.ViewFormapagoLabel_descripcion}"/>
                         <h:outputText value="#{formapagoController.selected.descripcion}" title="#{bundle.ViewFormapagoTitle_descripcion}"/>
+                        <h:outputText value="Cuenta Vinculada:"/>
+                        <h:outputText value="#{formapagoController.selected.idCuentaAsiento.descripcion}" title="#{bundle.ViewFormapagoTitle_descripcion}"/>
                     </p:panelGrid>
                     <p:commandButton value="#{bundle.Close}" onclick="FormapagoViewDialog.hide()"/>
                 </h:panelGroup>

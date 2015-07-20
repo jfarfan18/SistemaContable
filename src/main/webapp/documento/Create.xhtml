@@ -8,13 +8,11 @@
 
     <ui:composition>
 
-        <p:dialog id="DocumentoCreateDlg" widgetVar="DocumentoCreateDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.CreateDocumentoTitle}">
+        <p:dialog id="DocumentoCreateDlg" widgetVar="DocumentoCreateDialog" modal="true" resizable="false" appendTo="@(body)" header="CREAR DOCUMENTO">
             <h:form id="DocumentoCreateForm">
                 <h:panelGroup id="display">
                     <p:panelGrid columns="2" rendered="#{documentoController.selected != null}">
-                        <p:outputLabel value="#{bundle.CreateDocumentoLabel_iddocumento}" for="iddocumento" />
-                        <p:inputText id="iddocumento" value="#{documentoController.selected.iddocumento}" title="#{bundle.CreateDocumentoTitle_iddocumento}" required="true" requiredMessage="#{bundle.CreateDocumentoRequiredMessage_iddocumento}"/>
-                        <p:outputLabel value="#{bundle.CreateDocumentoLabel_nombreDocumento}" for="nombreDocumento" />
+                        <p:outputLabel value="Nombre:" for="nombreDocumento" />
                         <p:inputText id="nombreDocumento" value="#{documentoController.selected.nombreDocumento}" title="#{bundle.CreateDocumentoTitle_nombreDocumento}" />
                     </p:panelGrid>
                     <p:commandButton actionListener="#{documentoController.create}" value="#{bundle.Save}" update="display,:DocumentoListForm:datalist,:growl" oncomplete="handleSubmit(args,'DocumentoCreateDialog');"/>
