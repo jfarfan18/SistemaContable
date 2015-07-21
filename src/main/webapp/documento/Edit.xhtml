@@ -8,13 +8,11 @@
 
     <ui:composition>
 
-        <p:dialog id="DocumentoEditDlg" widgetVar="DocumentoEditDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.EditDocumentoTitle}">
+        <p:dialog id="DocumentoEditDlg" widgetVar="DocumentoEditDialog" modal="true" resizable="false" appendTo="@(body)" header="EDITAR DOCUMENTO">
             <h:form id="DocumentoEditForm">
                 <h:panelGroup id="display">
                     <p:panelGrid columns="2" rendered="#{documentoController.selected != null}">
-                        <p:outputLabel value="#{bundle.EditDocumentoLabel_iddocumento}" for="iddocumento" />
-                        <p:inputText id="iddocumento" value="#{documentoController.selected.iddocumento}" title="#{bundle.EditDocumentoTitle_iddocumento}" required="true" requiredMessage="#{bundle.EditDocumentoRequiredMessage_iddocumento}"/>
-                        <p:outputLabel value="#{bundle.EditDocumentoLabel_nombreDocumento}" for="nombreDocumento" />
+                        <p:outputLabel value="Nombre:" for="nombreDocumento" />
                         <p:inputText id="nombreDocumento" value="#{documentoController.selected.nombreDocumento}" title="#{bundle.EditDocumentoTitle_nombreDocumento}" />
                     </p:panelGrid>
                     <p:commandButton actionListener="#{documentoController.update}" value="#{bundle.Save}" update="display,:DocumentoListForm:datalist,:growl" oncomplete="handleSubmit(args, 'DocumentoEditDialog');"/>

@@ -10,12 +10,12 @@
 
 
         <ui:define name="title">
-            <h:outputText value="#{bundle.ListImpuestoTitle}"></h:outputText>
+            <h:outputText value="LISTA IMPUESTOS"></h:outputText>
         </ui:define>
 
         <ui:define name="body">
             <h:form id="ImpuestoListForm">
-                <p:panel header="#{bundle.ListImpuestoTitle}">
+                <p:panel header="Lista Impuestos">
                     <p:dataTable id="datalist" value="#{impuestoController.items}" var="item"
                                  selectionMode="single" selection="#{impuestoController.selected}"
                                  paginator="true"
@@ -29,7 +29,7 @@
 
                         <p:column>
                             <f:facet name="header">
-                                <h:outputText value="#{bundle.ListImpuestoTitle_idimpuesto}"/>
+                                <h:outputText value="Codigo"/>
                             </f:facet>
                             <h:outputText value="#{item.idimpuesto}"/>
                         </p:column>
@@ -46,10 +46,10 @@
                             <h:outputText value="#{item.valor}"/>
                         </p:column>
                         <f:facet name="footer">
-                            <p:commandButton id="createButton" icon="ui-icon-plus"   value="#{bundle.Create}" actionListener="#{impuestoController.prepareCreate}" update=":ImpuestoCreateForm" oncomplete="PF('ImpuestoCreateDialog').show()"/>
-                            <p:commandButton id="viewButton"   icon="ui-icon-search" value="#{bundle.View}" update=":ImpuestoViewForm" oncomplete="PF('ImpuestoViewDialog').show()" disabled="#{empty impuestoController.selected}"/>
-                            <p:commandButton id="editButton"   icon="ui-icon-pencil" value="#{bundle.Edit}" update=":ImpuestoEditForm" oncomplete="PF('ImpuestoEditDialog').show()" disabled="#{empty impuestoController.selected}"/>
-                            <p:commandButton id="deleteButton" icon="ui-icon-trash"  value="#{bundle.Delete}" actionListener="#{impuestoController.destroy}" update=":growl,datalist" disabled="#{empty impuestoController.selected}"/>
+                            <p:commandButton id="createButton" icon="ui-icon-plus"   value="Crear" actionListener="#{impuestoController.prepareCreate}" update=":ImpuestoCreateForm" oncomplete="PF('ImpuestoCreateDialog').show()"/>
+                            <p:commandButton id="viewButton"   icon="ui-icon-search" value="Ver" update=":ImpuestoViewForm" oncomplete="PF('ImpuestoViewDialog').show()" disabled="#{empty impuestoController.selected}"/>
+                            <p:commandButton id="editButton"   icon="ui-icon-pencil" value="Editar" update=":ImpuestoEditForm" oncomplete="PF('ImpuestoEditDialog').show()" disabled="#{empty impuestoController.selected}"/>
+                            <p:commandButton id="deleteButton" icon="ui-icon-trash"  value="Eliminar" actionListener="#{impuestoController.destroy}" update=":growl,datalist" disabled="#{empty impuestoController.selected}"/>
                         </f:facet>
                     </p:dataTable>
                 </p:panel>

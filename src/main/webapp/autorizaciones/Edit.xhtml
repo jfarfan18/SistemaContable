@@ -8,30 +8,28 @@
 
     <ui:composition>
 
-        <p:dialog id="AutorizacionesEditDlg" widgetVar="AutorizacionesEditDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.EditAutorizacionesTitle}">
+        <p:dialog id="AutorizacionesEditDlg" widgetVar="AutorizacionesEditDialog" modal="true" resizable="false" appendTo="@(body)" header="EDITAR AUTORIZACION">
             <h:form id="AutorizacionesEditForm">
                 <h:panelGroup id="display">
                     <p:panelGrid columns="2" rendered="#{autorizacionesController.selected != null}">
-                        <p:outputLabel value="#{bundle.EditAutorizacionesLabel_idautorizaciones}" for="idautorizaciones" />
-                        <p:inputText id="idautorizaciones" value="#{autorizacionesController.selected.idautorizaciones}" title="#{bundle.EditAutorizacionesTitle_idautorizaciones}" required="true" requiredMessage="#{bundle.EditAutorizacionesRequiredMessage_idautorizaciones}"/>
-                        <p:outputLabel value="#{bundle.EditAutorizacionesLabel_establecimeinto}" for="establecimeinto" />
-                        <p:inputText id="establecimeinto" value="#{autorizacionesController.selected.establecimeinto}" title="#{bundle.EditAutorizacionesTitle_establecimeinto}" />
-                        <p:outputLabel value="#{bundle.EditAutorizacionesLabel_puntoEmision}" for="puntoEmision" />
-                        <p:inputText id="puntoEmision" value="#{autorizacionesController.selected.puntoEmision}" title="#{bundle.EditAutorizacionesTitle_puntoEmision}" />
-                        <p:outputLabel value="#{bundle.EditAutorizacionesLabel_numeroInicialDoc}" for="numeroInicialDoc" />
-                        <p:inputText id="numeroInicialDoc" value="#{autorizacionesController.selected.numeroInicialDoc}" title="#{bundle.EditAutorizacionesTitle_numeroInicialDoc}" />
-                        <p:outputLabel value="#{bundle.EditAutorizacionesLabel_numeroFinalDoc}" for="numeroFinalDoc" />
-                        <p:inputText id="numeroFinalDoc" value="#{autorizacionesController.selected.numeroFinalDoc}" title="#{bundle.EditAutorizacionesTitle_numeroFinalDoc}" />
-                        <p:outputLabel value="#{bundle.EditAutorizacionesLabel_numeroActual}" for="numeroActual" />
-                        <p:inputText id="numeroActual" value="#{autorizacionesController.selected.numeroActual}" title="#{bundle.EditAutorizacionesTitle_numeroActual}" />
-                        <p:outputLabel value="#{bundle.EditAutorizacionesLabel_fechaCaducudad}" for="fechaCaducudad" />
+                        <p:outputLabel value="Establecimiento:" for="establecimeinto" />
+                        <p:inputText id="establecimeinto" value="#{autorizacionesController.selected.establecimeinto}" title="#{bundle.CreateAutorizacionesTitle_establecimeinto}" />
+                        <p:outputLabel value="Punto Emision:" for="puntoEmision" />
+                        <p:inputText id="puntoEmision" value="#{autorizacionesController.selected.puntoEmision}" title="#{bundle.CreateAutorizacionesTitle_puntoEmision}" />
+                        <p:outputLabel value="Numero Inicial:" for="numeroInicialDoc" />
+                        <p:inputText id="numeroInicialDoc" value="#{autorizacionesController.selected.numeroInicialDoc}" title="#{bundle.CreateAutorizacionesTitle_numeroInicialDoc}" />
+                        <p:outputLabel value="Numero Final:" for="numeroFinalDoc" />
+                        <p:inputText id="numeroFinalDoc" value="#{autorizacionesController.selected.numeroFinalDoc}" title="#{bundle.CreateAutorizacionesTitle_numeroFinalDoc}" />
+                        <p:outputLabel value="Numero Actual:" for="numeroActual" />
+                        <p:inputText id="numeroActual" value="#{autorizacionesController.selected.numeroActual}" title="#{bundle.CreateAutorizacionesTitle_numeroActual}" />
+                        <p:outputLabel value="Fecha Cuducidad" for="fechaCaducudad" />
                         <p:calendar id="fechaCaducudad" pattern="MM/dd/yyyy" value="#{autorizacionesController.selected.fechaCaducudad}" title="#{bundle.EditAutorizacionesTitle_fechaCaducudad}"  showOn="button"/>
-                        <p:outputLabel value="#{bundle.EditAutorizacionesLabel_idTipoDocumento}" for="idTipoDocumento" />
+                        <p:outputLabel value="Tipo Documento:" for="idTipoDocumento" />
                         <p:selectOneMenu id="idTipoDocumento" value="#{autorizacionesController.selected.idTipoDocumento}" >
-                            <f:selectItem itemLabel="#{bundle.SelectOneMessage}"/>
                             <f:selectItems value="#{documentoController.itemsAvailableSelectOne}"
                                            var="idTipoDocumentoItem"
-                                           itemValue="#{idTipoDocumentoItem}"/>
+                                           itemValue="#{idTipoDocumentoItem}"
+                                           itemLabel="#{idTipoDocumentoItem.nombreDocumento}"/>
                         </p:selectOneMenu>
                     </p:panelGrid>
                     <p:commandButton actionListener="#{autorizacionesController.update}" value="#{bundle.Save}" update="display,:AutorizacionesListForm:datalist,:growl" oncomplete="handleSubmit(args, 'AutorizacionesEditDialog');"/>

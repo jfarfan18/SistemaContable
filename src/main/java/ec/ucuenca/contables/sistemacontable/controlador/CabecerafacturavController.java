@@ -1,19 +1,27 @@
 package ec.ucuenca.contables.sistemacontable.controlador;
 
+import Reporte.GeneraReporte;
 import ec.ucuenca.contables.sistemacontable.controlador.util.JsfUtil;
 import ec.ucuenca.contables.sistemacontable.controlador.util.JsfUtil.PersistAction;
 import ec.ucuenca.contables.sistemacontable.modelo.Cabecerafacturav;
 import ec.ucuenca.contables.sistemacontable.modelo.Cliente;
+import ec.ucuenca.contables.sistemacontable.modelo.Cuenta;
 import ec.ucuenca.contables.sistemacontable.modelo.Detallefacturav;
 import ec.ucuenca.contables.sistemacontable.modelo.Producto;
+import ec.ucuenca.contables.sistemacontable.modelo.Tipocuenta;
+import ec.ucuenca.contables.sistemacontable.modelo.Transaccion;
 import ec.ucuenca.contables.sistemacontable.negocio.CabecerafacturavFacade;
 import ec.ucuenca.contables.sistemacontable.negocio.ClienteFacade;
+import ec.ucuenca.contables.sistemacontable.negocio.CuentaFacade;
 import ec.ucuenca.contables.sistemacontable.negocio.KardexFacade;
+import ec.ucuenca.contables.sistemacontable.negocio.TipocuentaFacade;
+import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -23,10 +31,12 @@ import javax.ejb.EJBException;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 import javax.inject.Named;
+import net.sf.jasperreports.engine.JRException;
 import org.primefaces.context.RequestContext;
 
 @Named("cabecerafacturavController")
@@ -39,11 +49,18 @@ public class CabecerafacturavController implements Serializable {
     private KardexFacade ejbKardexFacade;
     @EJB
     private ClienteFacade ejbClienteFacade;
+    @EJB
+    private CuentaFacade ejbCuentaFacade;
+    @EJB
+    private TipocuentaFacade ejbTipocuentaFacade;
+    
+    private GeneraReporte generaReporte;
     private List<Cabecerafacturav> items = null;
     private Cabecerafacturav selected;
     private Detallefacturav detalleSeleccionado;
     private Producto nuevoItem;
     private int cantidadAgregar;
+    
 
     public CabecerafacturavController() {
     }
@@ -61,6 +78,29 @@ public class CabecerafacturavController implements Serializable {
 
     protected void initializeEmbeddableKey() {
     }
+    
+    public void imprimeComprobante(Long codIfip) throws JRException, IOException, ClassNotFoundException {
+
+        String nombreReporte;
+        ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+
+        //System.out.println("Imprime Movimiento");
+        GeneraReporte g;
+        setGeneraReporte(new GeneraReporte());
+        getGeneraReporte().setParametros(new HashMap<String, Object>());
+
+        getGeneraReporte().getParametros().put("codigo", codIfip);
+
+        nombreReporte = "catalogoCuentas";
+
+        getGeneraReporte().exporta("/contable/reportes/catalogoCuentas/reporte/", nombreReporte,
+                nombreReporte + String.valueOf("CatalogoCuentas") + ".pdf",
+                "PDF", externalContext, facesContext);
+
+        //System.out.println("Imprimió Movimiento");
+    }
+
     
     public void cargarCliente(){
         Cliente cliente=ejbClienteFacade.getClientebycedula(selected.getIdCliente().getIdentificacion());
@@ -108,6 +148,29 @@ public class CabecerafacturavController implements Serializable {
         selected.setTotal(new BigDecimal(total).setScale(2, RoundingMode.HALF_EVEN));
     }
     
+    private Cuenta craerCuentaInventario(String nombre, String cuePadre,int idPadre){
+        Cuenta cuenta=new Cuenta();
+        cuenta.setDescripcion(nombre);
+        List<Cuenta> cuentasInventario=ejbCuentaFacade.getCuentasLikeCuentaDetalle(cuePadre);
+        Cuenta padre=ejbCuentaFacade.find(idPadre);
+        Tipocuenta tipo=ejbTipocuentaFacade.find(1);
+        int numCue=cuentasInventario.size()+1;
+        if (numCue<10)
+            cuePadre=cuePadre+"0"+numCue;
+        else
+            cuePadre=cuePadre+numCue;
+        cuenta.setNumeroCuenta(cuePadre);
+        cuenta.setCategoria('D');
+        cuenta.setIdTipoCuenta(tipo);
+        cuenta.setIdCuentaPadre(padre); 
+        cuenta.setCuentaList(new ArrayList<Cuenta>());
+        cuenta.setProductoList(new ArrayList<Producto>());
+        cuenta.setTransaccionList(new ArrayList<Transaccion>());
+        cuenta.setSaldoInicial(new BigDecimal(0));
+        cuenta.setSaldoFinal(BigDecimal.ZERO);
+        return cuenta;
+    }
+    
     public void crearCliente(){
     if (ejbClienteFacade.getClientebycedula(selected.getIdCliente().getIdentificacion())!=null){
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "Ya exste un cliente registrado con ese numero de identificacion");
@@ -122,6 +185,10 @@ public class CabecerafacturavController implements Serializable {
                 return;
             }
         }
+        selected.getIdCliente().setIdDocumentoCobrar(this.craerCuentaInventario("Documentos por cobrar cliete "+selected.getIdCliente().getIdentificacion(),"1.1.2.1.",11));
+        ejbCuentaFacade.create(selected.getIdCliente().getIdDocumentoCobrar());
+        selected.getIdCliente().setIdCuentaCobrar(this.craerCuentaInventario("Cuentas por cobrar cliete "+selected.getIdCliente().getIdentificacion(),"1.1.2.2.",14));
+        ejbCuentaFacade.create(selected.getIdCliente().getIdCuentaCobrar());
         ejbClienteFacade.create(selected.getIdCliente());
         RequestContext.getCurrentInstance().execute("ClienteCreateDialog.hide()");
     }
@@ -299,6 +366,20 @@ public class CabecerafacturavController implements Serializable {
      */
     public void setCantidadAgregar(int cantidadAgregar) {
         this.cantidadAgregar = cantidadAgregar;
+    }
+
+    /**
+     * @return the generaReporte
+     */
+    public GeneraReporte getGeneraReporte() {
+        return generaReporte;
+    }
+
+    /**
+     * @param generaReporte the generaReporte to set
+     */
+    public void setGeneraReporte(GeneraReporte generaReporte) {
+        this.generaReporte = generaReporte;
     }
 
     @FacesConverter(forClass = Cabecerafacturav.class)

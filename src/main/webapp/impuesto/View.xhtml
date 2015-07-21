@@ -8,11 +8,11 @@
 
     <ui:composition>
 
-        <p:dialog id="ImpuestoViewDlg" widgetVar="ImpuestoViewDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.ViewImpuestoTitle}">
+        <p:dialog id="ImpuestoViewDlg" widgetVar="ImpuestoViewDialog" modal="true" resizable="false" appendTo="@(body)" header="VER IMPUESTO">
             <h:form id="ImpuestoViewForm">
                 <h:panelGroup id="display">
                     <p:panelGrid columns="2" rendered="#{impuestoController.selected != null}">
-                        <h:outputText value="#{bundle.ViewImpuestoLabel_idimpuesto}"/>
+                        <h:outputText value="Codigo:"/>
                         <h:outputText value="#{impuestoController.selected.idimpuesto}" title="#{bundle.ViewImpuestoTitle_idimpuesto}"/>
                         <h:outputText value="#{bundle.ViewImpuestoLabel_descripcion}"/>
                         <h:outputText value="#{impuestoController.selected.descripcion}" title="#{bundle.ViewImpuestoTitle_descripcion}"/>

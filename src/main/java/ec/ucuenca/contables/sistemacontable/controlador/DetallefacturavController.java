@@ -1,11 +1,14 @@
 package ec.ucuenca.contables.sistemacontable.controlador;
 
+import Reporte.GeneraReporte;
 import ec.ucuenca.contables.sistemacontable.modelo.Detallefacturav;
 import ec.ucuenca.contables.sistemacontable.controlador.util.JsfUtil;
 import ec.ucuenca.contables.sistemacontable.controlador.util.JsfUtil.PersistAction;
 import ec.ucuenca.contables.sistemacontable.negocio.DetallefacturavFacade;
+import java.io.IOException;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -15,9 +18,11 @@ import javax.ejb.EJBException;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.component.UIComponent;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
+import net.sf.jasperreports.engine.JRException;
 
 @Named("detallefacturavController")
 @SessionScoped
@@ -54,7 +59,8 @@ public class DetallefacturavController implements Serializable {
         initializeEmbeddableKey();
         return selected;
     }
-
+    
+    
     public void create() {
         persist(PersistAction.CREATE, ResourceBundle.getBundle("/Bundle").getString("DetallefacturavCreated"));
         if (!JsfUtil.isValidationFailed()) {

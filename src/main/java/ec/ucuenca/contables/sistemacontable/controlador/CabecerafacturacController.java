@@ -87,7 +87,7 @@ public class CabecerafacturacController implements Serializable {
     }
 
     public void create() {
-        this.selected.setAutorizacionSri(this.selected.getIdProveedor().getAutorizacion());
+        this.selected.setAutorizacionSri(this.selected.getIdProveedor().getAutorizacion().getIdautorizaciones().toString());
         this.updateKardex();
         persist(PersistAction.CREATE, ResourceBundle.getBundle("/Bundle").getString("CabecerafacturacCreated"));
         if (!JsfUtil.isValidationFailed()) {

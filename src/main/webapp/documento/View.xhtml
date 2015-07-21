@@ -8,13 +8,13 @@
 
     <ui:composition>
 
-        <p:dialog id="DocumentoViewDlg" widgetVar="DocumentoViewDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.ViewDocumentoTitle}">
+        <p:dialog id="DocumentoViewDlg" widgetVar="DocumentoViewDialog" modal="true" resizable="false" appendTo="@(body)" header="VER DOCUMENTO">
             <h:form id="DocumentoViewForm">
                 <h:panelGroup id="display">
                     <p:panelGrid columns="2" rendered="#{documentoController.selected != null}">
-                        <h:outputText value="#{bundle.ViewDocumentoLabel_iddocumento}"/>
+                        <h:outputText value="Codigo:"/>
                         <h:outputText value="#{documentoController.selected.iddocumento}" title="#{bundle.ViewDocumentoTitle_iddocumento}"/>
-                        <h:outputText value="#{bundle.ViewDocumentoLabel_nombreDocumento}"/>
+                        <h:outputText value="Nombre:"/>
                         <h:outputText value="#{documentoController.selected.nombreDocumento}" title="#{bundle.ViewDocumentoTitle_nombreDocumento}"/>
                     </p:panelGrid>
                     <p:commandButton value="#{bundle.Close}" onclick="DocumentoViewDialog.hide()"/>

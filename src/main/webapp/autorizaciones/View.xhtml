@@ -8,28 +8,28 @@
 
     <ui:composition>
 
-        <p:dialog id="AutorizacionesViewDlg" widgetVar="AutorizacionesViewDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.ViewAutorizacionesTitle}">
+        <p:dialog id="AutorizacionesViewDlg" widgetVar="AutorizacionesViewDialog" modal="true" resizable="false" appendTo="@(body)" header="VER AUTORIZACION">
             <h:form id="AutorizacionesViewForm">
                 <h:panelGroup id="display">
                     <p:panelGrid columns="2" rendered="#{autorizacionesController.selected != null}">
-                        <h:outputText value="#{bundle.ViewAutorizacionesLabel_idautorizaciones}"/>
+                        <h:outputText value="Codigo:"/>
                         <h:outputText value="#{autorizacionesController.selected.idautorizaciones}" title="#{bundle.ViewAutorizacionesTitle_idautorizaciones}"/>
-                        <h:outputText value="#{bundle.ViewAutorizacionesLabel_establecimeinto}"/>
+                        <h:outputText value="Establecimiento:"/>
                         <h:outputText value="#{autorizacionesController.selected.establecimeinto}" title="#{bundle.ViewAutorizacionesTitle_establecimeinto}"/>
-                        <h:outputText value="#{bundle.ViewAutorizacionesLabel_puntoEmision}"/>
+                        <h:outputText value="Punto Emision:"/>
                         <h:outputText value="#{autorizacionesController.selected.puntoEmision}" title="#{bundle.ViewAutorizacionesTitle_puntoEmision}"/>
-                        <h:outputText value="#{bundle.ViewAutorizacionesLabel_numeroInicialDoc}"/>
+                        <h:outputText value="Numero Inicial:"/>
                         <h:outputText value="#{autorizacionesController.selected.numeroInicialDoc}" title="#{bundle.ViewAutorizacionesTitle_numeroInicialDoc}"/>
-                        <h:outputText value="#{bundle.ViewAutorizacionesLabel_numeroFinalDoc}"/>
+                        <h:outputText value="Numero Final:"/>
                         <h:outputText value="#{autorizacionesController.selected.numeroFinalDoc}" title="#{bundle.ViewAutorizacionesTitle_numeroFinalDoc}"/>
-                        <h:outputText value="#{bundle.ViewAutorizacionesLabel_numeroActual}"/>
+                        <h:outputText value="Numero Actual:"/>
                         <h:outputText value="#{autorizacionesController.selected.numeroActual}" title="#{bundle.ViewAutorizacionesTitle_numeroActual}"/>
-                        <h:outputText value="#{bundle.ViewAutorizacionesLabel_fechaCaducudad}"/>
+                        <h:outputText value="Fecha Caducidad:"/>
                         <h:outputText value="#{autorizacionesController.selected.fechaCaducudad}" title="#{bundle.ViewAutorizacionesTitle_fechaCaducudad}">
                             <f:convertDateTime pattern="MM/dd/yyyy" />
                         </h:outputText>
-                        <h:outputText value="#{bundle.ViewAutorizacionesLabel_idTipoDocumento}"/>
-                        <h:outputText value="#{autorizacionesController.selected.idTipoDocumento}" title="#{bundle.ViewAutorizacionesTitle_idTipoDocumento}"/>
+                        <h:outputText value="Tipo Documento:"/>
+                        <h:outputText value="#{autorizacionesController.selected.idTipoDocumento.nombreDocumento}" title="#{bundle.ViewAutorizacionesTitle_idTipoDocumento}"/>
                     </p:panelGrid>
                     <p:commandButton value="#{bundle.Close}" onclick="AutorizacionesViewDialog.hide()"/>
                 </h:panelGroup>

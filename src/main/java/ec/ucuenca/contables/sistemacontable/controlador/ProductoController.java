@@ -91,13 +91,6 @@ public class ProductoController implements Serializable {
     
     public void create() {
         selected.setIdcuentaInventario(this.craerCuentaInventario("Inventario "+selected.getNombre()));
-        System.out.println(selected.getIdcuentaInventario().getCategoria());
-        System.out.println(selected.getIdcuentaInventario().getDescripcion());
-        System.out.println(selected.getIdcuentaInventario().getIdCuentaPadre());
-        System.out.println(selected.getIdcuentaInventario().getIdTipoCuenta());
-        System.out.println(selected.getIdcuentaInventario().getNumeroCuenta());
-        System.out.println(selected.getIdcuentaInventario().getSaldoFinal());
-        System.out.println(selected.getIdcuentaInventario().getSaldoInicial());
         ejbCuentaFacade.create(selected.getIdcuentaInventario());
         persist(PersistAction.CREATE, ResourceBundle.getBundle("/Bundle").getString("ProductoCreated"));
         if (!JsfUtil.isValidationFailed()) {

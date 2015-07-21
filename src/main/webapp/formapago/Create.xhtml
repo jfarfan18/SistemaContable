@@ -8,14 +8,24 @@
 
     <ui:composition>
 
-        <p:dialog id="FormapagoCreateDlg" widgetVar="FormapagoCreateDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.CreateFormapagoTitle}">
+        <p:dialog id="FormapagoCreateDlg" widgetVar="FormapagoCreateDialog" modal="true" resizable="false" appendTo="@(body)" header="CREAR FORMA DE PAGO">
             <h:form id="FormapagoCreateForm">
                 <h:panelGroup id="display">
                     <p:panelGrid columns="2" rendered="#{formapagoController.selected != null}">
-                        <p:outputLabel value="#{bundle.CreateFormapagoLabel_idformaPago}" for="idformaPago" />
-                        <p:inputText id="idformaPago" value="#{formapagoController.selected.idformaPago}" title="#{bundle.CreateFormapagoTitle_idformaPago}" required="true" requiredMessage="#{bundle.CreateFormapagoRequiredMessage_idformaPago}"/>
                         <p:outputLabel value="#{bundle.CreateFormapagoLabel_descripcion}" for="descripcion" />
                         <p:inputText id="descripcion" value="#{formapagoController.selected.descripcion}" title="#{bundle.CreateFormapagoTitle_descripcion}" />
+                         <p:outputLabel value="Cuenta Viculada" for="idCuenta" />
+                        <p:selectOneMenu id="idCuenta" 
+                                         value="#{formapagoController.selected.idCuentaAsiento}" effect="fade"
+                                         filter="true" 
+                                         filterMatchMode="startsWith">
+                            <f:selectItem itemLabel="Ninguno" />
+                            <f:selectItems value="#{cuentaController.itemsAvailableSelectMany}"
+                                           var="cuenta"
+                                           itemValue="#{cuenta}"
+                                           itemLabel="#{cuenta.descripcion} (#{cuenta.numeroCuenta})"
+                                           itemDescription="#{cuenta.numeroCuenta}"/>
+                        </p:selectOneMenu>
                     </p:panelGrid>
                     <p:commandButton actionListener="#{formapagoController.create}" value="#{bundle.Save}" update="display,:FormapagoListForm:datalist,:growl" oncomplete="handleSubmit(args,'FormapagoCreateDialog');"/>
                     <p:commandButton value="#{bundle.Cancel}" onclick="FormapagoCreateDialog.hide()"/>
