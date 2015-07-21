@@ -16,13 +16,15 @@
                         <p:inputText id="establecimeinto" value="#{autorizacionesController.selected.establecimeinto}" title="#{bundle.CreateAutorizacionesTitle_establecimeinto}" />
                         <p:outputLabel value="Punto Emision:" for="puntoEmision" />
                         <p:inputText id="puntoEmision" value="#{autorizacionesController.selected.puntoEmision}" title="#{bundle.CreateAutorizacionesTitle_puntoEmision}" />
+                        <p:outputLabel value="Numero Autorizacion:" for="numeroAu" />
+                        <p:inputText id="numeroAu" value="#{autorizacionesController.selected.numeroAutorizacion}" title="Numero Autorizacion" />
                         <p:outputLabel value="Numero Inicial:" for="numeroInicialDoc" />
                         <p:inputText id="numeroInicialDoc" value="#{autorizacionesController.selected.numeroInicialDoc}" title="#{bundle.CreateAutorizacionesTitle_numeroInicialDoc}" />
                         <p:outputLabel value="Numero Final:" for="numeroFinalDoc" />
                         <p:inputText id="numeroFinalDoc" value="#{autorizacionesController.selected.numeroFinalDoc}" title="#{bundle.CreateAutorizacionesTitle_numeroFinalDoc}" />
                         <p:outputLabel value="Numero Actual:" for="numeroActual" />
                         <p:inputText id="numeroActual" value="#{autorizacionesController.selected.numeroActual}" title="#{bundle.CreateAutorizacionesTitle_numeroActual}" />
-                        <p:outputLabel value="Fecha Cuducidad" for="fechaCaducudad" />
+                        <p:outputLabel value="Fecha Caducidad" for="fechaCaducudad" />
                         <p:calendar id="fechaCaducudad" pattern="MM/dd/yyyy" value="#{autorizacionesController.selected.fechaCaducudad}" title="#{bundle.EditAutorizacionesTitle_fechaCaducudad}"  showOn="button"/>
                         <p:outputLabel value="Tipo Documento:" for="idTipoDocumento" />
                         <p:selectOneMenu id="idTipoDocumento" value="#{autorizacionesController.selected.idTipoDocumento}" >

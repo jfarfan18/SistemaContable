@@ -45,6 +45,8 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Autorizaciones.findByNumeroActual", query = "SELECT a FROM Autorizaciones a WHERE a.numeroActual = :numeroActual"),
     @NamedQuery(name = "Autorizaciones.findByFechaCaducudad", query = "SELECT a FROM Autorizaciones a WHERE a.fechaCaducudad = :fechaCaducudad")})
 public class Autorizaciones implements Serializable {
+    @Column(name = "numeroAutorizacion")
+    private Integer numeroAutorizacion;
     @OneToMany(mappedBy = "autorizacion", fetch = FetchType.LAZY)
     private List<Proveedor> proveedorList;
     private static final long serialVersionUID = 1L;
@@ -175,6 +177,14 @@ public class Autorizaciones implements Serializable {
 
     public void setProveedorList(List<Proveedor> proveedorList) {
         this.proveedorList = proveedorList;
+    }
+
+    public Integer getNumeroAutorizacion() {
+        return numeroAutorizacion;
+    }
+
+    public void setNumeroAutorizacion(Integer numeroAutorizacion) {
+        this.numeroAutorizacion = numeroAutorizacion;
     }
     
 }
