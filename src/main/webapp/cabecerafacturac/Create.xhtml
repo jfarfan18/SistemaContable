@@ -23,11 +23,11 @@
                             <p:outputLabel value="#{bundle.CreateCabecerafacturacLabel_fecha}" for="fecha" />
                             <p:calendar id="fecha" pattern="MM/dd/yyyy" value="#{cabecerafacturacController.selected.fecha}" title="#{bundle.EditCabecerafacturacTitle_fecha}"  showOn="button"/>
                             <p:outputLabel value="Autorizacion SRI:" for="autorizacionSri" />
-                            <p:inputText id="autorizacionSri" readonly="true" value="#{cabecerafacturacController.selected.idProveedor.autorizacion}" title="#{bundle.CreateCabecerafacturacTitle_autorizacionSri}" />
+                            <p:inputText id="autorizacionSri" readonly="true" value="#{cabecerafacturacController.selected.idProveedor.autorizacion.numeroAutorizacion}" title="#{bundle.CreateCabecerafacturacTitle_autorizacionSri}" />
                             <p:outputLabel value="#{bundle.CreateCabecerafacturacLabel_establecimiento}" for="establecimiento" />
-                            <p:inputText id="establecimiento" value="#{cabecerafacturacController.selected.establecimiento}" title="#{bundle.CreateCabecerafacturacTitle_establecimiento}" />
+                            <p:inputText id="establecimiento" readonly="true" value="#{cabecerafacturacController.selected.idProveedor.autorizacion.establecimeinto}" title="#{bundle.CreateCabecerafacturacTitle_establecimiento}" />
                             <p:outputLabel value="Punto Emision:" for="puntoEmision" />
-                            <p:inputText id="puntoEmision" value="#{cabecerafacturacController.selected.puntoEmision}" title="#{bundle.CreateCabecerafacturacTitle_puntoEmision}" />
+                            <p:inputText id="puntoEmision" readonly="true" value="#{cabecerafacturacController.selected.idProveedor.autorizacion.puntoEmision}" title="#{bundle.CreateCabecerafacturacTitle_puntoEmision}" />
 
                         </h:panelGrid>
                         <h:panelGrid columns="6">
@@ -40,7 +40,7 @@
                             <p:inputText id="identificacion" 
                                          value="#{cabecerafacturacController.selected.idProveedor.identificacion}" 
                                          title="#{bundle.CreateProveedorTitle_identificacion}" >
-                                <p:ajax event="blur" listener="#{cabecerafacturacController.cargarProveedor()}" update=":ProveedorCreateForm,nombre,telefono,direccion,autorizacionSri" />
+                                <p:ajax event="blur" listener="#{cabecerafacturacController.cargarProveedor()}" update=":ProveedorCreateForm,nombre,telefono,direccion,autorizacionSri,establecimiento,puntoEmision" />
                             </p:inputText>
                             <p:outputLabel value="Nombre" for="nombre" />
                             <p:inputText id="nombre" 
@@ -60,7 +60,7 @@
                         </h:panelGrid>
                         <h:panelGrid columns="7">
                             <f:facet name="header">
-                                <h:outputText value="DETALLE FACURA"/>
+                                <h:outputText value="DETALLE FACTURA"/>
 
                                 <p:separator style="width: 1050px"/>
                             </f:facet>

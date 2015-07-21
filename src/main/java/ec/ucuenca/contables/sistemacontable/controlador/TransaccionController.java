@@ -315,17 +315,19 @@ public class TransaccionController implements Serializable {
         
         float saldo=0;
         this.items=this.getFacade().findAll();
-        for(int i=0;i<items.size();i++){
-            if(items.get(i).getIdCuenta().getNumeroCuenta().equals(numerocuenta)){
-                if(items.get(i).getIdCuenta().getIdTipoCuenta().getIdTipoCuenta()==1 || items.get(i).getIdCuenta().getIdTipoCuenta().getIdTipoCuenta()==5){
-                    return 0;
-                }else{
-                    if(items.get(i).getIdAsiento().getPeriodo()<=periodo){
-                        saldo=saldo+items.get(i).getHaber().floatValue()-items.get(i).getDebe().floatValue();
+
+            for(int i=0;i<items.size();i++){
+                if(items.get(i).getIdCuenta().getNumeroCuenta().equals(numerocuenta)){
+                    if(items.get(i).getIdCuenta().getIdTipoCuenta().getIdTipoCuenta()==1 || items.get(i).getIdCuenta().getIdTipoCuenta().getIdTipoCuenta()==5){
+                        return 0;
+                    }else{
+                        if(items.get(i).getIdAsiento().getPeriodo()<=periodo){
+                            saldo=saldo+items.get(i).getHaber().floatValue()-items.get(i).getDebe().floatValue();
+                        }
                     }
                 }
             }
-        }
+        
         return saldo;
     }
     

@@ -12,10 +12,14 @@
             <h:form id="ProveedorEditForm">
                 <h:panelGroup id="display">
                     <p:panelGrid columns="2" rendered="#{proveedorController.selected != null}">
-                        <p:outputLabel value="#{bundle.EditProveedorLabel_idproveedor}" for="idproveedor" />
-                        <p:inputText id="idproveedor" value="#{proveedorController.selected.idproveedor}" title="#{bundle.EditProveedorTitle_idproveedor}" required="true" requiredMessage="#{bundle.EditProveedorRequiredMessage_idproveedor}"/>
-                        <p:outputLabel value="#{bundle.EditProveedorLabel_tipoIdentificacion}" for="tipoIdentificacion" />
-                        <p:inputText id="tipoIdentificacion" value="#{proveedorController.selected.tipoIdentificacion}" title="#{bundle.EditProveedorTitle_tipoIdentificacion}" />
+                        <p:outputLabel value="Tipo Identificacion " 
+                                       for="tipoIdentificacion" />
+                        <p:selectOneMenu id="tipoIdentificacion" 
+                                         value="#{proveedorController.selected.tipoIdentificacion}">
+                            <f:selectItem itemLabel="Cedula" itemValue="C" />
+                            <f:selectItem itemLabel="RUC" itemValue="R" />
+                            <f:selectItem itemLabel="Pasaporte" itemValue="P" />
+                        </p:selectOneMenu>
                         <p:outputLabel value="#{bundle.EditProveedorLabel_identificacion}" for="identificacion" />
                         <p:inputText id="identificacion" value="#{proveedorController.selected.identificacion}" title="#{bundle.EditProveedorTitle_identificacion}" />
                         <p:outputLabel value="#{bundle.EditProveedorLabel_nombre}" for="nombre" />
@@ -24,13 +28,17 @@
                         <p:inputText id="direccion" value="#{proveedorController.selected.direccion}" title="#{bundle.EditProveedorTitle_direccion}" />
                         <p:outputLabel value="#{bundle.EditProveedorLabel_telefono}" for="telefono" />
                         <p:inputText id="telefono" value="#{proveedorController.selected.telefono}" title="#{bundle.EditProveedorTitle_telefono}" />
-                        <p:outputLabel value="#{bundle.EditProveedorLabel_autorizacion}" for="autorizacion" />
-                        <p:inputText id="autorizacion" value="#{proveedorController.selected.autorizacion}" title="#{bundle.EditProveedorTitle_autorizacion}" />
+                        <p:outputLabel value="Autorizacion SRI" for="autorizacion" />
+                        <p:selectOneMenu id="autorizacion" value="#{proveedorController.selected.autorizacion}" >
+                            <f:selectItems value="#{autorizacionesController.itemsAvailableSelectOne}"
+                                           var="autorizacionesItem"
+                                           itemValue="#{autorizacionesItem}" itemLabel="#{autorizacionesItem.numeroAutorizacion}"/>
+                        </p:selectOneMenu>
                         <p:outputLabel value="#{bundle.EditProveedorLabel_fachaCaducidadAutorizacion}" for="fachaCaducidadAutorizacion" />
                         <p:calendar id="fachaCaducidadAutorizacion" pattern="MM/dd/yyyy" value="#{proveedorController.selected.fachaCaducidadAutorizacion}" title="#{bundle.EditProveedorTitle_fachaCaducidadAutorizacion}"  showOn="button"/>
                     </p:panelGrid>
-                    <p:commandButton actionListener="#{proveedorController.update}" value="#{bundle.Save}" update="display,:ProveedorListForm:datalist,:growl" oncomplete="handleSubmit(args, 'ProveedorEditDialog');"/>
-                    <p:commandButton value="#{bundle.Cancel}" onclick="ProveedorEditDialog.hide()"/>
+                    <p:commandButton actionListener="#{proveedorController.update}" value="Guardar" update="display,:ProveedorListForm:datalist,:growl" oncomplete="handleSubmit(args, 'ProveedorEditDialog');"/>
+                    <p:commandButton value="Cancelar" onclick="ProveedorEditDialog.hide()"/>
                 </h:panelGroup>
             </h:form>
         </p:dialog>

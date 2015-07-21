@@ -9,6 +9,7 @@ import ec.ucuenca.contables.sistemacontable.modelo.Cabecerafacturav;
 import ec.ucuenca.contables.sistemacontable.modelo.Cliente;
 import ec.ucuenca.contables.sistemacontable.modelo.Cuenta;
 import ec.ucuenca.contables.sistemacontable.modelo.Detallefacturav;
+import ec.ucuenca.contables.sistemacontable.modelo.Kardex;
 import ec.ucuenca.contables.sistemacontable.modelo.Producto;
 import ec.ucuenca.contables.sistemacontable.modelo.Tipocuenta;
 import ec.ucuenca.contables.sistemacontable.modelo.Transaccion;
@@ -123,6 +124,11 @@ public class CabecerafacturavController implements Serializable {
     }
     
     public void agregarItem(){
+        if(nuevoItem==null){
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "No existe stock suficiente para "+nuevoItem.getNombre());
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+            return;
+        }
         if (nuevoItem.getStock().intValue()<cantidadAgregar){
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "No existe stock suficiente para "+nuevoItem.getNombre());
             FacesContext.getCurrentInstance().addMessage(null, msg);
@@ -398,7 +404,7 @@ public class CabecerafacturavController implements Serializable {
         
         ejbAsientoFacade.create(asiento2);
         
-            
+        this.updateKardex();    
         persist(PersistAction.CREATE, ResourceBundle.getBundle("/Bundle").getString("CabecerafacturavCreated"));
         //this.updateKardex();
         if (!JsfUtil.isValidationFailed()) {
@@ -562,13 +568,42 @@ public class CabecerafacturavController implements Serializable {
 
     }
 
+    
     public void updateKardex(){
         FacesContext facesContext= FacesContext.getCurrentInstance();
         KardexController beanKardex = (KardexController)facesContext.getApplication().createValueBinding("#{kardexController}").getValue(facesContext);
+        List <Kardex> kardexlist=new ArrayList();
+        Kardex k;
         for(int i=0;i<this.selected.getDetallefacturavList().size();i++){
-            beanKardex.setKardexDataFromVenta(selected.getDetallefacturavList().get(i), selected);
-            ejbKardexFacade.create(beanKardex.getSelected());
-            //RequestContext.getCurrentInstance().execute("ClienteCreateDialog.hide()");
+            k=new Kardex();
+            k.setCantidad(this.selected.getDetallefacturavList().get(i).getCantidad());
+            //k.setCosto(this.selected.getDetallefacturavList().get(i).getPrecioUnitario());
+            //k.setCosto(beanKardex.getCostoActualByProducto(this.selected.getDetallefacturavList().get(i).getIdProducto().getIdproducto()));
+            k.setCosto(selected.getDetallefacturavList().get(i).getIdProducto().getCosto());
+            k.setDetalle("Venta");
+            k.setFecha(this.selected.getFecha());
+            k.setIdFacturaV(selected);
+            k.setIdProducto(this.selected.getDetallefacturavList().get(i).getIdProducto());
+            k.setSubtotal(k.getCosto().multiply(new BigDecimal(k.getCantidad())));
+            k.setTipo('S');
+            k.setTotalCantidad(selected.getDetallefacturavList().get(i).getIdProducto().getStock()-k.getCantidad());
+            //k.setTotalCantidad(beanKardex.getCantidadByProducto(this.selected.getDetallefacturavList().get(i).getIdProducto().getIdproducto())-k.getCantidad());
+            k.setTotalSubtotal(beanKardex.getSubtotalByProducto(this.selected.getDetallefacturavList().get(i).getIdProducto().getIdproducto()).subtract(k.getSubtotal()));
+            k.setTotalCosto(k.getTotalSubtotal().divide(new BigDecimal(k.getTotalCantidad()),3, RoundingMode.HALF_UP));
+            
+            kardexlist.add(k);
+            //beanKardex.setKardexDataFromVenta(selected.getDetallefacturavList().get(i), selected);
+            this.updateCantidadProducto(k.getIdProducto(), k.getTotalCantidad());
         }
+        this.selected.setKardexList(kardexlist);
+        //ejbKardexFacade.create(beanKardex.getSelected());
+    }
+    
+    public void updateCantidadProducto(Producto idproducto, Integer cantidad){
+        FacesContext facesContext= FacesContext.getCurrentInstance();
+        ProductoController beanProducto = (ProductoController)facesContext.getApplication().createValueBinding("#{productoController}").getValue(facesContext);
+        beanProducto.setSelected(beanProducto.getProducto(idproducto.getIdproducto()));
+        beanProducto.getSelected().setStock(cantidad);
+        beanProducto.update();
     }
 }

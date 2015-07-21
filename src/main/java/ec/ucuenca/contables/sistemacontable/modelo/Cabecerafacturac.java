@@ -256,6 +256,5 @@ public class Cabecerafacturac implements Serializable {
         this.kardexList = kardexList;
     }
     
-    
 }
 

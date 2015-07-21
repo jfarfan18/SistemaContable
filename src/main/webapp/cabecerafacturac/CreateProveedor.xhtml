@@ -36,10 +36,12 @@
                         <p:inputText id="direccion" 
                                      value="#{cabecerafacturacController.selected.idProveedor.direccion}" 
                                      title="#{bundle.CreateProveedorTitle_direccion}" />
-                        <p:outputLabel value="Autorizacion" for="autorizacion" />
-                        <p:inputText id="autorizacion" 
-                                     value="#{cabecerafacturacController.selected.idProveedor.autorizacion}" 
-                                     title="#{bundle.CreateProveedorTitle_autorizacion}" />
+                        <p:outputLabel value="Autorizacion SRI" for="autorizacion" />
+                        <p:selectOneMenu id="autorizacion" value="#{cabecerafacturacController.selected.idProveedor.autorizacion}" >
+                            <f:selectItems value="#{autorizacionesController.itemsAvailableSelectOne}"
+                                           var="autorizacionesItem"
+                                           itemValue="#{autorizacionesItem}" itemLabel="#{autorizacionesItem.numeroAutorizacion}"/>
+                        </p:selectOneMenu>
                         <p:outputLabel value="Caducidad Autorizacion" for="fachaCaducidadAutorizacion" />
                         <p:calendar id="fachaCaducidadAutorizacion" 
                                     pattern="MM/dd/yyyy" 

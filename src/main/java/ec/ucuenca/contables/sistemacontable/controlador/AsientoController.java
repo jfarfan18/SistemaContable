@@ -261,6 +261,7 @@ public class AsientoController implements Serializable {
             } catch (EJBException ex) {
                 String msg = "";
                 Throwable cause = ex.getCause();
+
                 if (cause != null) {
                     msg = cause.getLocalizedMessage();
                 }
@@ -272,7 +273,7 @@ public class AsientoController implements Serializable {
             } catch (Exception ex) {
                 Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
                 JsfUtil.addErrorMessage(ex, ResourceBundle.getBundle("/Bundle").getString("PersistenceErrorOccured"));
-            }
+            } 
         }
     }
 
@@ -472,7 +473,5 @@ public class AsientoController implements Serializable {
     public void setSelecteddiario(Integer selecteddiario) {
         this.selecteddiario = selecteddiario;
     }
-
-    
-    
+ 
 }

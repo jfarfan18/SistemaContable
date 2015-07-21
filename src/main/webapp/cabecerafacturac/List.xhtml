@@ -37,15 +37,15 @@
                             <f:facet name="header">
                                 <h:outputText value="FECHA"/>
                             </f:facet>
-                            <h:outputText value="#{item.fecha}"/>
+                            <h:outputText value="#{item.fecha}">
+                                <f:convertDateTime pattern="MM/dd/yyyy" />
+                            </h:outputText>
                         </p:column>
                         <p:column>
                             <f:facet name="header">
                                 <h:outputText value="TOTAL"/>
                             </f:facet>
-                            <h:outputText value="#{item.total}">
-                                <f:convertDateTime pattern="MM/dd/yyyy" />
-                            </h:outputText>
+                            <h:outputText value="#{item.total}"/>
                         </p:column>
                         <p:column>
                             <f:facet name="header">

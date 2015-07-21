@@ -824,4 +824,25 @@ public class CuentaController implements Serializable {
         utilidad=this.getUtilidadOperacionalByPeriodo(periodo)+this.getTotalSaldosIngresosnoOpByPeriodo(periodo)-this.getTotalSaldosGastosnoOpByPeriodo(periodo);
         return utilidad;
     }
+    
+    public Cuenta getCuentaIvaPagado(){
+        this.items=this.getFacade().findAll();
+        for(int i=0;i<items.size();i++){
+            if(items.get(i).getNumeroCuenta().equals("1.1.3.1.01")){
+                return items.get(i);
+            }
+        }
+        return null;
+    }
+    
+    public Cuenta getCuentaInventario(){
+        this.items=this.getFacade().findAll();
+        for(int i=0;i<items.size();i++){
+            if(items.get(i).getNumeroCuenta().equals("1.1.5.1.01")){
+                return items.get(i);
+            }
+        }
+        return null;
+    }
+    
 }
