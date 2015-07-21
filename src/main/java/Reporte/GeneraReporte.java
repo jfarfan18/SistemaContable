@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.util.HashMap;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -73,9 +74,14 @@ public class GeneraReporte {
     public void exporta(String directorioReporte, String nombreReporte, String nombreReportePdf, String tipo, ExternalContext externalContext, FacesContext facesContext) {
         try {
             Configuracion configuracion = new Configuracion();
-            Connection conexion = configuracion.obtieneConexionBD();
+            Connection conexion = DriverManager
+          .getConnection("jdbc:mysql://localhost/SistemasContables?"
+              + "user=root&password=1234");
+            System.out.println("Pasoooo");
             configuracion.compilaReporte(externalContext, directorioReporte, nombreReporte);
+            System.out.println("Pasoooo1");
             String reporteAbsoluto = externalContext.getRealPath(directorioReporte + nombreReporte + ".jasper");
+            System.out.println("Pasoooo2");
             JasperPrint impresionJasper = configuracion.creaReporte(reporteAbsoluto, parametros, conexion);
             conexion.close();
 
