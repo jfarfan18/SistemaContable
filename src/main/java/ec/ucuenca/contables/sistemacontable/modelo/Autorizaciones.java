@@ -43,8 +43,10 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Autorizaciones.findByNumeroInicialDoc", query = "SELECT a FROM Autorizaciones a WHERE a.numeroInicialDoc = :numeroInicialDoc"),
     @NamedQuery(name = "Autorizaciones.findByNumeroFinalDoc", query = "SELECT a FROM Autorizaciones a WHERE a.numeroFinalDoc = :numeroFinalDoc"),
     @NamedQuery(name = "Autorizaciones.findByNumeroActual", query = "SELECT a FROM Autorizaciones a WHERE a.numeroActual = :numeroActual"),
+    @NamedQuery(name = "Autorizaciones.findByTipoDocumento", query = "SELECT a FROM Autorizaciones a WHERE a.idTipoDocumento.iddocumento = :iddocumento"),
     @NamedQuery(name = "Autorizaciones.findByFechaCaducudad", query = "SELECT a FROM Autorizaciones a WHERE a.fechaCaducudad = :fechaCaducudad")})
 public class Autorizaciones implements Serializable {
+    public static String findByTipoDocumento="Autorizaciones.findByTipoDocumento";
     @Column(name = "numeroAutorizacion")
     private Integer numeroAutorizacion;
     @OneToMany(mappedBy = "autorizacion", fetch = FetchType.LAZY)

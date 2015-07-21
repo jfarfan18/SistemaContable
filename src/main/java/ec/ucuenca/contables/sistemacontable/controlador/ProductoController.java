@@ -90,8 +90,10 @@ public class ProductoController implements Serializable {
     }
     
     public void create() {
-        selected.setIdcuentaInventario(this.craerCuentaInventario("Inventario "+selected.getNombre()));
-        ejbCuentaFacade.create(selected.getIdcuentaInventario());
+        Cuenta padre=ejbCuentaFacade.find(31);
+        selected.setIdcuentaInventario(padre);
+        selected.setStock(0);
+        selected.setCosto(BigDecimal.ZERO);
         persist(PersistAction.CREATE, ResourceBundle.getBundle("/Bundle").getString("ProductoCreated"));
         if (!JsfUtil.isValidationFailed()) {
             items = null;    // Invalidate list of items to trigger re-query.
