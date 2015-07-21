@@ -19,6 +19,7 @@ import ec.ucuenca.contables.sistemacontable.negocio.CabecerafacturavFacade;
 import ec.ucuenca.contables.sistemacontable.negocio.ClienteFacade;
 import ec.ucuenca.contables.sistemacontable.negocio.CuentaFacade;
 import ec.ucuenca.contables.sistemacontable.negocio.KardexFacade;
+import ec.ucuenca.contables.sistemacontable.negocio.ProductoFacade;
 import ec.ucuenca.contables.sistemacontable.negocio.TipocuentaFacade;
 import java.io.IOException;
 import java.io.Serializable;
@@ -62,6 +63,8 @@ public class CabecerafacturavController implements Serializable {
     private AutorizacionesFacade ejbAutorizacionesFacade;
     @EJB
     private AsientoFacade ejbAsientoFacade;
+    @EJB
+    private ProductoFacade ejbProductoFacade;
     
     private GeneraReporte generaReporte;
     private List<Cabecerafacturav> items = null;
@@ -70,6 +73,8 @@ public class CabecerafacturavController implements Serializable {
     private Producto nuevoItem;
     private int cantidadAgregar;
     private Autorizaciones autorizacion;
+    private Detallefacturav itemDetalle;
+    private Cabecerafacturav aux;
     
 
     public CabecerafacturavController() {
@@ -306,6 +311,11 @@ public class CabecerafacturavController implements Serializable {
             ingresa=selected.getIdCliente().getIdCuentaCobrar();
         else
             ingresa=selected.getIdFormaPago().getIdCuentaAsiento();
+        for (Detallefacturav item:selected.getDetallefacturavList()){
+            int s=item.getIdProducto().getStock()-item.getCantidad();
+            item.getIdProducto().setStock(s);
+            ejbProductoFacade.edit(item.getIdProducto());
+        }
         
         Asiento asiento1=new  Asiento();
         asiento1.setConcepto("Venta de mercaderia factura "+selected.getNumeroFactura());
@@ -403,13 +413,20 @@ public class CabecerafacturavController implements Serializable {
         asiento2.getTransaccionList().add(haberInventario);
         
         ejbAsientoFacade.create(asiento2);
+        String numeroFac=selected.getNumeroFactura();
+        System.out.println(selected);
+        this.updateKardex();        
         
-        this.updateKardex();    
+        System.out.println(selected+"1");
         persist(PersistAction.CREATE, ResourceBundle.getBundle("/Bundle").getString("CabecerafacturavCreated"));
         //this.updateKardex();
         if (!JsfUtil.isValidationFailed()) {
             items = null;    // Invalidate list of items to trigger re-query.
         }
+        autorizacion.setNumeroActual(autorizacion.getNumeroActual()+1);
+        ejbAutorizacionesFacade.edit(autorizacion);
+        System.out.println(selected+"2");
+        RequestContext.getCurrentInstance().execute("PF('CabecerafacturavViewDialog').show()");
     }
 
     public void update() {
@@ -525,6 +542,34 @@ public class CabecerafacturavController implements Serializable {
      */
     public void setGeneraReporte(GeneraReporte generaReporte) {
         this.generaReporte = generaReporte;
+    }
+
+    /**
+     * @return the itemDetalle
+     */
+    public Detallefacturav getItemDetalle() {
+        return itemDetalle;
+    }
+
+    /**
+     * @param itemDetalle the itemDetalle to set
+     */
+    public void setItemDetalle(Detallefacturav itemDetalle) {
+        this.itemDetalle = itemDetalle;
+    }
+
+    /**
+     * @return the aux
+     */
+    public Cabecerafacturav getAux() {
+        return aux;
+    }
+
+    /**
+     * @param aux the aux to set
+     */
+    public void setAux(Cabecerafacturav aux) {
+        this.aux = aux;
     }
 
     @FacesConverter(forClass = Cabecerafacturav.class)

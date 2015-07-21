@@ -7,9 +7,11 @@
 package ec.ucuenca.contables.sistemacontable.negocio;
 
 import ec.ucuenca.contables.sistemacontable.modelo.Cabecerafacturav;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 /**
  *
@@ -29,4 +31,13 @@ public class CabecerafacturavFacade extends AbstractFacade<Cabecerafacturav> {
         super(Cabecerafacturav.class);
     }
     
+    public Cabecerafacturav getIdFactura(String numeroFactura) {
+        Query query = this.em.createNamedQuery(Cabecerafacturav.findByNumeroFactura);
+        query.setParameter("numeroFactura",numeroFactura);
+        List<Cabecerafacturav>lista=query.getResultList();
+        if (lista.isEmpty())
+            return null;
+        else
+            return lista.get(0);
+    }
 }

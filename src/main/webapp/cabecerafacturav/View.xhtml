@@ -8,40 +8,101 @@
 
     <ui:composition>
 
-        <p:dialog id="CabecerafacturavViewDlg" widgetVar="CabecerafacturavViewDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.ViewCabecerafacturavTitle}">
+        <p:dialog id="CabecerafacturavViewDlg" widgetVar="CabecerafacturavViewDialog" modal="true" resizable="false" appendTo="@(body)" header="FACTURA">
             <h:form id="CabecerafacturavViewForm">
                 <h:panelGroup id="display">
                     <p:panelGrid columns="2" rendered="#{cabecerafacturavController.selected != null}">
-                        <h:outputText value="#{bundle.ViewCabecerafacturavLabel_idcabeceraFacturaV}"/>
-                        <h:outputText value="#{cabecerafacturavController.selected.idcabeceraFacturaV}" title="#{bundle.ViewCabecerafacturavTitle_idcabeceraFacturaV}"/>
-                        <h:outputText value="#{bundle.ViewCabecerafacturavLabel_numeroFactura}"/>
-                        <h:outputText value="#{cabecerafacturavController.selected.numeroFactura}" title="#{bundle.ViewCabecerafacturavTitle_numeroFactura}"/>
-                        <h:outputText value="#{bundle.ViewCabecerafacturavLabel_fecha}"/>
-                        <h:outputText value="#{cabecerafacturavController.selected.fecha}" title="#{bundle.ViewCabecerafacturavTitle_fecha}">
-                            <f:convertDateTime pattern="MM/dd/yyyy" />
-                        </h:outputText>
-                        <h:outputText value="#{bundle.ViewCabecerafacturavLabel_autorizacionSri}"/>
-                        <h:outputText value="#{cabecerafacturavController.selected.autorizacionSri}" title="#{bundle.ViewCabecerafacturavTitle_autorizacionSri}"/>
-                        <h:outputText value="#{bundle.ViewCabecerafacturavLabel_establecimiento}"/>
-                        <h:outputText value="#{cabecerafacturavController.selected.establecimiento}" title="#{bundle.ViewCabecerafacturavTitle_establecimiento}"/>
-                        <h:outputText value="#{bundle.ViewCabecerafacturavLabel_puntoEmision}"/>
-                        <h:outputText value="#{cabecerafacturavController.selected.puntoEmision}" title="#{bundle.ViewCabecerafacturavTitle_puntoEmision}"/>
-                        <h:outputText value="#{bundle.ViewCabecerafacturavLabel_subtotal}"/>
-                        <h:outputText value="#{cabecerafacturavController.selected.subtotal}" title="#{bundle.ViewCabecerafacturavTitle_subtotal}"/>
-                        <h:outputText value="#{bundle.ViewCabecerafacturavLabel_subtotalBase0}"/>
-                        <h:outputText value="#{cabecerafacturavController.selected.subtotalBase0}" title="#{bundle.ViewCabecerafacturavTitle_subtotalBase0}"/>
-                        <h:outputText value="#{bundle.ViewCabecerafacturavLabel_subtotalBaseIva}"/>
-                        <h:outputText value="#{cabecerafacturavController.selected.subtotalBaseIva}" title="#{bundle.ViewCabecerafacturavTitle_subtotalBaseIva}"/>
-                        <h:outputText value="#{bundle.ViewCabecerafacturavLabel_descuento}"/>
-                        <h:outputText value="#{cabecerafacturavController.selected.descuento}" title="#{bundle.ViewCabecerafacturavTitle_descuento}"/>
-                        <h:outputText value="#{bundle.ViewCabecerafacturavLabel_iva}"/>
-                        <h:outputText value="#{cabecerafacturavController.selected.iva}" title="#{bundle.ViewCabecerafacturavTitle_iva}"/>
-                        <h:outputText value="#{bundle.ViewCabecerafacturavLabel_total82}"/>
-                        <h:outputText value="#{cabecerafacturavController.selected.total}" title="#{bundle.ViewCabecerafacturavTitle_total82}"/>
-                        <h:outputText value="#{bundle.ViewCabecerafacturavLabel_idCliente}"/>
-                        <h:outputText value="#{cabecerafacturavController.selected.idCliente}" title="#{bundle.ViewCabecerafacturavTitle_idCliente}"/>
-                        <h:outputText value="#{bundle.ViewCabecerafacturavLabel_idFormaPago}"/>
-                        <h:outputText value="#{cabecerafacturavController.selected.idFormaPago}" title="#{bundle.ViewCabecerafacturavTitle_idFormaPago}"/>
+
+                        <p:dataTable id="datalist" value="#{cabecerafacturavController.selected.detallefacturavList}" var="item"
+                                     selectionMode="single" selection="#{cabecerafacturavController.itemDetalle}"
+                                     paginator="true" style="margin-bottom:20px"
+                                     rowKey="#{item.iddetalleFacturaV}"
+                                     rows="10"
+                                     rowsPerPageTemplate="10,20,30,40,50"
+                                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {Exporters}" 
+                                     >
+                            <f:facet name="{Exporters}"> 
+                                <h:commandLink>
+                                    <p:graphicImage library="img" name="PDF.png" width="24" alt="PDF" />
+                                </h:commandLink>
+                            </f:facet> 
+
+                            <p:columnGroup type="header">
+                                <p:row>
+                                    <p:column colspan="4" headerText="FACTURA" />
+                                </p:row>
+                                <p:row>
+                                    <p:column colspan="2" headerText="Empresa x" />
+                                    <p:column colspan="2" headerText="DIRECCION: 12 de abril" />
+                                </p:row>
+                                <p:row>
+                                    <p:column colspan="2" headerText="AUTORIZACION: #{cabecerafacturavController.selected.autorizacionSri}" />
+                                    <p:column colspan="2" headerText="Nro. FACTURA: #{cabecerafacturavController.selected.establecimiento}-#{cabecerafacturavController.selected.puntoEmision}-#{cabecerafacturavController.selected.numeroFactura}" />
+                                </p:row>
+                                <p:row>
+                                    <p:column colspan="2" headerText="CLIENTE: #{cabecerafacturavController.selected.idCliente.nombre} #{cabecerafacturavController.selected.idCliente.apellido}" />
+                                    <p:column colspan="2" headerText="IDENTIFICACION: #{cabecerafacturavController.selected.idCliente.identificacion}" />
+                                </p:row>
+                                <p:row>
+                                    <p:column colspan="2" headerText="DIRECCION: #{cabecerafacturavController.selected.idCliente.direccion} " />
+                                    <p:column colspan="2" headerText="TELEFONO: #{cabecerafacturavController.selected.idCliente.telefono}" />
+                                </p:row>
+                                <p:row>
+                                    <p:column colspan="2" headerText="FECHA: #{cabecerafacturavController.selected.fecha}" />
+                                </p:row>
+
+                                <p:row>
+                                    <p:column rowspan="1" headerText="Cantidad" />
+                                    <p:column rowspan="1" headerText="Producto" />
+                                    <p:column rowspan="1" headerText="Precio Unitario" />
+                                    <p:column colspan="1" headerText="Precio Total" />
+                                </p:row>
+                            </p:columnGroup>
+
+                            <p:column>
+                                <h:outputText value="#{item.cantidad}">
+
+                                </h:outputText>
+                            </p:column>
+                            <p:column>
+                                <h:outputText value="#{item.idProducto.nombre}"/>
+                            </p:column>
+                            <p:column>
+                                <h:outputText value="#{item.precioUnitario}"/>
+                            </p:column>
+                            <p:column>
+                                <h:outputText value="#{item.total}"/>
+                            </p:column>
+
+                                <p:columnGroup type="footer">
+                                    <p:row>
+                                        <p:column colspan="3" style="text-align:right" footerText="SUBTOTAL 12%:" />
+                                        <p:column footerText="$#{cabecerafacturavController.selected.subtotalBaseIva}" />
+                                    </p:row>
+                                    <p:row>
+                                        <p:column colspan="3" style="text-align:right" footerText="SUBTOTAL 0%:" />
+                                        <p:column footerText="$#{cabecerafacturavController.selected.subtotalBase0}" />
+                                    </p:row>
+                                    <p:row>
+                                        <p:column colspan="3" style="text-align:right" footerText="DESCUENTO:" />
+                                        <p:column footerText="$#{cabecerafacturavController.selected.descuento}" />
+                                    </p:row>
+                                    <p:row>
+                                        <p:column colspan="3" style="text-align:right" footerText="SUBTOTAL:" />
+                                        <p:column footerText="$#{cabecerafacturavController.selected.subtotal}" />
+                                    </p:row>
+                                    <p:row>
+                                        <p:column colspan="3" style="text-align:right" footerText="IVA:" />
+                                        <p:column footerText="$#{cabecerafacturavController.selected.iva}" />
+                                    </p:row>
+                                    <p:row>
+                                        <p:column colspan="3" style="text-align:right" footerText="TOTAL:" />
+                                        <p:column footerText="$#{cabecerafacturavController.selected.total}" />
+                                    </p:row>
+                                </p:columnGroup>
+                        </p:dataTable>
+
+
                     </p:panelGrid>
                     <p:commandButton value="#{bundle.Close}" onclick="CabecerafacturavViewDialog.hide()"/>
                 </h:panelGroup>
