@@ -69,7 +69,7 @@ public class Proveedor implements Serializable {
 //    @Size(max = 45)
 //    @Column(name = "autorizacion")
 //    private String autorizacion1;
-    @JoinColumn(name = "autorizacion", referencedColumnName = "autorizacion")
+    @JoinColumn(name = "autorizacion", referencedColumnName = "idautorizaciones")
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private Autorizaciones autorizacion;
     @Column(name = "fachaCaducidadAutorizacion")

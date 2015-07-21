@@ -4,7 +4,8 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pe="http://primefaces.org/ui/extensions">
     
     <ui:composition template="/template.xhtml">
 
@@ -41,6 +42,12 @@
                                  rowsPerPageTemplate="10,20,30,40,50"
                                  paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {Exporters}" 
                                  >
+                        <f:facet name="{Exporters}"> 
+                            <h:commandLink>
+                                <p:graphicImage library="img" name="PDF.png" width="24" alt="PDF" />
+                                <pe:exporter type="pdf" orientation="Landscape" target="datalist" fileName="kardex #{kardexController.nombreProducto}"/>
+                            </h:commandLink>
+                        </f:facet> 
 
                         <p:columnGroup type="header">
                             <p:row>
@@ -85,7 +92,7 @@
                             <h:outputText value="#{item.detalle}"/>
                         </p:column>
                         <p:column>
-                            <h:outputText value="#{item.idFacturaV}"/>
+                            <h:outputText value="#{item.numFactura}"/>
                         </p:column>
                         <p:column>
                             <h:outputText value="#{item.cantEntradas}"/>

@@ -275,4 +275,11 @@ public class Kardex implements Serializable {
     public void setIdFacturaV(Cabecerafacturav idFacturaV) {
         this.idFacturaV = idFacturaV;
     }
+    
+    public String getNumFactura(){
+        if(this.tipo=='S'){
+            return this.idFacturaV.getNumeroFactura();
+        }
+        return this.idFacturaC.getNumeroFacturaC();    
+    }
 }

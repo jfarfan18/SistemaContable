@@ -3,10 +3,12 @@ package ec.ucuenca.contables.sistemacontable.controlador;
 import ec.ucuenca.contables.sistemacontable.modelo.Cabecerafacturac;
 import ec.ucuenca.contables.sistemacontable.controlador.util.JsfUtil;
 import ec.ucuenca.contables.sistemacontable.controlador.util.JsfUtil.PersistAction;
+import ec.ucuenca.contables.sistemacontable.modelo.Asiento;
 import ec.ucuenca.contables.sistemacontable.modelo.Detallefactuc;
 import ec.ucuenca.contables.sistemacontable.modelo.Kardex;
 import ec.ucuenca.contables.sistemacontable.modelo.Producto;
 import ec.ucuenca.contables.sistemacontable.modelo.Proveedor;
+import ec.ucuenca.contables.sistemacontable.modelo.Transaccion;
 import ec.ucuenca.contables.sistemacontable.negocio.CabecerafacturacFacade;
 import ec.ucuenca.contables.sistemacontable.negocio.KardexFacade;
 import ec.ucuenca.contables.sistemacontable.negocio.ProductoFacade;
@@ -53,6 +55,8 @@ public class CabecerafacturacController implements Serializable {
     private KardexFacade ejbKardexFacade;
     @EJB
     private ProductoFacade ejbProductoFacade;
+    @EJB
+    private ec.ucuenca.contables.sistemacontable.negocio.AsientoFacade ejbAsientoFacade;
     
     public CabecerafacturacController() {
     }
@@ -87,9 +91,12 @@ public class CabecerafacturacController implements Serializable {
     }
 
     public void create() {
-        this.selected.setAutorizacionSri(this.selected.getIdProveedor().getAutorizacion().getIdautorizaciones().toString());
+        this.selected.setAutorizacionSri(this.selected.getIdProveedor().getAutorizacion().getNumeroAutorizacion().toString());
+        this.selected.setEstablecimiento(this.selected.getIdProveedor().getAutorizacion().getEstablecimeinto());
+        this.selected.setPuntoEmision(this.selected.getIdProveedor().getAutorizacion().getPuntoEmision());
         this.updateKardex();
         persist(PersistAction.CREATE, ResourceBundle.getBundle("/Bundle").getString("CabecerafacturacCreated"));
+        this.createAsiento();
         if (!JsfUtil.isValidationFailed()) {
             items = null;    // Invalidate list of items to trigger re-query.
         }
@@ -395,5 +402,61 @@ public class CabecerafacturacController implements Serializable {
         beanProducto.setSelected(beanProducto.getProducto(idproducto.getIdproducto()));
         beanProducto.getSelected().setStock(cantidad);
         beanProducto.update();
+    }
+    
+    public void createAsiento(){
+        FacesContext facesContext= FacesContext.getCurrentInstance();
+        CuentaController beanCuenta = (CuentaController)facesContext.getApplication().createValueBinding("#{cuentaController}").getValue(facesContext);
+     
+        
+        Asiento a=new Asiento();
+        a.setConcepto("Compra de Mercaderia");
+        a.setFecha(selected.getFecha());
+        a.setNumeroDocumento(selected.getNumeroFacturaC());
+        a.setNumeroDiario(1);
+        a.setPeriodo(selected.getFecha().getYear());
+        a.setNumeroAsiento(1);
+        a.setDebe(new BigDecimal(0));
+        a.setHaber(new BigDecimal(0));
+        List<Transaccion> transacciones=new ArrayList();
+        Transaccion t1=new Transaccion();
+        t1.setIdCuenta(beanCuenta.getCuentaInventario());
+        t1.setReferencia("Compra Fac "+selected.getNumeroFacturaC());
+        t1.setDebe(new BigDecimal(0));
+        t1.setHaber(new BigDecimal(0));
+        for(int i=0;i<selected.getDetallefactucList().size();i++){
+            t1.setDebe(t1.getDebe().add(selected.getDetallefactucList().get(i).getTotal()));
+        }
+        transacciones.add(t1);
+        a.setDebe(a.getDebe().add(t1.getDebe()));
+        Transaccion fpago=new Transaccion();
+        fpago.setIdCuenta(selected.getIdFormaPago().getIdCuentaAsiento());
+        fpago.setDebe(new BigDecimal(0));
+        fpago.setHaber(selected.getTotal());
+        fpago.setReferencia("Compra Fac "+selected.getNumeroFacturaC());
+        transacciones.add(fpago);
+        a.setHaber(a.getHaber().add(fpago.getHaber()));
+        if(selected.getIva().doubleValue()!=0.0){
+            Transaccion ivap=new Transaccion();
+            ivap.setIdCuenta(beanCuenta.getCuentaIvaPagado());
+            ivap.setDebe(selected.getIva());
+            ivap.setHaber(new BigDecimal(0));
+            ivap.setReferencia("Compra Fac "+selected.getNumeroFacturaC());
+            transacciones.add(ivap);
+            a.setDebe(a.getDebe().add(ivap.getDebe()));
+        }
+        a.setTransaccionList(transacciones);
+        a.setNumeroAsiento(ejbAsientoFacade.getNumeroAsientoMayor(a.getNumeroDiario(), a.getPeriodo())+1);
+        
+        AsientoController beanAsiento = (AsientoController)facesContext.getApplication().createValueBinding("#{asientoController}").getValue(facesContext);
+        beanAsiento.preparaNuevo();
+        beanAsiento.getSelected().setConcepto(a.getConcepto());
+        beanAsiento.getSelected().setFecha(a.getFecha());
+        beanAsiento.getSelected().setTransaccionList(a.getTransaccionList());
+        for(int i=0;i<a.getTransaccionList().size();i++){
+            a.getTransaccionList().get(i).setIdAsiento(beanAsiento.getSelected());
+        }
+        beanAsiento.getSelected().setConcepto(a.getConcepto());
+        beanAsiento.create();
     }
 }
