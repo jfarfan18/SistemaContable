@@ -77,6 +77,48 @@
                         
                     <h:panelGrid>
                     <f:facet name="header">
+                        <h:outputLabel value="COSTOS" />
+                    </f:facet>
+                    <p:dataTable id="tablacostos" value="#{cuentaController.cuentasCostosConSaldo}" var="item"
+                                 selectionMode="single" 
+                                 rowKey="#{item.numeroCuenta}"
+                                 >                  
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="CODIGO"/>
+                            </f:facet>
+                            <h:outputText value="#{item.numeroCuenta}"/>
+                        </p:column>                        
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="CUENTA"/>
+                            </f:facet>
+                            <h:outputText value="#{item.descripcion}"/>
+                        </p:column>                        
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="SALDO"/>
+                            </f:facet>
+                            <h:outputText value="#{transaccionController.getSaldoByCuentaAndPeriodo(item.numeroCuenta,asientoController.selectedperiodo)}"/>
+                        </p:column>  
+                        
+                        <p:columnGroup type="footer">  
+                            <p:row>  
+                                <p:column colspan="2" footerText="TOTAL:"  
+                                        style="text-align:right"  />  
+      
+                                <p:column footerText="#{cuentaController.getTotalSaldosCostosByPeriodo(asientoController.selectedperiodo)}" style="text-align:right" />  
+       
+                            </p:row>  
+                        </p:columnGroup> 
+                        
+                    </p:dataTable>
+                    </h:panelGrid>
+                    
+                    <p:panel id="basic" header="UTILIDAD BRUTA =  #{cuentaController.getUtilidadBrutaByPeriodo(asientoController.selectedperiodo)}" style="text-align:right"/>
+
+                    <h:panelGrid>
+                    <f:facet name="header">
                         <h:outputLabel value="GASTOS OPERACIONALES" />
                     </f:facet>
                     <p:dataTable id="tablagasop" value="#{cuentaController.cuentasGastosOpConSaldo}" var="item"
@@ -115,8 +157,9 @@
                     </p:dataTable>
                     </h:panelGrid>
                     
-                    <p:panel id="basic" header="UTILIDAD (PERDIDA) OPERACIONAL  =  #{cuentaController.getUtilidadOperacionalByPeriodo(asientoController.selectedperiodo)}" style="text-align:right"/>
-
+                    <p:panel id="basic2" header="UTILIDAD OPERACIONAL =  #{cuentaController.getUtilidadBrutaByPeriodo(asientoController.selectedperiodo)}" style="text-align:right"/>
+                    
+                    
                     <h:panelGrid>
                     <f:facet name="header">
                         <h:outputLabel value="INGRESOS NO OPERACIONALES" />

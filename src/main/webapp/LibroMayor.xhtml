@@ -17,8 +17,19 @@
             <h:form id="LibroMayor">
                 <p:panel header="Libro Mayor">
                     <h:panelGrid columns="3" cellpadding="5">
-                        <h:outputLabel for="numerob" value="# Cuenta:" style="font-weight:bold" />
-                        <p:inputText id="numerob" value="#{transaccionController.numcuenta}"  />        
+                        <p:outputLabel value="Cuenta" 
+                                           for="cuenta" />
+                            <p:selectOneMenu id="cuenta"
+                                             value="#{transaccionController.numcuenta}" 
+                                             effect="fade"
+                                             filter="true" 
+                                             filterMatchMode="startsWith">
+                            <f:selectItems value="#{cuentaController.itemsAvailableSelectOne}"
+                                               var="cuenta"
+                                               itemValue="#{cuenta.numeroCuenta}"
+                                               itemLabel="#{cuenta.descripcion}"
+                                               itemDescription="#{cuenta.numeroCuenta}"/>
+                            </p:selectOneMenu>
                     </h:panelGrid>
                      
                      <h:panelGrid columns="4" cellpadding="5">

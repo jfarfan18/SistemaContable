@@ -595,9 +595,9 @@ public class CuentaController implements Serializable {
             if(items.get(i).getIdTipoCuenta().getIdTipoCuenta()==4){
                 if(items.get(i).getNumeroCuenta().startsWith("4.1.")){
                     if(items.get(i).getCategoria()=='D'){
-                        //if(beanTransaccion.getSaldoByCuenta(items.get(i).getNumeroCuenta())!=0){
+                        if(beanTransaccion.cuentaSeMovio(items.get(i).getIdCuenta())){
                             cres.add(items.get(i));
-                        //}
+                        }
                     }
                 }
             }
@@ -615,9 +615,29 @@ public class CuentaController implements Serializable {
             if(items.get(i).getIdTipoCuenta().getIdTipoCuenta()==4){
                 if(!items.get(i).getNumeroCuenta().startsWith("4.1.")){
                     if(items.get(i).getCategoria()=='D'){
-                        //if(beanTransaccion.getSaldoByCuenta(items.get(i).getNumeroCuenta())!=0){
+                        if(beanTransaccion.cuentaSeMovio(items.get(i).getIdCuenta())){
                             cres.add(items.get(i));
-                        //}
+                        }
+                    }
+                }
+            }
+        }
+        return cres;
+    }
+    
+    public List<Cuenta> getCuentasCostosConSaldo(){
+        this.items=this.getFacade().findAll(); // cambiar consulta
+        char d='D';
+        List<Cuenta> cres=new ArrayList();
+        FacesContext facesContext= FacesContext.getCurrentInstance();
+        TransaccionController beanTransaccion = (TransaccionController)facesContext.getApplication().createValueBinding("#{transaccionController}").getValue(facesContext);
+        for(int i=0;i<items.size();i++){
+            if(items.get(i).getIdTipoCuenta().getIdTipoCuenta()==5){
+                if(items.get(i).getNumeroCuenta().startsWith("5.1.")){
+                    if(items.get(i).getCategoria()=='D'){
+                        if(beanTransaccion.cuentaSeMovio(items.get(i).getIdCuenta())){
+                            cres.add(items.get(i));
+                        }
                     }
                 }
             }
@@ -632,12 +652,12 @@ public class CuentaController implements Serializable {
         FacesContext facesContext= FacesContext.getCurrentInstance();
         TransaccionController beanTransaccion = (TransaccionController)facesContext.getApplication().createValueBinding("#{transaccionController}").getValue(facesContext);
         for(int i=0;i<items.size();i++){
-            if(items.get(i).getIdTipoCuenta().getIdTipoCuenta()==5){
-                if(items.get(i).getNumeroCuenta().startsWith("5.1.")){
+            if(items.get(i).getIdTipoCuenta().getIdTipoCuenta()==6){
+                if(items.get(i).getNumeroCuenta().startsWith("6.1.")){
                     if(items.get(i).getCategoria()=='D'){
-                        //if(beanTransaccion.getSaldoByCuenta(items.get(i).getNumeroCuenta())!=0){
+                        if(beanTransaccion.cuentaSeMovio(items.get(i).getIdCuenta())){
                             cres.add(items.get(i));
-                        //}
+                        }
                     }
                 }
             }
@@ -652,12 +672,12 @@ public class CuentaController implements Serializable {
         FacesContext facesContext= FacesContext.getCurrentInstance();
         TransaccionController beanTransaccion = (TransaccionController)facesContext.getApplication().createValueBinding("#{transaccionController}").getValue(facesContext);
         for(int i=0;i<items.size();i++){
-            if(items.get(i).getIdTipoCuenta().getIdTipoCuenta()==5){
-                if(!items.get(i).getNumeroCuenta().startsWith("5.1.")){
+            if(items.get(i).getIdTipoCuenta().getIdTipoCuenta()==6){
+                if(items.get(i).getNumeroCuenta().startsWith("6.1.")){
                     if(items.get(i).getCategoria()=='D'){
-                        //if(beanTransaccion.getSaldoByCuenta(items.get(i).getNumeroCuenta())!=0){
+                        if(beanTransaccion.cuentaSeMovio(items.get(i).getIdCuenta())){
                             cres.add(items.get(i));
-                        //}
+                        }
                     }
                 }
             }
@@ -705,10 +725,27 @@ public class CuentaController implements Serializable {
         FacesContext facesContext= FacesContext.getCurrentInstance();
         TransaccionController beanTransaccion = (TransaccionController)facesContext.getApplication().createValueBinding("#{transaccionController}").getValue(facesContext);
         for(int i=0;i<items.size();i++){
+            if(items.get(i).getIdTipoCuenta().getIdTipoCuenta()==6){
+                if(items.get(i).getNumeroCuenta().startsWith("6.1.")){
+                    if(items.get(i).getCategoria()=='D'){
+                        total=total+beanTransaccion.getSaldoDebeByCuenta(items.get(i).getNumeroCuenta());
+                    }
+                }
+            }
+        }
+        return total;
+    }
+    
+    public float getTotalSaldosCostosByPeriodo(Integer periodo){
+        float total=0;
+        this.items=this.getFacade().findAll();
+        FacesContext facesContext= FacesContext.getCurrentInstance();
+        TransaccionController beanTransaccion = (TransaccionController)facesContext.getApplication().createValueBinding("#{transaccionController}").getValue(facesContext);
+        for(int i=0;i<items.size();i++){
             if(items.get(i).getIdTipoCuenta().getIdTipoCuenta()==5){
                 if(items.get(i).getNumeroCuenta().startsWith("5.1.")){
                     if(items.get(i).getCategoria()=='D'){
-                        total=total+beanTransaccion.getSaldoDebeByCuenta(items.get(i).getNumeroCuenta());
+                        total=total+beanTransaccion.getSaldoDebeByCuentaAndPeriodo(items.get(i).getNumeroCuenta(),periodo);
                     }
                 }
             }
@@ -722,8 +759,8 @@ public class CuentaController implements Serializable {
         FacesContext facesContext= FacesContext.getCurrentInstance();
         TransaccionController beanTransaccion = (TransaccionController)facesContext.getApplication().createValueBinding("#{transaccionController}").getValue(facesContext);
         for(int i=0;i<items.size();i++){
-            if(items.get(i).getIdTipoCuenta().getIdTipoCuenta()==5){
-                if(items.get(i).getNumeroCuenta().startsWith("5.1.")){
+            if(items.get(i).getIdTipoCuenta().getIdTipoCuenta()==6){
+                if(items.get(i).getNumeroCuenta().startsWith("6.1.")){
                     if(items.get(i).getCategoria()=='D'){
                         total=total+beanTransaccion.getSaldoDebeByCuentaAndPeriodo(items.get(i).getNumeroCuenta(),periodo);
                     }
@@ -773,8 +810,8 @@ public class CuentaController implements Serializable {
         FacesContext facesContext= FacesContext.getCurrentInstance();
         TransaccionController beanTransaccion = (TransaccionController)facesContext.getApplication().createValueBinding("#{transaccionController}").getValue(facesContext);
         for(int i=0;i<items.size();i++){
-            if(items.get(i).getIdTipoCuenta().getIdTipoCuenta()==5){
-                if(!items.get(i).getNumeroCuenta().startsWith("5.1.")){
+            if(items.get(i).getIdTipoCuenta().getIdTipoCuenta()==6){
+                if(!items.get(i).getNumeroCuenta().startsWith("6.1.")){
                     if(items.get(i).getCategoria()=='D'){
                         total=total+beanTransaccion.getSaldoDebeByCuenta(items.get(i).getNumeroCuenta());
                     }
@@ -790,8 +827,8 @@ public class CuentaController implements Serializable {
         FacesContext facesContext= FacesContext.getCurrentInstance();
         TransaccionController beanTransaccion = (TransaccionController)facesContext.getApplication().createValueBinding("#{transaccionController}").getValue(facesContext);
         for(int i=0;i<items.size();i++){
-            if(items.get(i).getIdTipoCuenta().getIdTipoCuenta()==5){
-                if(!items.get(i).getNumeroCuenta().startsWith("5.1.")){
+            if(items.get(i).getIdTipoCuenta().getIdTipoCuenta()==6){
+                if(!items.get(i).getNumeroCuenta().startsWith("6.1.")){
                     if(items.get(i).getCategoria()=='D'){
                         total=total+beanTransaccion.getSaldoDebeByCuentaAndPeriodo(items.get(i).getNumeroCuenta(), periodo);
                     }
@@ -807,9 +844,15 @@ public class CuentaController implements Serializable {
         return utilidad;
     }
     
+    public float getUtilidadBrutaByPeriodo(Integer periodo){
+        float utilidad=0;
+        utilidad=this.getTotalSaldosIngresosOpByPeriodo(periodo)-this.getTotalSaldosCostosByPeriodo(periodo);
+        return utilidad;
+    }
+    
     public float getUtilidadOperacionalByPeriodo(Integer periodo){
         float utilidad=0;
-        utilidad=this.getTotalSaldosIngresosOpByPeriodo(periodo)-this.getTotalSaldosGastosOpByPeriodo(periodo);
+        utilidad=this.getUtilidadBrutaByPeriodo(periodo)-this.getTotalSaldosGastosOpByPeriodo(periodo);
         return utilidad;
     }
     

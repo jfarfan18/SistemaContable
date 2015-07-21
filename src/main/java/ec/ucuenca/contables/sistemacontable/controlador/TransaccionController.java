@@ -387,4 +387,13 @@ public class TransaccionController implements Serializable {
         return haber;
     }
    
+    public boolean cuentaSeMovio(Integer idcuenta){
+        this.items=this.getFacade().findAll();
+        for(int i=0;i<items.size();i++){
+            if(items.get(i).getIdCuenta().getIdCuenta()==idcuenta){
+                return true;
+            }
+        }
+        return false;
+    }
 }
