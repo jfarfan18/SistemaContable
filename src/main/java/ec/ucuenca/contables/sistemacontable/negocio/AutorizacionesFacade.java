@@ -7,9 +7,11 @@
 package ec.ucuenca.contables.sistemacontable.negocio;
 
 import ec.ucuenca.contables.sistemacontable.modelo.Autorizaciones;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 /**
  *
@@ -29,4 +31,13 @@ public class AutorizacionesFacade extends AbstractFacade<Autorizaciones> {
         super(Autorizaciones.class);
     }
     
+    public Autorizaciones getAutorizacionVenta() {
+        Query query = this.em.createNamedQuery(Autorizaciones.findByTipoDocumento);
+        query.setParameter("iddocumento",1);
+        List<Autorizaciones>lista=query.getResultList();
+        if (lista.isEmpty())
+            return null;
+        else
+            return lista.get(0);
+    }
 }

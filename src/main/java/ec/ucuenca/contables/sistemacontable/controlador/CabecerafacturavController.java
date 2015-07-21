@@ -3,6 +3,8 @@ package ec.ucuenca.contables.sistemacontable.controlador;
 import Reporte.GeneraReporte;
 import ec.ucuenca.contables.sistemacontable.controlador.util.JsfUtil;
 import ec.ucuenca.contables.sistemacontable.controlador.util.JsfUtil.PersistAction;
+import ec.ucuenca.contables.sistemacontable.modelo.Asiento;
+import ec.ucuenca.contables.sistemacontable.modelo.Autorizaciones;
 import ec.ucuenca.contables.sistemacontable.modelo.Cabecerafacturav;
 import ec.ucuenca.contables.sistemacontable.modelo.Cliente;
 import ec.ucuenca.contables.sistemacontable.modelo.Cuenta;
@@ -10,6 +12,8 @@ import ec.ucuenca.contables.sistemacontable.modelo.Detallefacturav;
 import ec.ucuenca.contables.sistemacontable.modelo.Producto;
 import ec.ucuenca.contables.sistemacontable.modelo.Tipocuenta;
 import ec.ucuenca.contables.sistemacontable.modelo.Transaccion;
+import ec.ucuenca.contables.sistemacontable.negocio.AsientoFacade;
+import ec.ucuenca.contables.sistemacontable.negocio.AutorizacionesFacade;
 import ec.ucuenca.contables.sistemacontable.negocio.CabecerafacturavFacade;
 import ec.ucuenca.contables.sistemacontable.negocio.ClienteFacade;
 import ec.ucuenca.contables.sistemacontable.negocio.CuentaFacade;
@@ -53,6 +57,10 @@ public class CabecerafacturavController implements Serializable {
     private CuentaFacade ejbCuentaFacade;
     @EJB
     private TipocuentaFacade ejbTipocuentaFacade;
+    @EJB
+    private AutorizacionesFacade ejbAutorizacionesFacade;
+    @EJB
+    private AsientoFacade ejbAsientoFacade;
     
     private GeneraReporte generaReporte;
     private List<Cabecerafacturav> items = null;
@@ -60,6 +68,7 @@ public class CabecerafacturavController implements Serializable {
     private Detallefacturav detalleSeleccionado;
     private Producto nuevoItem;
     private int cantidadAgregar;
+    private Autorizaciones autorizacion;
     
 
     public CabecerafacturavController() {
@@ -114,6 +123,11 @@ public class CabecerafacturavController implements Serializable {
     }
     
     public void agregarItem(){
+        if (nuevoItem.getStock().intValue()<cantidadAgregar){
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "No existe stock suficiente para "+nuevoItem.getNombre());
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+            return;
+        }
         Detallefacturav item=new Detallefacturav();
         item.setCantidad(cantidadAgregar);
         item.setIdCabeceraFactura(selected);
@@ -185,9 +199,9 @@ public class CabecerafacturavController implements Serializable {
                 return;
             }
         }
-        selected.getIdCliente().setIdDocumentoCobrar(this.craerCuentaInventario("Documentos por cobrar cliete "+selected.getIdCliente().getIdentificacion(),"1.1.2.1.",11));
+        selected.getIdCliente().setIdDocumentoCobrar(this.craerCuentaInventario("Documentos por cobrar cliete "+selected.getIdCliente().getIdentificacion(),"1.1.2.1.",10));
         ejbCuentaFacade.create(selected.getIdCliente().getIdDocumentoCobrar());
-        selected.getIdCliente().setIdCuentaCobrar(this.craerCuentaInventario("Cuentas por cobrar cliete "+selected.getIdCliente().getIdentificacion(),"1.1.2.2.",14));
+        selected.getIdCliente().setIdCuentaCobrar(this.craerCuentaInventario("Cuentas por cobrar cliete "+selected.getIdCliente().getIdentificacion(),"1.1.2.2.",13));
         ejbCuentaFacade.create(selected.getIdCliente().getIdCuentaCobrar());
         ejbClienteFacade.create(selected.getIdCliente());
         RequestContext.getCurrentInstance().execute("ClienteCreateDialog.hide()");
@@ -248,7 +262,17 @@ public class CabecerafacturavController implements Serializable {
     }
 
     public Cabecerafacturav prepareCreate() {
+        autorizacion=ejbAutorizacionesFacade.getAutorizacionVenta();
+        if (autorizacion==null){
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "No existen parametros para la factura, configuelos");
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+            return null;
+        }
         selected = new Cabecerafacturav();
+        selected.setEstablecimiento(autorizacion.getEstablecimeinto());
+        selected.setAutorizacionSri(autorizacion.getNumeroAutorizacion().toString());
+        selected.setPuntoEmision(autorizacion.getPuntoEmision());
+        selected.setNumeroFactura(autorizacion.getNumeroActual().toString());
         selected.setFecha(new Date());
         selected.setIdCliente(new Cliente());
         selected.setDetallefacturavList(new ArrayList<Detallefacturav>());
@@ -260,8 +284,123 @@ public class CabecerafacturavController implements Serializable {
     }
 
     public void create() {
+        this.calcularTotales();
+        for (Detallefacturav item:selected.getDetallefacturavList()){
+            if (item.getIdProducto().getStock().intValue()<item.getCantidad()){
+                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "No existe stock suficiente para "+item.getIdProducto().getNombre());
+                FacesContext.getCurrentInstance().addMessage(null, msg);
+                return;
+            }
+        }
+        Cuenta ingresa=null;
+        if (selected.getIdFormaPago().getIdCuentaAsiento().getIdCuenta()==10)
+            ingresa=selected.getIdCliente().getIdDocumentoCobrar();
+        else
+        if (selected.getIdFormaPago().getIdCuentaAsiento().getIdCuenta()==13)
+            ingresa=selected.getIdCliente().getIdCuentaCobrar();
+        else
+            ingresa=selected.getIdFormaPago().getIdCuentaAsiento();
+        
+        Asiento asiento1=new  Asiento();
+        asiento1.setConcepto("Venta de mercaderia factura "+selected.getNumeroFactura());
+        asiento1.setFecha(new Date());
+        asiento1.setDebe(selected.getTotal());
+        asiento1.setHaber(selected.getTotal());
+        asiento1.setNumeroAsiento(ejbAsientoFacade.getNumeroAsientoMayor(1, 2015)+1);
+        asiento1.setNumeroDiario(1);
+        asiento1.setNumeroDocumento(selected.getNumeroFactura());
+        asiento1.setPeriodo(2015);
+        asiento1.setTransaccionList(new ArrayList<Transaccion>());
+        
+        Transaccion debeAsiento1=new Transaccion();
+        debeAsiento1.setDebe(selected.getTotal());
+        debeAsiento1.setHaber(BigDecimal.ZERO);
+        debeAsiento1.setIdAsiento(asiento1);
+        debeAsiento1.setIdCuenta(ingresa);
+        debeAsiento1.setReferencia("Ingreso de dinero");
+        asiento1.getTransaccionList().add(debeAsiento1);
+        
+        Transaccion haberAsiento1=new Transaccion();
+        Transaccion haberAsiento2=new Transaccion();
+        Transaccion haberIva=new Transaccion();
+        if (selected.getSubtotalBase0().doubleValue()>0){
+            haberAsiento1.setDebe(BigDecimal.ZERO);
+            haberAsiento1.setHaber(selected.getSubtotalBase0());
+            haberAsiento1.setIdAsiento(asiento1);
+            haberAsiento1.setIdCuenta(ejbCuentaFacade.find(88));
+            haberAsiento1.setReferencia("Venta tarifa 0");
+            asiento1.getTransaccionList().add(haberAsiento1);
+        }
+        if (selected.getSubtotalBaseIva().doubleValue()>0){            
+            haberAsiento2.setDebe(BigDecimal.ZERO);
+            haberAsiento2.setHaber(selected.getSubtotalBaseIva());
+            haberAsiento2.setIdAsiento(asiento1);
+            haberAsiento2.setIdCuenta(ejbCuentaFacade.find(86));
+            haberAsiento2.setReferencia("Venta tarifa 12");
+            asiento1.getTransaccionList().add(haberAsiento2);
+            
+            haberIva.setDebe(BigDecimal.ZERO);
+            haberIva.setHaber(selected.getIva());
+            haberIva.setIdAsiento(asiento1);
+            haberIva.setIdCuenta(ejbCuentaFacade.find(66));
+            haberIva.setReferencia("Iva en venta");
+            asiento1.getTransaccionList().add(haberIva);
+        }        
+        ejbAsientoFacade.create(asiento1);
+        
+        double costo12=0;
+        double costo0=0;
+        for(Detallefacturav item:selected.getDetallefacturavList()){
+            int c=item.getCantidad();
+            BigDecimal cos=item.getIdProducto().getCosto();
+            if (item.getIdProducto().getIdImpuesto()==null)
+                costo0=costo0+cos.doubleValue()*c;
+            else
+                costo12=costo12+cos.doubleValue()*c;
+        }
+        Asiento asiento2=new  Asiento();
+        asiento2.setConcepto("Salida de mercadería con factura "+selected.getNumeroFactura());
+        asiento2.setFecha(new Date());
+        asiento2.setDebe(new BigDecimal(costo0+costo12));
+        asiento2.setHaber(new BigDecimal(costo0+costo12));
+        asiento2.setNumeroAsiento(ejbAsientoFacade.getNumeroAsientoMayor(1, 2015)+1);
+        asiento2.setNumeroDiario(1);
+        asiento2.setNumeroDocumento(selected.getNumeroFactura());
+        asiento2.setPeriodo(2015);
+        asiento2.setTransaccionList(new ArrayList<Transaccion>());
+        
+        Transaccion debeAsiento21=new Transaccion();
+        Transaccion debeAsiento22=new Transaccion();
+        if (costo12>0){
+            debeAsiento21.setDebe(new BigDecimal(costo12));
+            debeAsiento21.setHaber(BigDecimal.ZERO);
+            debeAsiento21.setIdAsiento(asiento2);
+            debeAsiento21.setIdCuenta(ejbCuentaFacade.find(95));
+            debeAsiento21.setReferencia("Costo de venta");
+            asiento2.getTransaccionList().add(debeAsiento21);
+        }
+        if (costo0>0){
+            debeAsiento22.setDebe(new BigDecimal(costo0));
+            debeAsiento22.setHaber(BigDecimal.ZERO);
+            debeAsiento22.setIdAsiento(asiento2);
+            debeAsiento22.setIdCuenta(ejbCuentaFacade.find(96));
+            debeAsiento22.setReferencia("Costo de venta");
+            asiento2.getTransaccionList().add(debeAsiento22);
+        }
+        
+        Transaccion haberInventario=new Transaccion();
+        haberInventario.setDebe(BigDecimal.ZERO);
+        haberInventario.setHaber(new BigDecimal(costo0+costo12));
+        haberInventario.setIdAsiento(asiento2);
+        haberInventario.setIdCuenta(ejbCuentaFacade.find(31));
+        haberInventario.setReferencia("Salida de inventario");
+        asiento2.getTransaccionList().add(haberInventario);
+        
+        ejbAsientoFacade.create(asiento2);
+        
+            
         persist(PersistAction.CREATE, ResourceBundle.getBundle("/Bundle").getString("CabecerafacturavCreated"));
-        this.updateKardex();
+        //this.updateKardex();
         if (!JsfUtil.isValidationFailed()) {
             items = null;    // Invalidate list of items to trigger re-query.
         }

@@ -19,15 +19,15 @@
                                 <p:separator style="width: 1050px"/>
                             </f:facet>
                             <p:outputLabel value="Numero Factura:" for="numeroFactura" />
-                            <p:inputText id="numeroFactura" value="#{cabecerafacturavController.selected.numeroFactura}" title="#{bundle.CreateCabecerafacturavTitle_numeroFactura}" />
+                            <p:inputText id="numeroFactura" readonly="true" value="#{cabecerafacturavController.selected.numeroFactura}" title="#{bundle.CreateCabecerafacturavTitle_numeroFactura}" />
                             <p:outputLabel value="#{bundle.CreateCabecerafacturavLabel_fecha}" for="fecha" />
-                            <p:calendar id="fecha" pattern="MM/dd/yyyy" value="#{cabecerafacturavController.selected.fecha}" title="#{bundle.EditCabecerafacturavTitle_fecha}"  showOn="button"/>
+                            <p:calendar id="fecha" readonly="true" pattern="MM/dd/yyyy" value="#{cabecerafacturavController.selected.fecha}" title="#{bundle.EditCabecerafacturavTitle_fecha}"  showOn="button"/>
                             <p:outputLabel value="Autorizacion SRI:" for="autorizacionSri" />
-                            <p:inputText id="autorizacionSri" value="#{cabecerafacturavController.selected.autorizacionSri}" title="#{bundle.CreateCabecerafacturavTitle_autorizacionSri}" />
+                            <p:inputText id="autorizacionSri" readonly="true" value="#{cabecerafacturavController.selected.autorizacionSri}" title="#{bundle.CreateCabecerafacturavTitle_autorizacionSri}" />
                             <p:outputLabel value="#{bundle.CreateCabecerafacturavLabel_establecimiento}" for="establecimiento" />
-                            <p:inputText id="establecimiento" value="#{cabecerafacturavController.selected.establecimiento}" title="#{bundle.CreateCabecerafacturavTitle_establecimiento}" />
+                            <p:inputText id="establecimiento" readonly="true" value="#{cabecerafacturavController.selected.establecimiento}" title="#{bundle.CreateCabecerafacturavTitle_establecimiento}" />
                             <p:outputLabel value="Punto Emision:" for="puntoEmision" />
-                            <p:inputText id="puntoEmision" value="#{cabecerafacturavController.selected.puntoEmision}" title="#{bundle.CreateCabecerafacturavTitle_puntoEmision}" />
+                            <p:inputText id="puntoEmision" readonly="true" value="#{cabecerafacturavController.selected.puntoEmision}" title="#{bundle.CreateCabecerafacturavTitle_puntoEmision}" />
 
                         </h:panelGrid>
                         <h:panelGrid columns="6">
@@ -135,7 +135,7 @@
                             </p:column>                       
 
                             <p:column style="width:32px;text-align: center">
-                                <p:commandButton update="detalleTbl" action="#{cabecerafacturavController.quitarItem()}" icon="ui-icon-close" title="Quitar">
+                                <p:commandButton update=":CabecerafacturavCreateForm:subtotal,:CabecerafacturavCreateForm:subtotalCero,:CabecerafacturavCreateForm:subtotalIva,:CabecerafacturavCreateForm:iva,:CabecerafacturavCreateForm:descuento,:CabecerafacturavCreateForm:total,:CabecerafacturavCreateForm:detalleTbl" action="#{cabecerafacturavController.quitarItem()}" icon="ui-icon-close" title="Quitar">
                                     <f:setPropertyActionListener value="#{item}" target="#{cabecerafacturavController.detalleSeleccionado}" />
                                 </p:commandButton>
                             </p:column>

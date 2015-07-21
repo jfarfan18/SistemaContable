@@ -92,9 +92,9 @@ public class ClienteController implements Serializable {
     }
 
     public void create() {
-        selected.setIdDocumentoCobrar(this.craerCuentaInventario("Documentos por cobrar cliete "+selected.getIdentificacion(),"1.1.2.1.",11));
+        selected.setIdDocumentoCobrar(this.craerCuentaInventario("Documentos por cobrar cliete "+selected.getIdentificacion(),"1.1.2.1.",10));
         ejbCuentaFacade.create(selected.getIdDocumentoCobrar());
-        selected.setIdCuentaCobrar(this.craerCuentaInventario("Cuentas por cobrar cliete "+selected.getIdentificacion(),"1.1.2.2.",14));
+        selected.setIdCuentaCobrar(this.craerCuentaInventario("Cuentas por cobrar cliete "+selected.getIdentificacion(),"1.1.2.2.",13));
         ejbCuentaFacade.create(selected.getIdCuentaCobrar());
         if (ejbFacade.getClientebycedula(selected.getIdentificacion())!=null){
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "Ya exste un cliente registrado con ese numero de identificacion");
