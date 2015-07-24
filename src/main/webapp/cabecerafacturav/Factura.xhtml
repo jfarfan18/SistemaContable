@@ -6,128 +6,17 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:p="http://primefaces.org/ui"
       xmlns:pe="http://primefaces.org/ui/extensions">
-    
-    <ui:composition template="/template.xhtml">
 
+    <ui:composition>
 
-        <ui:define name="title">
-            <h:outputText value="Kardex"></h:outputText>
-        </ui:define>
-
-        <ui:define name="body">
-            <h:form id="Kardex">
-                <p:panel header="KARDEX">
-                    <h:panelGrid columns="2" cellpadding="5">
-                        <p:outputLabel value="Producto:" for="producto" />
-                            <p:selectOneMenu id="producto" 
-                                             value="#{kardexController.producto}" effect="fade"
-                                             filter="true" 
-                                             filterMatchMode="startsWith">
-                                <f:selectItem itemLabel="..." />
-                                <f:selectItems value="#{productoController.itemsAvailableSelectOne}"
-                                               var="cuenta"
-                                               itemValue="#{cuenta}"
-                                               itemLabel="#{cuenta.idproducto}:#{cuenta.nombre}"/>
-                            </p:selectOneMenu>
-                        <p:outputLabel value="Hasta el:" for="fecha" />
-                        <p:calendar id="fecha" pattern="MM/dd/yyyy" value="#{kardexController.selectedfecha}" title="Fecha:"  showOn="button"/>
-                        <p:commandButton value="Cargar" icon="ui-icon-search" update="Kardex" action="#{kardexController.kardexByProductoAndDate()}" />
-                    </h:panelGrid>
-
-                    <p:dataTable id="datalist" value="#{kardexController.resultItems}" var="item"
-                                 selectionMode="single" selection="#{kardexController.selected}"
-                                 paginator="true" style="margin-bottom:20px"
-                                 rowKey="#{item.idkardex}"
-                                 rows="10"
-                                 rowsPerPageTemplate="10,20,30,40,50"
-                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {Exporters}" 
-                                 >
-                        <f:facet name="{Exporters}"> 
-                            <h:commandLink>
-                                <p:graphicImage library="img" name="PDF.png" width="24" alt="PDF" />
-                                <pe:exporter type="pdf" orientation="Landscape" target="datalist" fileName="kardex #{kardexController.nombreProducto}"/>
-                            </h:commandLink>
-                        </f:facet> 
-
-                        <p:columnGroup type="header">
-                            <p:row>
-                                <p:column colspan="12" headerText="KARDEX" />
-                            </p:row>
-                            <p:row>
-                                <p:column colspan="12" headerText="PRODUCTO: #{kardexController.nombreProducto}" />
-                            </p:row>
-                            <p:row>
-                                <p:column colspan="12" headerText="METODO PROMEDIO PONDERADO" />
-                            </p:row>
-                            <p:row>
-                                <p:column colspan="12" headerText="HASTA: #{kardexController.selectedfecha.toLocaleString()}" />
-                            </p:row>
-                            <p:row>
-                                <p:column rowspan="2" headerText="Fecha" />
-                                <p:column rowspan="2" headerText="Detalle" />
-                                <p:column rowspan="2" headerText="Factura" />
-                                <p:column colspan="3" headerText="Entradas" />
-                                <p:column colspan="3" headerText="Salidas" />
-                                <p:column colspan="3" headerText="Existencias" />
-                            </p:row>
-                            <p:row>
-                                <p:column headerText="Cant." />
-                                <p:column headerText="Costo" />
-                                <p:column headerText="Total" />
-                                <p:column headerText="Cant." />
-                                <p:column headerText="Costo" />
-                                <p:column headerText="Total" />
-                                <p:column headerText="Cant." />
-                                <p:column headerText="Costo" />
-                                <p:column headerText="Total" />
-                            </p:row>
-                        </p:columnGroup>
-
-                        <p:column>
-                            <h:outputText value="#{item.fecha}">
-                                <f:convertDateTime pattern="MM/dd/yyyy"/>
-                            </h:outputText>
-                        </p:column>
-                        <p:column>
-                            <h:outputText value="#{item.detalle}"/>
-                        </p:column>
-                        <p:column>
-                            <h:outputText value="#{item.numFactura}"/>
-                        </p:column>
-                        <p:column>
-                            <h:outputText value="#{item.cantEntradas}"/>
-                        </p:column>
-                        <p:column>
-                            <h:outputText value="#{item.costoEntradas}"/>
-                        </p:column>
-                        <p:column>
-                            <h:outputText value="#{item.subtotalEntradas}"/>
-                        </p:column>
-                        <p:column>
-                            <h:outputText value="#{item.cantSalidas}"/>
-                        </p:column>
-                        <p:column>
-                            <h:outputText value="#{item.costoSalidas}"/>
-                        </p:column>
-                            
-                        <p:column>
-                            <h:outputText value="#{item.subtotalSalidas}"/>
-                        </p:column>
-                        <p:column>
-                            <h:outputText value="#{item.totalCantidad}"/>
-                        </p:column>
-                        <p:column>
-                            <h:outputText value="#{item.totalCosto}"/>
-                        </p:column>
-                        <p:column>
-                            <h:outputText value="#{item.totalSubtotal}"/>
-                        </p:column>
-                        <f:facet name="footer">
-                        </f:facet>
-                    </p:dataTable>
+        <p:dialog id="FacturaViewDlg" widgetVar="FacturaDialog" modal="true" resizable="false" appendTo="@(body)" header="FACTURA">
+            <h:form id="FacturaForm">
+                <p:panel header="PREIMPRESION">
+                    <pe:documentViewer height="500" width="800" value="#{cabecerafacturavController.content}"/> 
                 </p:panel>
+                
             </h:form>
-        </ui:define>
-    </ui:composition>
+        </p:dialog>
 
+    </ui:composition>
 </html>

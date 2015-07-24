@@ -19,6 +19,7 @@ import java.sql.DriverManager;
 import java.util.HashMap;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import net.sf.jasperreports.engine.JRAbstractExporter;
@@ -83,15 +84,18 @@ public class GeneraReporte {
             String reporteAbsoluto = externalContext.getRealPath(directorioReporte + nombreReporte + ".jasper");
             System.out.println("Pasoooo2");
             JasperPrint impresionJasper = configuracion.creaReporte(reporteAbsoluto, parametros, conexion);
-            conexion.close();
+            bytesReporte = JasperExportManager.exportReportToPdf(impresionJasper);
+            conexion.close(); 
+            JasperExportManager.exportReportToPdfFile(impresionJasper, externalContext.getRealPath("")+"\\impuesto\\factura.pdf");
+            
 
-            if (tipo.equals("PDF")) {
-                this.exportaRepotePDF(nombreReportePdf, impresionJasper, externalContext, facesContext);
-                System.out.println("Exportado");
-            }else if (tipo.equals("XLS")) {
-                System.out.println("Exportando EXCELs");
-                this.exportReporteEXCEL(nombreReportePdf, impresionJasper, externalContext, facesContext);
-            }
+//            if (tipo.equals("PDF")) {
+//                this.exportaRepotePDF(nombreReportePdf, impresionJasper, externalContext, facesContext);
+//                System.out.println("Exportado");
+//            }else if (tipo.equals("XLS")) {
+//                System.out.println("Exportando EXCELs");
+//                this.exportReporteEXCEL(nombreReportePdf, impresionJasper, externalContext, facesContext);
+//            }
             
         } catch (Exception ex) {
             System.out.println("Error en exporta " + ex.toString());
