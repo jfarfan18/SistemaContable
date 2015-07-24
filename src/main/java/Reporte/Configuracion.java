@@ -77,7 +77,7 @@ public class Configuracion {
         return impresionJasper;
     }
     
-    
+
     /**
      * 
      * @param contexto

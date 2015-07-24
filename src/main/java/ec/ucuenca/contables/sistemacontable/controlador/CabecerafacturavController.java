@@ -1,6 +1,9 @@
 package ec.ucuenca.contables.sistemacontable.controlador;
 
 import Reporte.GeneraReporte;
+import com.lowagie.text.Document;
+import com.lowagie.text.Paragraph;
+import com.lowagie.text.pdf.PdfWriter;
 import ec.ucuenca.contables.sistemacontable.controlador.util.JsfUtil;
 import ec.ucuenca.contables.sistemacontable.controlador.util.JsfUtil.PersistAction;
 import ec.ucuenca.contables.sistemacontable.modelo.Asiento;
@@ -21,6 +24,8 @@ import ec.ucuenca.contables.sistemacontable.negocio.CuentaFacade;
 import ec.ucuenca.contables.sistemacontable.negocio.KardexFacade;
 import ec.ucuenca.contables.sistemacontable.negocio.ProductoFacade;
 import ec.ucuenca.contables.sistemacontable.negocio.TipocuentaFacade;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -41,9 +46,12 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
+import javax.faces.event.ComponentSystemEvent;
 import javax.inject.Named;
 import net.sf.jasperreports.engine.JRException;
 import org.primefaces.context.RequestContext;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 
 @Named("cabecerafacturavController")
 @SessionScoped
@@ -75,6 +83,7 @@ public class CabecerafacturavController implements Serializable {
     private Autorizaciones autorizacion;
     private Detallefacturav itemDetalle;
     private Cabecerafacturav aux;
+    private StreamedContent content; 
     
 
     public CabecerafacturavController() {
@@ -94,6 +103,29 @@ public class CabecerafacturavController implements Serializable {
     protected void initializeEmbeddableKey() {
     }
     
+    public void onPrerender() {  
+        System.out.println("Codigo "+selected.getIdcabeceraFacturaV());
+  
+        try {  
+      
+//            ByteArrayOutputStream out = new ByteArrayOutputStream();  
+//  
+//            Document document = new Document();  
+//            PdfWriter.getInstance(document, out);  
+//            document.open();  
+//  
+//            for (int i = 0; i < 50; i++) {  
+//                document.add(new Paragraph("All work and no play makes Jack a dull boy"));  
+//            }  
+//              System.out.println("onprete");
+//            document.close();  
+            imprimeComprobante(selected.getIdcabeceraFacturaV().longValue());
+            setContent(new DefaultStreamedContent(new ByteArrayInputStream(generaReporte.getBytesReporte()), "application/pdf"));  
+        } catch (Exception e) {  
+            e.printStackTrace();  
+        }  
+    }
+    
     public void imprimeComprobante(Long codIfip) throws JRException, IOException, ClassNotFoundException {
 
         String nombreReporte;
@@ -107,9 +139,9 @@ public class CabecerafacturavController implements Serializable {
 
         getGeneraReporte().getParametros().put("codigo", codIfip);
 
-        nombreReporte = "catalogoCuentas";
+        nombreReporte = "factura";
 
-        getGeneraReporte().exporta("/contable/reportes/catalogoCuentas/reporte/", nombreReporte,
+        getGeneraReporte().exporta("/cabecerafacturav/", nombreReporte,
                 nombreReporte + String.valueOf("CatalogoCuentas") + ".pdf",
                 "PDF", externalContext, facesContext);
 
@@ -311,11 +343,11 @@ public class CabecerafacturavController implements Serializable {
             ingresa=selected.getIdCliente().getIdCuentaCobrar();
         else
             ingresa=selected.getIdFormaPago().getIdCuentaAsiento();
-        for (Detallefacturav item:selected.getDetallefacturavList()){
-            int s=item.getIdProducto().getStock()-item.getCantidad();
-            item.getIdProducto().setStock(s);
-            ejbProductoFacade.edit(item.getIdProducto());
-        }
+//        for (Detallefacturav item:selected.getDetallefacturavList()){
+//            int s=item.getIdProducto().getStock()-item.getCantidad();
+//            item.getIdProducto().setStock(s);
+//            ejbProductoFacade.edit(item.getIdProducto());
+//        }
         
         Asiento asiento1=new  Asiento();
         asiento1.setConcepto("Venta de mercaderia factura "+selected.getNumeroFactura());
@@ -420,13 +452,26 @@ public class CabecerafacturavController implements Serializable {
         System.out.println(selected+"1");
         persist(PersistAction.CREATE, ResourceBundle.getBundle("/Bundle").getString("CabecerafacturavCreated"));
         //this.updateKardex();
+        autorizacion.setNumeroActual(autorizacion.getNumeroActual()+1);
+        ejbAutorizacionesFacade.edit(autorizacion);
+        aux=ejbFacade.getIdFactura(numeroFac);
+        System.out.println(numeroFac+" --  "+aux);
+        selected=aux;
+        onPrerender();
+        RequestContext.getCurrentInstance().execute("PF('FacturaDialog').show();");
         if (!JsfUtil.isValidationFailed()) {
             items = null;    // Invalidate list of items to trigger re-query.
         }
-        autorizacion.setNumeroActual(autorizacion.getNumeroActual()+1);
-        ejbAutorizacionesFacade.edit(autorizacion);
-        System.out.println(selected+"2");
-        RequestContext.getCurrentInstance().execute("PF('CabecerafacturavViewDialog').show()");
+        
+        
+        
+//        RequestContext.getCurrentInstance().execute("PF('FacturaDialog').show();");
+//        onPrerender();
+//        try {
+//            FacesContext.getCurrentInstance().getExternalContext().redirect("/SistemaContable/faces/cabecerafacturav/Factura.xhtml");
+//        } catch (IOException ex) {
+//            Logger.getLogger(CabecerafacturavController.class.getName()).log(Level.SEVERE, null, ex);
+//        }
     }
 
     public void update() {
@@ -570,6 +615,20 @@ public class CabecerafacturavController implements Serializable {
      */
     public void setAux(Cabecerafacturav aux) {
         this.aux = aux;
+    }
+
+    /**
+     * @return the content
+     */
+    public StreamedContent getContent() {
+        return content;
+    }
+
+    /**
+     * @param content the content to set
+     */
+    public void setContent(StreamedContent content) {
+        this.content = content;
     }
 
     @FacesConverter(forClass = Cabecerafacturav.class)
