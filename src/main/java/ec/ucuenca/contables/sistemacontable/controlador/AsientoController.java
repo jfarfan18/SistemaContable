@@ -1,5 +1,6 @@
 package ec.ucuenca.contables.sistemacontable.controlador;
 
+import Reporte.GeneraReporte;
 import ec.ucuenca.contables.sistemacontable.controlador.util.JsfUtil;
 import ec.ucuenca.contables.sistemacontable.controlador.util.JsfUtil.PersistAction;
 import ec.ucuenca.contables.sistemacontable.modelo.Asiento;
@@ -8,10 +9,13 @@ import ec.ucuenca.contables.sistemacontable.modelo.Cuenta;
 import ec.ucuenca.contables.sistemacontable.modelo.Transaccion;
 import ec.ucuenca.contables.sistemacontable.negocio.AsientoFacade;
 import ec.ucuenca.contables.sistemacontable.negocio.TransaccionFacade;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -22,11 +26,15 @@ import javax.ejb.EJBException;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 import javax.inject.Named;
+import net.sf.jasperreports.engine.JRException;
 import org.primefaces.context.RequestContext;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 
 @Named("asientoController")
 @SessionScoped
@@ -53,11 +61,14 @@ public class AsientoController implements Serializable {
     private Integer selecteddiario;
     private double totalDebeDiario;
     private double totalHaberDiario;
+    private GeneraReporte generaReporte;
+    private StreamedContent content; 
     
     public AsientoController() {
     }
 
     public List<Asiento> getItemsLibroDiario(){
+        onPrerender();
         if (selecteddiario==null)selecteddiario=0;
         if (selectedperiodo==null)selectedperiodo=0;
         List<Asiento> listaAsientos=ejbFacade.getAsientosLibro(this.selecteddiario, selectedperiodo);
@@ -72,6 +83,51 @@ public class AsientoController implements Serializable {
         if (totalDebeDiario!=totalHaberDiario)mensaje="Totales Debe y Haber no son iguales";else mensaje="";
         return listaAsientos;
         
+    }
+    
+    
+    public void onPrerender() {  
+  
+        try {  
+      
+//            ByteArrayOutputStream out = new ByteArrayOutputStream();  
+//  
+//            Document document = new Document();  
+//            PdfWriter.getInstance(document, out);  
+//            document.open();  
+//  
+//            for (int i = 0; i < 50; i++) {  
+//                document.add(new Paragraph("All work and no play makes Jack a dull boy"));  
+//            }  
+//              System.out.println("onprete");
+//            document.close();  
+            imprimeDiario();
+            setContent(new DefaultStreamedContent(new ByteArrayInputStream(generaReporte.getBytesReporte()), "application/pdf"));  
+        } catch (Exception e) {  
+            e.printStackTrace();  
+        }  
+    }
+    
+    public void imprimeDiario() throws JRException, IOException, ClassNotFoundException {
+
+        String nombreReporte;
+        ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+
+        //System.out.println("Imprime Movimiento");
+        GeneraReporte g;
+        setGeneraReporte(new GeneraReporte());
+        getGeneraReporte().setParametros(new HashMap<String, Object>());
+
+        getGeneraReporte().getParametros().put("SUBREPORT_DIR", facesContext.getExternalContext().getRealPath("")+"/reportes/");
+
+        nombreReporte = "diario";
+
+        getGeneraReporte().exporta("/reportes/", nombreReporte,
+                nombreReporte + String.valueOf("Diario") + ".pdf",
+                "PDF", externalContext, facesContext);
+
+        //System.out.println("Imprimió Movimiento");
     }
     
     public void quitarTransaccion(){
@@ -385,6 +441,34 @@ public class AsientoController implements Serializable {
      */
     public void setTotalHaberDiario(double totalHaberDiario) {
         this.totalHaberDiario = totalHaberDiario;
+    }
+
+    /**
+     * @return the generaReporte
+     */
+    public GeneraReporte getGeneraReporte() {
+        return generaReporte;
+    }
+
+    /**
+     * @param generaReporte the generaReporte to set
+     */
+    public void setGeneraReporte(GeneraReporte generaReporte) {
+        this.generaReporte = generaReporte;
+    }
+
+    /**
+     * @return the content
+     */
+    public StreamedContent getContent() {
+        return content;
+    }
+
+    /**
+     * @param content the content to set
+     */
+    public void setContent(StreamedContent content) {
+        this.content = content;
     }
 
     @FacesConverter(forClass = Asiento.class)

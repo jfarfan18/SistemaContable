@@ -23,6 +23,7 @@
                         <h:outputLabel for="numeroDiario" value="Número Diario:" style="font-weight:bold" />
                         <p:inputText id="numeroDiario" value="#{asientoController.selecteddiario}"  />
                         <p:commandButton value="Cargar" icon="ui-icon-search" update="LibroDiario" />
+                        <p:commandButton value="Imprimir" icon="ui-icon-search" update=":DiarioForm" oncomplete="PF('DiarioDialog').show()" />
                     </h:panelGrid>
 
 
@@ -91,7 +92,7 @@
                 </p:panel>
             </h:form>
 
-
+            <ui:include src="reportes/Diario.xhtml"/>
         </ui:define>
     </ui:composition>
 
