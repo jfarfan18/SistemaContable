@@ -122,8 +122,23 @@
                         <p:column>
                             <h:outputText value="#{item.totalSubtotal}"/>
                         </p:column>
-                        <f:facet name="footer">
-                        </f:facet>
+                        
+                        <p:columnGroup type="footer">  
+                            <p:row>  
+                                <p:column colspan="3" footerText="TOTALES:"  
+                                        style="text-align:right"  />  
+      
+                                <p:column footerText="#{kardexController.getTotalEntradasPorProducto(kardexController.producto.idproducto)}" style="text-align:right" />  
+                                <p:column footerText="-" style="text-align:center" />
+                                <p:column footerText="#{kardexController.getTotalEntradasSaldoPorProducto(kardexController.producto.idproducto)}" style="text-align:right" /> 
+                                <p:column footerText="#{kardexController.getTotalSalidasPorProducto(kardexController.producto.idproducto)}" style="text-align:right" />  
+                                <p:column footerText="-" style="text-align:center" />
+                                <p:column footerText="#{kardexController.getTotalSalidasSaldoPorProducto(kardexController.producto.idproducto)}" style="text-align:right" />
+                                <p:column footerText="#{kardexController.getCantidadByProducto(kardexController.producto.idproducto)}" style="text-align:right" />  
+                                <p:column footerText="#{kardexController.getCostoActualByProducto(kardexController.producto.idproducto)}" style="text-align:right" />  
+                                <p:column footerText="#{kardexController.getSubtotalByProducto(kardexController.producto.idproducto)}" style="text-align:right" />  
+                            </p:row>  
+                        </p:columnGroup>  
                     </p:dataTable>
                 </p:panel>
             </h:form>

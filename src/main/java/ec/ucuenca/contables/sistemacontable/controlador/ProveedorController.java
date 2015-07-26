@@ -14,10 +14,12 @@ import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
+import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
+import org.primefaces.context.RequestContext;
 
 @Named("proveedorController")
 @SessionScoped
@@ -56,14 +58,42 @@ public class ProveedorController implements Serializable {
     }
 
     public void create() {
+        if (ejbFacade.getProveedorbyidentificacion(selected.getIdentificacion())!=null){
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "Ya exste un Proveedor registrado con ese numero de identificacion");
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+            return;
+        }
+            
+        if (selected.getTipoIdentificacion()=='C'){
+            if (!this.validadorDeCedula(selected.getIdentificacion())){
+                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "La cedula ingresada es incorrecta");
+                FacesContext.getCurrentInstance().addMessage(null, msg);
+                return;
+            }
+        }
         persist(PersistAction.CREATE, ResourceBundle.getBundle("/Bundle").getString("ProveedorCreated"));
+        RequestContext.getCurrentInstance().execute("ProveedorCreateDialog.hide()");
         if (!JsfUtil.isValidationFailed()) {
             items = null;    // Invalidate list of items to trigger re-query.
         }
     }
 
     public void update() {
+        if (ejbFacade.getProveedorbyidentificacion(selected.getIdentificacion())!=null){
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "Ya existe un proveedor registrado con ese numero de identificacion");
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+            return;
+        }
+            
+        if (selected.getTipoIdentificacion()=='C'){
+            if (!this.validadorDeCedula(selected.getIdentificacion())){
+                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "La cedula ingresada es incorrecta");
+                FacesContext.getCurrentInstance().addMessage(null, msg);
+                return;
+            }
+        }
         persist(PersistAction.UPDATE, ResourceBundle.getBundle("/Bundle").getString("ProveedorUpdated"));
+        RequestContext.getCurrentInstance().execute("ProveedorCreateDialog.hide()");
     }
 
     public void destroy() {
@@ -162,4 +192,47 @@ public class ProveedorController implements Serializable {
 
     }
 
+    private boolean validadorDeCedula(String cedula) {
+        boolean cedulaCorrecta = false;
+
+        try {
+
+            if (cedula.length() == 10) // ConstantesApp.LongitudCedula
+            {
+                int tercerDigito = Integer.parseInt(cedula.substring(2, 3));
+                if (tercerDigito < 6) {
+// Coeficientes de validación cédula
+// El decimo digito se lo considera dígito verificador
+                    int[] coefValCedula = {2, 1, 2, 1, 2, 1, 2, 1, 2};
+                    int verificador = Integer.parseInt(cedula.substring(9, 10));
+                    int suma = 0;
+                    int digito = 0;
+                    for (int i = 0; i < (cedula.length() - 1); i++) {
+                        digito = Integer.parseInt(cedula.substring(i, i + 1)) * coefValCedula[i];
+                        suma += ((digito % 10) + (digito / 10));
+                    }
+
+                    if ((suma % 10 == 0) && (suma % 10 == verificador)) {
+                        cedulaCorrecta = true;
+                    } else if ((10 - (suma % 10)) == verificador) {
+                        cedulaCorrecta = true;
+                    } else {
+                        cedulaCorrecta = false;
+                    }
+                } else {
+                    cedulaCorrecta = false;
+                }
+            } else {
+                cedulaCorrecta = false;
+            }
+        } catch (NumberFormatException nfe) {
+            cedulaCorrecta = false;
+        } catch (Exception err) {
+            cedulaCorrecta = false;
+        }
+
+        if (!cedulaCorrecta) {
+        }
+        return cedulaCorrecta;
+    }
 }

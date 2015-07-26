@@ -888,4 +888,19 @@ public class CuentaController implements Serializable {
         return null;
     }
     
+    public List<Cuenta> getCuentasDetalleMovimiento(){
+        this.items=this.getFacade().findAll();
+        char d='D';
+        List<Cuenta> cdetalle=new ArrayList();
+        FacesContext facesContext= FacesContext.getCurrentInstance();
+        TransaccionController beanTransaccion = (TransaccionController)facesContext.getApplication().createValueBinding("#{transaccionController}").getValue(facesContext);
+        for(int i=0;i<items.size();i++){
+            if(items.get(i).getCategoria()==d){
+                if(beanTransaccion.cuentaSeMovio(items.get(i).getIdCuenta())){
+                    cdetalle.add(items.get(i));
+                }
+            }
+        }
+        return cdetalle;
+    }
 }

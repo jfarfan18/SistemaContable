@@ -4,7 +4,8 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pe="http://primefaces.org/ui/extensions">
 
     <ui:composition template="/template.xhtml">
 
@@ -28,16 +29,32 @@
             </h:panelGrid>
                     
             
-            <p:dataTable id="balancetable" var="cuentas" value="#{cuentaController.cuentasDetalle}">  
+            <p:dataTable id="balancetable" value="#{cuentaController.cuentasDetalleMovimiento}" var="cuentas"
+                         rowKey="#{cuentas.idCuenta}"
+                         paginator="true"
+                         paginatorTemplate="{Exporters}"
+                         >  
       
-                <f:facet name="header">  
-                    <h:outputText value="BALANCE DE COMPROBACION"></h:outputText>
-                </f:facet>
-      
+                <f:facet name="{Exporters}"> 
+                            <h:commandLink>
+                                <p:graphicImage value="img/pdf.gif" width="24" alt="PDF" />
+                                <pe:exporter type="pdf" orientation="Landscape" target="balancetable" fileName="bcomprobacion"/>
+                            </h:commandLink>
+                        </f:facet> 
+ 
                 <p:columnGroup type="header">  
+                    
                     <p:row>  
-                        <p:column rowspan="3" headerText="# Cuenta" /> 
-                        <p:column rowspan="3" headerText="Cuentas" />  
+                        <p:column colspan="6" headerText="BALANCE DE COMPROBACION" />  
+                    </p:row>  
+                    
+                    <p:row>  
+                        <p:column colspan="6" headerText="PERIODO: #{asientoController.selectedperiodo}" />  
+                    </p:row>  
+                    
+                    <p:row>  
+                        <p:column rowspan="2" headerText="# Cuenta" /> 
+                        <p:column rowspan="2" headerText="Cuentas" />  
                         <p:column colspan="2" headerText="Sumas" />  
                         <p:column colspan="2" headerText="Saldos" />  
                     </p:row>  
@@ -48,32 +65,30 @@
                         <p:column headerText="Debe" />  
                         <p:column headerText="Haber" />  
                     </p:row>  
-      
-
                 </p:columnGroup>  
       
                 <p:column>  
-                    #{cuentas.numeroCuenta}  
+                    <h:outputText value="#{cuentas.numeroCuenta}" />  
                 </p:column>  
       
                 <p:column>  
-                    #{cuentas.descripcion}  
+                    <h:outputText value="#{cuentas.descripcion}" />  
                 </p:column>  
       
                 <p:column style="text-align:right">  
-                    #{transaccionController.getSumaDebeByCuentaAndPeriodo(cuentas.numeroCuenta,asientoController.selectedperiodo)}  
+                    <h:outputText value="#{transaccionController.getSumaDebeByCuentaAndPeriodo(cuentas.numeroCuenta,asientoController.selectedperiodo)}" />  
                 </p:column>  
       
                 <p:column style="text-align:right">  
-                    #{transaccionController.getSumaHaberByCuentaAndPeriodo(cuentas.numeroCuenta,asientoController.selectedperiodo)}  
+                    <h:outputText value="#{transaccionController.getSumaHaberByCuentaAndPeriodo(cuentas.numeroCuenta,asientoController.selectedperiodo)}" />  
                 </p:column>  
       
                 <p:column style="text-align:right">  
-                    #{transaccionController.getSaldoDebeByCuentaAndPeriodo(cuentas.numeroCuenta,asientoController.selectedperiodo)}   
+                    <h:outputText value="#{transaccionController.getSaldoDebeByCuentaAndPeriodo(cuentas.numeroCuenta,asientoController.selectedperiodo)}" />   
                 </p:column>  
                 
                 <p:column style="text-align:right">  
-                    #{transaccionController.getSaldoHaberByCuentaAndPeriodo(cuentas.numeroCuenta,asientoController.selectedperiodo)} 
+                    <h:outputText value="#{transaccionController.getSaldoHaberByCuentaAndPeriodo(cuentas.numeroCuenta,asientoController.selectedperiodo)}" /> 
                 </p:column>
       
                 <p:columnGroup type="footer">  
@@ -90,8 +105,7 @@
                         <p:column footerText="#{cuentaController.getTotalSaldosHaberByPeriodo(asientoController.selectedperiodo)}" style="text-align:right"/>  
                     </p:row>  
                 </p:columnGroup>  
-       
-      
+         
             </p:dataTable>  
         </h:form> 
             

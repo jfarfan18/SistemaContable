@@ -6,6 +6,7 @@ import ec.ucuenca.contables.sistemacontable.controlador.util.JsfUtil.PersistActi
 import ec.ucuenca.contables.sistemacontable.negocio.FormapagoFacade;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -162,4 +163,25 @@ public class FormapagoController implements Serializable {
 
     }
 
+    public List<Formapago> getFormasPagoCompra() {
+        items=getFacade().findAll();
+        List<Formapago> formas= new ArrayList();
+        for(int i=0;i<items.size();i++){
+            if(items.get(i).getIdCuentaAsiento().getNumeroCuenta().startsWith("1.1.1.1") || items.get(i).getIdCuentaAsiento().getNumeroCuenta().startsWith("1.1.1.2") || items.get(i).getIdCuentaAsiento().getNumeroCuenta().startsWith("2.1.1.1") || items.get(i).getIdCuentaAsiento().getNumeroCuenta().startsWith("2.1.1.2")){
+                formas.add(items.get(i));
+            }
+        }
+        return formas;
+    }
+
+    public List<Formapago> getFormasPagoVentas() {
+        items=getFacade().findAll();
+        List<Formapago> formas= new ArrayList();
+        for(int i=0;i<items.size();i++){
+            if(items.get(i).getIdCuentaAsiento().getNumeroCuenta().startsWith("1.1.1.1") || items.get(i).getIdCuentaAsiento().getNumeroCuenta().startsWith("1.1.1.2") || items.get(i).getIdCuentaAsiento().getNumeroCuenta().startsWith("1.1.2.1") || items.get(i).getIdCuentaAsiento().getNumeroCuenta().startsWith("1.1.2.2")){
+                formas.add(items.get(i));
+            }
+        }
+        return formas;
+    }
 }

@@ -77,14 +77,16 @@ public class GeneraReporte {
             Configuracion configuracion = new Configuracion();
             Connection conexion = DriverManager
           .getConnection("jdbc:mysql://localhost/SistemasContables?"
-              + "user=root&password=1234");
+              + "user=root&password=gerenciales");
             System.out.println("Pasoooo");
             configuracion.compilaReporte(externalContext, directorioReporte, nombreReporte);
             System.out.println("Pasoooo1");
             String reporteAbsoluto = externalContext.getRealPath(directorioReporte + nombreReporte + ".jasper");
             System.out.println("Pasoooo2");
             JasperPrint impresionJasper = configuracion.creaReporte(reporteAbsoluto, parametros, conexion);
+            System.out.println("Pasoooo3");
             bytesReporte = JasperExportManager.exportReportToPdf(impresionJasper);
+            System.out.println("Pasoooo4");
             conexion.close(); 
             JasperExportManager.exportReportToPdfFile(impresionJasper, externalContext.getRealPath("")+"\\impuesto\\factura.pdf");
             
