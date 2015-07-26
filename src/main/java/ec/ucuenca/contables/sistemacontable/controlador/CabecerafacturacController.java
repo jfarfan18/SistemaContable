@@ -100,6 +100,7 @@ public class CabecerafacturacController implements Serializable {
         if (!JsfUtil.isValidationFailed()) {
             items = null;    // Invalidate list of items to trigger re-query.
         }
+        RequestContext.getCurrentInstance().execute("CabecerafacturacCreateDlg.hide()");
     }
 
     public void update() {
@@ -294,6 +295,11 @@ public class CabecerafacturacController implements Serializable {
     }
     
     public void agregarItem(){
+        if(cantidadAgregar==0){
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "No puede ingresar 0 productos de  "+nuevoItem.getNombre());
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+            return;
+        }
         Detallefactuc item=new Detallefactuc();
         item.setCantidad(cantidadAgregar);
         item.setPrecioUnitario(costoAgregar);
@@ -367,7 +373,11 @@ public class CabecerafacturacController implements Serializable {
             k.setTipo('E');
             k.setTotalCantidad(beanKardex.getCantidadByProducto(this.selected.getDetallefactucList().get(i).getIdProducto().getIdproducto())+k.getCantidad());
             k.setTotalSubtotal(beanKardex.getSubtotalByProducto(this.selected.getDetallefactucList().get(i).getIdProducto().getIdproducto()).add(k.getSubtotal()));
-            k.setTotalCosto(k.getTotalSubtotal().divide(new BigDecimal(k.getTotalCantidad()),3, RoundingMode.HALF_UP));
+            if(k.getTotalCantidad()!=0){
+                k.setTotalCosto(k.getTotalSubtotal().divide(new BigDecimal(k.getTotalCantidad()),3, RoundingMode.HALF_UP));
+            }else{
+                k.setTotalCosto(BigDecimal.ZERO);
+            }
             kardexlist.add(k);
             
             //beanKardex.setKardexDataFromVenta(selected.getDetallefacturavList().get(i), selected);

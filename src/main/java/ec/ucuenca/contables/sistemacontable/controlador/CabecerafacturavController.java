@@ -693,8 +693,11 @@ public class CabecerafacturavController implements Serializable {
             k.setTotalCantidad(selected.getDetallefacturavList().get(i).getIdProducto().getStock()-k.getCantidad());
             //k.setTotalCantidad(beanKardex.getCantidadByProducto(this.selected.getDetallefacturavList().get(i).getIdProducto().getIdproducto())-k.getCantidad());
             k.setTotalSubtotal(beanKardex.getSubtotalByProducto(this.selected.getDetallefacturavList().get(i).getIdProducto().getIdproducto()).subtract(k.getSubtotal()));
-            k.setTotalCosto(k.getTotalSubtotal().divide(new BigDecimal(k.getTotalCantidad()),3, RoundingMode.HALF_UP));
-            
+            if(k.getTotalCantidad()!=0){
+                k.setTotalCosto(k.getTotalSubtotal().divide(new BigDecimal(k.getTotalCantidad()),3, RoundingMode.HALF_UP));
+            }else{
+                k.setTotalCosto(BigDecimal.ZERO);
+            }
             kardexlist.add(k);
             //beanKardex.setKardexDataFromVenta(selected.getDetallefacturavList().get(i), selected);
             this.updateCantidadProducto(k.getIdProducto(), k.getTotalCantidad());

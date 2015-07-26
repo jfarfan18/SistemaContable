@@ -4,7 +4,8 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pe="http://primefaces.org/ui/extensions">
 
     <ui:composition template="/template.xhtml">
 
@@ -45,72 +46,72 @@
                         <p:commandButton value="Cargar" icon="ui-icon-search" update="LibroMayor" />
                     </h:panelGrid>
                     
-                    <h:panelGrid columns="2" cellpadding="5">
-                        <h:outputLabel for="# Cuenta" value="# Cuenta:" style="font-weight:bold" />
-                        <p:inputText id="numero" value="#{cuentaController.getNumeroCuentaByNumero(transaccionController.numcuenta)}" disabled="true"/>
-                    </h:panelGrid>
-                    <h:panelGrid columns="2" cellpadding="5">
-                        <h:outputLabel for="Nombre" value="Nombre :" style="font-weight:bold" />
-                        <p:inputText id="nombre" value="#{cuentaController.getNombreCuentaByNumero(transaccionController.numcuenta)}" disabled="true"/>
-                    </h:panelGrid>
                     <p:dataTable id="datalist" value="#{transaccionController.getItemsByCuentaPeriodoDiario(asientoController.selectedperiodo,asientoController.selecteddiario)}" var="item"
                                  selectionMode="single" 
                                  paginator="true"
                                  rowKey="#{item.idTransaccion}"
                                  rows="10"
                                  rowsPerPageTemplate="10,20,30,40,50"
-                                 widgetVar="mayorTable"  
+                                 widgetVar="mayorTable"
+                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {Exporters}" 
                                  >
 
-                     
+                        <f:facet name="{Exporters}"> 
+                            <h:commandLink>
+                                <p:graphicImage value="img/pdf.gif" width="24" alt="PDF" />
+                                <pe:exporter type="pdf" target="datalist" fileName="Mayor #{cuentaController.getNombreCuentaByNumero(transaccionController.numcuenta)}"/>
+                            </h:commandLink>
+                        </f:facet> 
+                        
+                        <p:columnGroup type="header">
+                            <p:row>
+                                <p:column colspan="8" headerText="LIBRO MAYOR" />
+                            </p:row>
+                            <p:row>
+                                <p:column colspan="8" headerText="CUENTA: #{cuentaController.getNumeroCuentaByNumero(transaccionController.numcuenta)} - #{cuentaController.getNombreCuentaByNumero(transaccionController.numcuenta)}" />
+                            </p:row>
+                            <p:row>
+                                <p:column colspan="8" headerText="PERIODO: #{asientoController.selectedperiodo}" />
+                            </p:row>
+                            <p:row>
+                                <p:column colspan="8" headerText="NUMERO DE DIARIO: #{asientoController.selecteddiario}" />
+                            </p:row>
+                            <p:row>
+                                <p:column headerText="FECHA" />
+                                <p:column headerText="NUMERO ASIENTO" />
+                                <p:column headerText="CONCEPTO" />
+                                <p:column headerText="NUMERO DIARIO" />
+                                <p:column headerText="PERIODO" />
+                                <p:column headerText="DEBE" />
+                                <p:column headerText="HABER" />
+                                <p:column headerText="SALDO" />
+                            </p:row>
+                        </p:columnGroup>
+                        
                         <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="FECHA"/>
-                            </f:facet>
                             <h:outputText value="#{item.idAsiento.fecha}">
                                 <f:convertDateTime pattern="dd/MM/yyyy" />
                             </h:outputText>
                         </p:column>                        
                         <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="NUMERO ASIENTO"/>
-                            </f:facet>
                             <h:outputText value="#{item.idAsiento.numeroAsiento}"/>
                         </p:column>                        
                         <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="CONCEPTO"/>
-                            </f:facet>
                             <h:outputText value="#{item.idAsiento.concepto}"/>
                         </p:column>
                         <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="NUMERO DIARIO"/>
-                            </f:facet>
                             <h:outputText value="#{item.idAsiento.numeroDiario}"/>
                         </p:column>
                         <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="PERIODO"/>
-                            </f:facet>
                             <h:outputText value="#{item.idAsiento.periodo}"/>
                         </p:column>
                         <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="DEBE"/>
-                            </f:facet>
                             <h:outputText value="#{item.debe}"/>      
                         </p:column>
                         <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="HABER"/>
-                            </f:facet>
                             <h:outputText value="#{item.haber}"/>
                         </p:column>
                         <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="SALDO"/>
-                            </f:facet>
                             <h:outputText value="#{transaccionController.getSaldoByCuentaAndTrans(item.idCuenta.numeroCuenta, item.idTransaccion)}"/>
                         </p:column>
                        

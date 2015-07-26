@@ -145,7 +145,7 @@
                                 <p:outputLabel value="Forma de Pago:" for="idFormaPago" />
                                 <p:selectOneMenu id="idFormaPago" 
                                                  value="#{cabecerafacturavController.selected.idFormaPago}" >
-                                    <f:selectItems value="#{formapagoController.itemsAvailableSelectOne}"
+                                    <f:selectItems value="#{formapagoController.formasPagoVentas}"
                                                    var="idFormaPagoItem"
                                                    itemValue="#{idFormaPagoItem}"
                                                    itemLabel="#{idFormaPagoItem.descripcion}"/>

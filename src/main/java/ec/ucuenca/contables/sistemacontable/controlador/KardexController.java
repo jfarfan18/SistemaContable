@@ -279,8 +279,8 @@ public class KardexController implements Serializable {
     }
     
     public BigDecimal getCostoActualByProducto(Integer producto){
-        BigDecimal total=new BigDecimal(-1);
-        this.items=this.ejbFacade.getKardexOrderedByFecha();
+        BigDecimal total=new BigDecimal(0);
+        this.items=this.findKardexByProducto(producto);
         if(items.size()>0){
             total=items.get(items.size()-1).getTotalCosto();
         }
@@ -325,5 +325,57 @@ public class KardexController implements Serializable {
     public void updateCantidadProducto(Producto idproducto, Integer cantidad){
         idproducto.setStock(cantidad);
         ejbProductoFacade.edit(idproducto);
+    }
+    
+    public Integer getTotalEntradasPorProducto(Integer idproducto){
+        this.items=getFacade().getKardexOrderedByFecha();
+        Integer total=0;
+        for(int i=0;i<items.size();i++){
+            if(items.get(i).getIdProducto().getIdproducto()==idproducto){
+                if(items.get(i).getTipo()=='E'){
+                    total=total+items.get(i).getCantidad();
+                }
+            }
+        }
+        return total;
+    }
+    
+    public BigDecimal getTotalEntradasSaldoPorProducto(Integer idproducto){
+        this.items=getFacade().getKardexOrderedByFecha();
+        BigDecimal total=new BigDecimal(0);
+        for(int i=0;i<items.size();i++){
+            if(items.get(i).getIdProducto().getIdproducto()==idproducto){
+                if(items.get(i).getTipo()=='E'){
+                    total=total.add(items.get(i).getSubtotal());
+                }
+            }
+        }
+        return total;
+    }
+    
+    public Integer getTotalSalidasPorProducto(Integer idproducto){
+        this.items=getFacade().getKardexOrderedByFecha();
+        Integer total=0;
+        for(int i=0;i<items.size();i++){
+            if(items.get(i).getIdProducto().getIdproducto()==idproducto){
+                if(items.get(i).getTipo()=='S'){
+                    total=total+items.get(i).getCantidad();
+                }
+            }
+        }
+        return total;
+    }
+    
+    public BigDecimal getTotalSalidasSaldoPorProducto(Integer idproducto){
+        this.items=getFacade().getKardexOrderedByFecha();
+        BigDecimal total=new BigDecimal(0);
+        for(int i=0;i<items.size();i++){
+            if(items.get(i).getIdProducto().getIdproducto()==idproducto){
+                if(items.get(i).getTipo()=='S'){
+                    total=total.add(items.get(i).getSubtotal());
+                }
+            }
+        }
+        return total;
     }
 }
