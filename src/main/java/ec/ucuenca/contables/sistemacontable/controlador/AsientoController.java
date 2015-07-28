@@ -16,6 +16,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -31,6 +32,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 import javax.inject.Named;
+import javax.validation.ConstraintViolationException;
 import net.sf.jasperreports.engine.JRException;
 import org.primefaces.context.RequestContext;
 import org.primefaces.model.DefaultStreamedContent;
@@ -278,11 +280,13 @@ public class AsientoController implements Serializable {
         selected.setDebe(new BigDecimal(sumaDebe));
         selected.setHaber(new BigDecimal(sumaHaber));
         selected.setNumeroAsiento(ejbFacade.getNumeroAsientoMayor(selected.getNumeroDiario(), selected.getPeriodo())+1);
+        
         persist(PersistAction.CREATE, "Asiento creado correctamente");
         if (!JsfUtil.isValidationFailed()) {
             items = null;    // Invalidate list of items to trigger re-query.
         }
         RequestContext.getCurrentInstance().execute("AsientoCreateDialog.hide()");
+        
     }
 
     public void update() {
@@ -326,10 +330,19 @@ public class AsientoController implements Serializable {
                 } else {
                     JsfUtil.addErrorMessage(ex, ResourceBundle.getBundle("/Bundle").getString("PersistenceErrorOccured"));
                 }
-            } catch (Exception ex) {
+            }catch (ConstraintViolationException cve) {
+ 
+                System.out.print("=========="+cve.getConstraintViolations().toString());
+                Iterator it=cve.getConstraintViolations().iterator();
+                while(it.hasNext()){
+                    System.out.println(it.next().toString());
+                }
+                System.out.print("==========");
+            } 
+            catch (Exception ex) {
                 Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
                 JsfUtil.addErrorMessage(ex, ResourceBundle.getBundle("/Bundle").getString("PersistenceErrorOccured"));
-            } 
+            }
         }
     }
 

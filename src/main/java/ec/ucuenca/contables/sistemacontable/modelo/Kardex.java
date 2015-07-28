@@ -46,7 +46,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Kardex.findByTotalCosto", query = "SELECT k FROM Kardex k WHERE k.totalCosto = :totalCosto"),
     @NamedQuery(name = "Kardex.findByTotalSubtotal", query = "SELECT k FROM Kardex k WHERE k.totalSubtotal = :totalSubtotal"),
     //personalizadas
-    @NamedQuery(name = "Kardex.findAllOrderedByFecha", query = "SELECT k FROM Kardex k ORDER BY k.fecha")
+    @NamedQuery(name = "Kardex.findAllOrderedByFecha", query = "SELECT k FROM Kardex k ORDER BY k.fecha,k.idkardex")
 })
 public class Kardex implements Serializable {
     @JoinColumn(name = "idFacturaC", referencedColumnName = "idcabeceraFacturaC")

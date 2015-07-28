@@ -50,4 +50,8 @@ public class CuentaFacade extends AbstractFacade<Cuenta> {
         return query.getResultList();
     }
     
+    public List<Cuenta> findAllOrderedByNumeroCuenta() {
+        Query query = this.em.createNamedQuery(Cuenta.findAllOrderedByNumeroCuenta);
+        return query.getResultList();
+    }
 }

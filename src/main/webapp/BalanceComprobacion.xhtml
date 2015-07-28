@@ -25,6 +25,8 @@
                                            var="periodos"
                                            itemValue="#{periodos}" itemLabel="#{periodos}"/>
                         </p:selectOneMenu>
+                        <h:outputLabel for="numeroDiario" value="Número Diario:" style="font-weight:bold" />
+                        <p:inputText id="numeroDiario" value="#{asientoController.selecteddiario}"  />
                         <p:commandButton value="Generar" icon="ui-icon-search" update="balancetable" />
             </h:panelGrid>
                     
@@ -53,6 +55,10 @@
                     </p:row>  
                     
                     <p:row>  
+                        <p:column colspan="6" headerText="NUMERO DE DIARIO: #{asientoController.selecteddiario}" />  
+                    </p:row>  
+                    
+                    <p:row>  
                         <p:column rowspan="2" headerText="# Cuenta" /> 
                         <p:column rowspan="2" headerText="Cuentas" />  
                         <p:column colspan="2" headerText="Sumas" />  
@@ -76,19 +82,19 @@
                 </p:column>  
       
                 <p:column style="text-align:right">  
-                    <h:outputText value="#{transaccionController.getSumaDebeByCuentaAndPeriodo(cuentas.numeroCuenta,asientoController.selectedperiodo)}" />  
+                    <h:outputText value="#{transaccionController.getSumaDebeByCuentaPeriodoDiario(cuentas.numeroCuenta,asientoController.selectedperiodo,asientoController.selecteddiario)}" />  
                 </p:column>  
       
                 <p:column style="text-align:right">  
-                    <h:outputText value="#{transaccionController.getSumaHaberByCuentaAndPeriodo(cuentas.numeroCuenta,asientoController.selectedperiodo)}" />  
+                    <h:outputText value="#{transaccionController.getSumaHaberByCuentaPeriodoDiario(cuentas.numeroCuenta,asientoController.selectedperiodo,asientoController.selecteddiario)}" />  
                 </p:column>  
       
                 <p:column style="text-align:right">  
-                    <h:outputText value="#{transaccionController.getSaldoDebeByCuentaAndPeriodo(cuentas.numeroCuenta,asientoController.selectedperiodo)}" />   
+                    <h:outputText value="#{transaccionController.getSaldoDebeByCuentaPeriodoDiario(cuentas.numeroCuenta,asientoController.selectedperiodo,asientoController.selecteddiario)}" />   
                 </p:column>  
                 
                 <p:column style="text-align:right">  
-                    <h:outputText value="#{transaccionController.getSaldoHaberByCuentaAndPeriodo(cuentas.numeroCuenta,asientoController.selectedperiodo)}" /> 
+                    <h:outputText value="#{transaccionController.getSaldoHaberByCuentaPeriodoDiario(cuentas.numeroCuenta,asientoController.selectedperiodo,asientoController.selecteddiario)}" /> 
                 </p:column>
       
                 <p:columnGroup type="footer">  
@@ -96,13 +102,13 @@
                         <p:column colspan="2" footerText="TOTALES:"  
                                     style="text-align:right"  />  
       
-                        <p:column footerText="#{cuentaController.getTotalSumasDebeByPeriodo(asientoController.selectedperiodo)}" style="text-align:right" />  
+                        <p:column footerText="#{cuentaController.getTotalSumasDebeByPeriodoDiario(asientoController.selectedperiodo,asientoController.selecteddiario)}" style="text-align:right" />  
       
-                        <p:column footerText="#{cuentaController.getTotalSumasHaberByPeriodo(asientoController.selectedperiodo)}" style="text-align:right"/>  
+                        <p:column footerText="#{cuentaController.getTotalSumasHaberByPeriodoDiario(asientoController.selectedperiodo,asientoController.selecteddiario)}" style="text-align:right"/>  
                         
-                        <p:column footerText="#{cuentaController.getTotalSaldosDebeByPeriodo(asientoController.selectedperiodo)}" style="text-align:right"/>  
+                        <p:column footerText="#{cuentaController.getTotalSaldosDebeByPeriodoDiario(asientoController.selectedperiodo,asientoController.selecteddiario)}" style="text-align:right"/>  
       
-                        <p:column footerText="#{cuentaController.getTotalSaldosHaberByPeriodo(asientoController.selectedperiodo)}" style="text-align:right"/>  
+                        <p:column footerText="#{cuentaController.getTotalSaldosHaberByPeriodoDiario(asientoController.selectedperiodo,asientoController.selecteddiario)}" style="text-align:right"/>  
                     </p:row>  
                 </p:columnGroup>  
          

@@ -1,5 +1,6 @@
 package ec.ucuenca.contables.sistemacontable.controlador;
 
+import Reporte.GeneraReporte;
 import ec.ucuenca.contables.sistemacontable.modelo.Cabecerafacturac;
 import ec.ucuenca.contables.sistemacontable.controlador.util.JsfUtil;
 import ec.ucuenca.contables.sistemacontable.controlador.util.JsfUtil.PersistAction;
@@ -13,12 +14,15 @@ import ec.ucuenca.contables.sistemacontable.negocio.CabecerafacturacFacade;
 import ec.ucuenca.contables.sistemacontable.negocio.KardexFacade;
 import ec.ucuenca.contables.sistemacontable.negocio.ProductoFacade;
 import ec.ucuenca.contables.sistemacontable.negocio.ProveedorFacade;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -29,10 +33,14 @@ import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
+import net.sf.jasperreports.engine.JRException;
 import org.primefaces.context.RequestContext;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 
 @Named("cabecerafacturacController")
 @SessionScoped
@@ -57,6 +65,9 @@ public class CabecerafacturacController implements Serializable {
     private ProductoFacade ejbProductoFacade;
     @EJB
     private ec.ucuenca.contables.sistemacontable.negocio.AsientoFacade ejbAsientoFacade;
+    private StreamedContent content; 
+    private GeneraReporte generaReporte;
+    private Cabecerafacturac aux;
     
     public CabecerafacturacController() {
     }
@@ -94,13 +105,19 @@ public class CabecerafacturacController implements Serializable {
         this.selected.setAutorizacionSri(this.selected.getIdProveedor().getAutorizacion().getNumeroAutorizacion().toString());
         this.selected.setEstablecimiento(this.selected.getIdProveedor().getAutorizacion().getEstablecimeinto());
         this.selected.setPuntoEmision(this.selected.getIdProveedor().getAutorizacion().getPuntoEmision());
+        
         this.updateKardex();
         persist(PersistAction.CREATE, ResourceBundle.getBundle("/Bundle").getString("CabecerafacturacCreated"));
         this.createAsiento();
+        /*String numeroFac=selected.getNumeroFacturaC();
+        aux=ejbFacade.getIdFactura(numeroFac);
+        System.out.println(numeroFac+" --  "+aux);
+        selected=aux;
+        onPrerender();
+        RequestContext.getCurrentInstance().execute("PF('FacturaDialog').show();");*/
         if (!JsfUtil.isValidationFailed()) {
             items = null;    // Invalidate list of items to trigger re-query.
         }
-        RequestContext.getCurrentInstance().execute("CabecerafacturacCreateDlg.hide()");
     }
 
     public void update() {
@@ -418,18 +435,18 @@ public class CabecerafacturacController implements Serializable {
         FacesContext facesContext= FacesContext.getCurrentInstance();
         CuentaController beanCuenta = (CuentaController)facesContext.getApplication().createValueBinding("#{cuentaController}").getValue(facesContext);
      
-        
+        /*
         Asiento a=new Asiento();
         a.setConcepto("Compra de Mercaderia");
         a.setFecha(selected.getFecha());
         a.setNumeroDocumento(selected.getNumeroFacturaC());
         a.setNumeroDiario(1);
         a.setPeriodo(selected.getFecha().getYear());
-        a.setNumeroAsiento(1);
         a.setDebe(new BigDecimal(0));
         a.setHaber(new BigDecimal(0));
         List<Transaccion> transacciones=new ArrayList();
         Transaccion t1=new Transaccion();
+        t1.setIdAsiento(a);
         t1.setIdCuenta(beanCuenta.getCuentaInventario());
         t1.setReferencia("Compra Fac "+selected.getNumeroFacturaC());
         t1.setDebe(new BigDecimal(0));
@@ -440,6 +457,7 @@ public class CabecerafacturacController implements Serializable {
         transacciones.add(t1);
         a.setDebe(a.getDebe().add(t1.getDebe()));
         Transaccion fpago=new Transaccion();
+        fpago.setIdAsiento(a);
         fpago.setIdCuenta(selected.getIdFormaPago().getIdCuentaAsiento());
         fpago.setDebe(new BigDecimal(0));
         fpago.setHaber(selected.getTotal());
@@ -448,6 +466,7 @@ public class CabecerafacturacController implements Serializable {
         a.setHaber(a.getHaber().add(fpago.getHaber()));
         if(selected.getIva().doubleValue()!=0.0){
             Transaccion ivap=new Transaccion();
+            ivap.setIdAsiento(a);
             ivap.setIdCuenta(beanCuenta.getCuentaIvaPagado());
             ivap.setDebe(selected.getIva());
             ivap.setHaber(new BigDecimal(0));
@@ -462,11 +481,116 @@ public class CabecerafacturacController implements Serializable {
         beanAsiento.preparaNuevo();
         beanAsiento.getSelected().setConcepto(a.getConcepto());
         beanAsiento.getSelected().setFecha(a.getFecha());
-        beanAsiento.getSelected().setTransaccionList(a.getTransaccionList());
         for(int i=0;i<a.getTransaccionList().size();i++){
             a.getTransaccionList().get(i).setIdAsiento(beanAsiento.getSelected());
         }
+        
+        beanAsiento.getSelected().setTransaccionList(a.getTransaccionList());
         beanAsiento.getSelected().setConcepto(a.getConcepto());
-        beanAsiento.create();
+        //this.ejbAsientoFacade.create(beanAsiento.getSelected());
+        beanAsiento.create();*/
+        Asiento asiento1=new  Asiento();
+        asiento1.setConcepto("Compra fac "+selected.getNumeroFacturaC());
+        asiento1.setFecha(new Date());
+        asiento1.setDebe(selected.getTotal());
+        asiento1.setHaber(selected.getTotal());
+        asiento1.setNumeroAsiento(ejbAsientoFacade.getNumeroAsientoMayor(1, 2015)+1);
+        asiento1.setNumeroDiario(1);
+        asiento1.setNumeroDocumento(selected.getNumeroFacturaC());
+        asiento1.setPeriodo(2015);
+        asiento1.setTransaccionList(new ArrayList<Transaccion>());
+        
+        Transaccion debeAsiento1=new Transaccion();
+        debeAsiento1.setDebe(BigDecimal.ZERO);
+        debeAsiento1.setHaber(selected.getTotal());
+        debeAsiento1.setIdAsiento(asiento1);
+        debeAsiento1.setIdCuenta(selected.getIdFormaPago().getIdCuentaAsiento());
+        debeAsiento1.setReferencia("Salida de dinero");
+        asiento1.getTransaccionList().add(debeAsiento1);
+        
+        Transaccion haberAsiento1=new Transaccion();
+        Transaccion haberAsiento2=new Transaccion();
+        Transaccion haberIva=new Transaccion();
+
+            haberAsiento1.setDebe(selected.getSubtotalBase0().add(selected.getSubtotalBaseIva()));
+            haberAsiento1.setHaber(BigDecimal.ZERO);
+            haberAsiento1.setIdAsiento(asiento1);
+            haberAsiento1.setIdCuenta(beanCuenta.getCuentaInventario());
+            haberAsiento1.setReferencia("Compra Mercadera");
+            asiento1.getTransaccionList().add(haberAsiento1);
+
+        if (selected.getSubtotalBaseIva().doubleValue()>0){            
+            
+            haberIva.setDebe(selected.getIva());
+            haberIva.setHaber(BigDecimal.ZERO);
+            haberIva.setIdAsiento(asiento1);
+            haberIva.setIdCuenta(beanCuenta.getCuentaIvaPagado());
+            haberIva.setReferencia("Iva en Compras");
+            asiento1.getTransaccionList().add(haberIva);
+        }        
+        ejbAsientoFacade.create(asiento1);
     }
+    
+    public void onPrerender() {  
+        System.out.println("Codigo "+selected.getIdcabeceraFacturaC());
+  
+        try {  
+      
+//            ByteArrayOutputStream out = new ByteArrayOutputStream();  
+//  
+//            Document document = new Document();  
+//            PdfWriter.getInstance(document, out);  
+//            document.open();  
+//  
+//            for (int i = 0; i < 50; i++) {  
+//                document.add(new Paragraph("All work and no play makes Jack a dull boy"));  
+//            }  
+//              System.out.println("onprete");
+//            document.close();  
+            imprimeComprobante(selected.getIdcabeceraFacturaC().longValue());
+            setContent(new DefaultStreamedContent(new ByteArrayInputStream(generaReporte.getBytesReporte()), "application/pdf"));  
+        } catch (Exception e) {  
+            e.printStackTrace();  
+        }  
+    }
+    
+    public void imprimeComprobante(Long codIfip) throws JRException, IOException, ClassNotFoundException {
+
+        String nombreReporte;
+        ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+
+        //System.out.println("Imprime Movimiento");
+        GeneraReporte g;
+        setGeneraReporte(new GeneraReporte());
+        getGeneraReporte().setParametros(new HashMap<String, Object>());
+
+        getGeneraReporte().getParametros().put("codigo", codIfip);
+
+        nombreReporte = "factura";
+
+        getGeneraReporte().exporta("/cabecerafacturac/", nombreReporte,
+                nombreReporte + String.valueOf("CatalogoCuentas") + ".pdf",
+                "PDF", externalContext, facesContext);
+
+        //System.out.println("Imprimió Movimiento");
+    }
+
+    public StreamedContent getContent() {
+        return content;
+    }
+
+    public void setContent(StreamedContent content) {
+        this.content = content;
+    }
+
+    public GeneraReporte getGeneraReporte() {
+        return generaReporte;
+    }
+
+    public void setGeneraReporte(GeneraReporte generaReporte) {
+        this.generaReporte = generaReporte;
+    }
+    
+    
 }
