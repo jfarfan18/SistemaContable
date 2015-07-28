@@ -39,10 +39,12 @@ public class CuentaController implements Serializable {
     private List<Cuenta> activoCorrienteList;
      private List<Cuenta> activoFijoList;
       private List<Cuenta> pasivoCorrienteList;
+      private List<Cuenta> pasivoLargoPlazoList;
        private List<Cuenta> patrimonioList;
        private double totalActivoCorriente;
        private double totalActivoFijo;
        private double totalPasivoCorriente;
+       private double totalPasivoLargo;
        private double totalPatrimonio;
 
     public CuentaController() {
@@ -88,6 +90,19 @@ public class CuentaController implements Serializable {
         for (Cuenta cuenta:quitar){
             pasivoCorrienteList.remove(cuenta);
         }
+        setPasivoLargoPlazoList(ejbFacade.getCuentasLikeCuentaDetalle("2.2."));
+        totalPasivoLargo=0;
+        quitar=new ArrayList<>();
+        for (Cuenta cuenta:getPasivoLargoPlazoList()){
+            double saldo=getSaldoCuenta(cuenta);
+            if (saldo==0)
+                quitar.add(cuenta);
+            else
+                totalPasivoLargo=totalPasivoLargo+saldo;
+        }
+        for (Cuenta cuenta:quitar){
+            getPasivoLargoPlazoList().remove(cuenta);
+        }
         patrimonioList=ejbFacade.getCuentasLikeCuentaDetalle("3.1.");
         totalPatrimonio=0;
         quitar=new ArrayList<>();
@@ -114,7 +129,7 @@ public class CuentaController implements Serializable {
     }
     
     public double getTotalPasivoPatrimonio(){
-        return totalPasivoCorriente+totalPatrimonio;
+        return totalPasivoCorriente+totalPasivoLargo+totalPatrimonio;
     }
     
     public double getSaldoCuenta(Cuenta cuenta){
@@ -405,6 +420,34 @@ public class CuentaController implements Serializable {
      */
     public void setTotalPatrimonio(double totalPatrimonio) {
         this.totalPatrimonio = totalPatrimonio;
+    }
+
+    /**
+     * @return the totalPasivoLargo
+     */
+    public double getTotalPasivoLargo() {
+        return totalPasivoLargo;
+    }
+
+    /**
+     * @param totalPasivoLargo the totalPasivoLargo to set
+     */
+    public void setTotalPasivoLargo(double totalPasivoLargo) {
+        this.totalPasivoLargo = totalPasivoLargo;
+    }
+
+    /**
+     * @return the pasivoLargoPlazoList
+     */
+    public List<Cuenta> getPasivoLargoPlazoList() {
+        return pasivoLargoPlazoList;
+    }
+
+    /**
+     * @param pasivoLargoPlazoList the pasivoLargoPlazoList to set
+     */
+    public void setPasivoLargoPlazoList(List<Cuenta> pasivoLargoPlazoList) {
+        this.pasivoLargoPlazoList = pasivoLargoPlazoList;
     }
 
     @FacesConverter(forClass = Cuenta.class)
