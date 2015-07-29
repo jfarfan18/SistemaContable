@@ -132,10 +132,15 @@ public class CuentaController implements Serializable {
         Cuenta utilidad=new Cuenta();
         utilidad.setDescripcion("Utilida (Pérdida)");
         patrimonioList.add(utilidad);
-        totalPatrimonio=+this.getUtilidadByPeriodo(periodo);
+        totalPatrimonio+=round(this.getUtilidadByPeriodo(periodo),2);
         for (Cuenta cuenta:quitar){
             patrimonioList.remove(cuenta);
         }
+        totalActivoCorriente=Double.parseDouble(String.valueOf(round(totalActivoCorriente, 2)));        
+        totalActivoFijo=Double.parseDouble(String.valueOf(round(totalActivoFijo, 2)));      
+        totalPasivoCorriente=Double.parseDouble(String.valueOf(round(totalPasivoCorriente, 2)));        
+        totalPasivoLargo=Double.parseDouble(String.valueOf(round(totalPasivoLargo, 2)));  
+        totalPatrimonio=Double.parseDouble(String.valueOf(round(totalPatrimonio, 2)));  
     }
     
     
@@ -150,7 +155,7 @@ public class CuentaController implements Serializable {
     
     public double getSaldoCuenta(Cuenta cuenta){
         if (cuenta.getDescripcion().equals("Utilida (Pérdida)"))
-            return this.getUtilidadByPeriodo(this.getPeriodo());
+            return round(this.getUtilidadByPeriodo(this.getPeriodo()),2);
         double res=0;
         List<Transaccion> lista=ejbFacadeTransaccion.getTransaccionPeriodo(cuenta.getIdCuenta(), numeroDiario, periodo);
         for (Transaccion tra:lista){
@@ -158,9 +163,10 @@ public class CuentaController implements Serializable {
             res=res-tra.getHaber().doubleValue();
         }
         if (cuenta.getIdTipoCuenta().getIdTipoCuenta()==1)
-            return res;
+            
+            return round(res,2);
         else
-            return res*-1;
+            return round(res*-1,2);
     }
 
     public Cuenta getSelected() {
@@ -210,18 +216,18 @@ public class CuentaController implements Serializable {
             }
         }
         if (tieneError) return;
-        persist(PersistAction.CREATE, ResourceBundle.getBundle("/Bundle").getString("CuentaCreated"));
+        persist(PersistAction.CREATE, "Cuenta Creada");
         if (!JsfUtil.isValidationFailed()) {
             items = null;    // Invalidate list of items to trigger re-query.
         }
     }
 
     public void update() {
-        persist(PersistAction.UPDATE, ResourceBundle.getBundle("/Bundle").getString("CuentaUpdated"));
+        persist(PersistAction.UPDATE, "Cuente Actualizada");
     }
 
     public void destroy() {
-        persist(PersistAction.DELETE, ResourceBundle.getBundle("/Bundle").getString("CuentaDeleted"));
+        persist(PersistAction.DELETE, "Cuenta Borrada");
         if (!JsfUtil.isValidationFailed()) {
             selected = null; // Remove selection
             items = null;    // Invalidate list of items to trigger re-query.
