@@ -24,7 +24,7 @@
                         <h:outputLabel for="numeroDiario" value="Número Diario:" style="font-weight:bold" />
                         <p:inputText id="numeroDiario" value="#{cuentaController.numeroDiario}"  />
                         <p:commandButton value="Cargar" icon="ui-icon-search" update="BalanceGeneral" action="#{cuentaController.cargarCuentas}" />
-                        <p:commandButton value="PDF" icon="ui-icon-search" update="BGeneralForm" action="#{cuentaController.onPrerender}" oncomplete="PF('ReporteBGeneral').show()"/>
+                        <p:commandButton value="PDF" icon="ui-icon-print" update="BGeneralForm" action="#{cuentaController.onPrerender}" oncomplete="PF('ReporteBGeneral').show()" disabled="#{empty cuentaController.activoCorrienteList}"/>
                     </h:panelGrid>
                     
                     <p:panelGrid columns="2" columnClasses="mystyle, mystyle" >

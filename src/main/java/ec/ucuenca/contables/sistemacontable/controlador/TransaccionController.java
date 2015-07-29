@@ -211,7 +211,7 @@ public class TransaccionController implements Serializable {
         this.items=this.getFacade().findAll();
         for(int i=0;i<items.size();i++){
             if(items.get(i).getIdCuenta().getNumeroCuenta().equals(numerocuenta)){
-                if(items.get(i).getIdCuenta().getIdTipoCuenta().getIdTipoCuenta()==1 || items.get(i).getIdCuenta().getIdTipoCuenta().getIdTipoCuenta()==5){
+                if(items.get(i).getIdCuenta().getIdTipoCuenta().getIdTipoCuenta()==1 || items.get(i).getIdCuenta().getIdTipoCuenta().getIdTipoCuenta()==5 || items.get(i).getIdCuenta().getIdTipoCuenta().getIdTipoCuenta()==6){
                     saldo=saldo+items.get(i).getDebe().floatValue()-items.get(i).getHaber().floatValue();
                 }else{
                     saldo=saldo-items.get(i).getDebe().floatValue()+items.get(i).getHaber().floatValue();
@@ -229,7 +229,7 @@ public class TransaccionController implements Serializable {
         this.items=this.getFacade().findAll();
         for(int i=0;i<items.size();i++){
             if(items.get(i).getIdCuenta().getNumeroCuenta().equals(numerocuenta)){
-                if(items.get(i).getIdCuenta().getIdTipoCuenta().getIdTipoCuenta()==1 || items.get(i).getIdCuenta().getIdTipoCuenta().getIdTipoCuenta()==5){
+                if(items.get(i).getIdCuenta().getIdTipoCuenta().getIdTipoCuenta()==1 || items.get(i).getIdCuenta().getIdTipoCuenta().getIdTipoCuenta()==5 || items.get(i).getIdCuenta().getIdTipoCuenta().getIdTipoCuenta()==6){
                     saldo=saldo+items.get(i).getDebe().floatValue()-items.get(i).getHaber().floatValue();
                 }else{
                     saldo=saldo-items.get(i).getDebe().floatValue()+items.get(i).getHaber().floatValue();
@@ -247,7 +247,7 @@ public class TransaccionController implements Serializable {
         this.items=this.getFacade().findAll();
         for(int i=0;i<items.size();i++){
             if(items.get(i).getIdCuenta().getNumeroCuenta().equals(numerocuenta)){
-                if(items.get(i).getIdCuenta().getIdTipoCuenta().getIdTipoCuenta()==1 || items.get(i).getIdCuenta().getIdTipoCuenta().getIdTipoCuenta()==5){
+                if(items.get(i).getIdCuenta().getIdTipoCuenta().getIdTipoCuenta()==1 || items.get(i).getIdCuenta().getIdTipoCuenta().getIdTipoCuenta()==5 || items.get(i).getIdCuenta().getIdTipoCuenta().getIdTipoCuenta()==6){
                     if(items.get(i).getIdAsiento().getPeriodo()<=periodo)
                         saldo=saldo+items.get(i).getDebe().floatValue()-items.get(i).getHaber().floatValue();
                 }else{
@@ -267,7 +267,7 @@ public class TransaccionController implements Serializable {
         this.items=this.getFacade().findAll();
         for(int i=0;i<items.size();i++){
             if(items.get(i).getIdCuenta().getNumeroCuenta().equals(numerocuenta)){
-                if(items.get(i).getIdCuenta().getIdTipoCuenta().getIdTipoCuenta()==1 || items.get(i).getIdCuenta().getIdTipoCuenta().getIdTipoCuenta()==5){
+                if(items.get(i).getIdCuenta().getIdTipoCuenta().getIdTipoCuenta()==1 || items.get(i).getIdCuenta().getIdTipoCuenta().getIdTipoCuenta()==5 || items.get(i).getIdCuenta().getIdTipoCuenta().getIdTipoCuenta()==6){
                     if(items.get(i).getIdAsiento().getPeriodo()<=periodo)
                         if(items.get(i).getIdAsiento().getNumeroDiario()==diario)
                             saldo=saldo+items.get(i).getDebe().floatValue()-items.get(i).getHaber().floatValue();
@@ -286,7 +286,7 @@ public class TransaccionController implements Serializable {
         this.items=this.getFacade().findAll();
         for(int i=0;i<items.size();i++){
             if(items.get(i).getIdCuenta().getNumeroCuenta().equals(numerocuenta)){
-                if(items.get(i).getIdCuenta().getIdTipoCuenta().getIdTipoCuenta()==1 || items.get(i).getIdCuenta().getIdTipoCuenta().getIdTipoCuenta()==5){
+                if(items.get(i).getIdCuenta().getIdTipoCuenta().getIdTipoCuenta()==1 || items.get(i).getIdCuenta().getIdTipoCuenta().getIdTipoCuenta()==5 || items.get(i).getIdCuenta().getIdTipoCuenta().getIdTipoCuenta()==6){
                     saldo=saldo+items.get(i).getDebe().floatValue()-items.get(i).getHaber().floatValue();
                 }else{
                     return 0;
@@ -304,7 +304,7 @@ public class TransaccionController implements Serializable {
         this.items=this.getFacade().findAll();
         for(int i=0;i<items.size();i++){
             if(items.get(i).getIdCuenta().getNumeroCuenta().equals(numerocuenta)){
-                if(items.get(i).getIdCuenta().getIdTipoCuenta().getIdTipoCuenta()==1 || items.get(i).getIdCuenta().getIdTipoCuenta().getIdTipoCuenta()==5){
+                if(items.get(i).getIdCuenta().getIdTipoCuenta().getIdTipoCuenta()==1 || items.get(i).getIdCuenta().getIdTipoCuenta().getIdTipoCuenta()==5 || items.get(i).getIdCuenta().getIdTipoCuenta().getIdTipoCuenta()==6){
                     if(items.get(i).getIdAsiento().getPeriodo()<=periodo){
                         saldo=saldo+items.get(i).getDebe().floatValue()-items.get(i).getHaber().floatValue();
                     }
@@ -324,7 +324,7 @@ public class TransaccionController implements Serializable {
         this.items=this.getFacade().findAll();
         for(int i=0;i<items.size();i++){
             if(items.get(i).getIdCuenta().getNumeroCuenta().equals(numerocuenta)){
-                if(items.get(i).getIdCuenta().getIdTipoCuenta().getIdTipoCuenta()==1 || items.get(i).getIdCuenta().getIdTipoCuenta().getIdTipoCuenta()==5){
+                if(items.get(i).getIdCuenta().getIdTipoCuenta().getIdTipoCuenta()==1 || items.get(i).getIdCuenta().getIdTipoCuenta().getIdTipoCuenta()==5 || items.get(i).getIdCuenta().getIdTipoCuenta().getIdTipoCuenta()==6){
                     if(items.get(i).getIdAsiento().getPeriodo()<=periodo){
                         if(items.get(i).getIdAsiento().getNumeroDiario()==diario){
                             saldo=saldo+items.get(i).getDebe().floatValue()-items.get(i).getHaber().floatValue();
@@ -343,7 +343,7 @@ public class TransaccionController implements Serializable {
         this.items=this.getFacade().findAll();
         for(int i=0;i<items.size();i++){
             if(items.get(i).getIdCuenta().getNumeroCuenta().equals(numerocuenta)){
-                if(items.get(i).getIdCuenta().getIdTipoCuenta().getIdTipoCuenta()==1 || items.get(i).getIdCuenta().getIdTipoCuenta().getIdTipoCuenta()==5){
+                if(items.get(i).getIdCuenta().getIdTipoCuenta().getIdTipoCuenta()==1 || items.get(i).getIdCuenta().getIdTipoCuenta().getIdTipoCuenta()==5 || items.get(i).getIdCuenta().getIdTipoCuenta().getIdTipoCuenta()==6){
                     return 0;
                 }else{
                     saldo=saldo+items.get(i).getHaber().floatValue()-items.get(i).getDebe().floatValue();
@@ -362,7 +362,7 @@ public class TransaccionController implements Serializable {
 
             for(int i=0;i<items.size();i++){
                 if(items.get(i).getIdCuenta().getNumeroCuenta().equals(numerocuenta)){
-                    if(items.get(i).getIdCuenta().getIdTipoCuenta().getIdTipoCuenta()==1 || items.get(i).getIdCuenta().getIdTipoCuenta().getIdTipoCuenta()==5){
+                    if(items.get(i).getIdCuenta().getIdTipoCuenta().getIdTipoCuenta()==1 || items.get(i).getIdCuenta().getIdTipoCuenta().getIdTipoCuenta()==5 || items.get(i).getIdCuenta().getIdTipoCuenta().getIdTipoCuenta()==6){
                         return 0;
                     }else{
                         if(items.get(i).getIdAsiento().getPeriodo()<=periodo){
@@ -384,7 +384,7 @@ public class TransaccionController implements Serializable {
 
             for(int i=0;i<items.size();i++){
                 if(items.get(i).getIdCuenta().getNumeroCuenta().equals(numerocuenta)){
-                    if(items.get(i).getIdCuenta().getIdTipoCuenta().getIdTipoCuenta()==1 || items.get(i).getIdCuenta().getIdTipoCuenta().getIdTipoCuenta()==5){
+                    if(items.get(i).getIdCuenta().getIdTipoCuenta().getIdTipoCuenta()==1 || items.get(i).getIdCuenta().getIdTipoCuenta().getIdTipoCuenta()==5 || items.get(i).getIdCuenta().getIdTipoCuenta().getIdTipoCuenta()==6){
                         return 0;
                     }else{
                         if(items.get(i).getIdAsiento().getPeriodo()<=periodo){

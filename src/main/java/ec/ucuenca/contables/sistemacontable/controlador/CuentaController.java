@@ -776,7 +776,7 @@ public class CuentaController implements Serializable {
         TransaccionController beanTransaccion = (TransaccionController)facesContext.getApplication().createValueBinding("#{transaccionController}").getValue(facesContext);
         for(int i=0;i<items.size();i++){
             if(items.get(i).getIdTipoCuenta().getIdTipoCuenta()==6){
-                if(items.get(i).getNumeroCuenta().startsWith("6.1.")){
+                if(items.get(i).getNumeroCuenta().startsWith("6.2.")){
                     if(items.get(i).getCategoria()=='D'){
                         if(beanTransaccion.cuentaSeMovio(items.get(i).getIdCuenta())){
                             cres.add(items.get(i));
@@ -1147,9 +1147,9 @@ public class CuentaController implements Serializable {
             for(int i=0;i<actcorr.size();i++){
                 Phrase myText=null;
                 if(actcorr.get(i).getDescripcion().length()>25){
-                    myText=new Phrase(actcorr.get(i).getDescripcion().substring(0, 24),FontFactory.getFont(FontFactory.COURIER, 9, Font.NORMAL,Color.BLACK));
+                    myText=new Phrase(actcorr.get(i).getDescripcion().substring(0, 24),FontFactory.getFont(FontFactory.HELVETICA, 10, Font.NORMAL,Color.BLACK));
                 }else{
-                    myText=new Phrase(actcorr.get(i).getDescripcion(),FontFactory.getFont(FontFactory.COURIER, 9, Font.NORMAL,Color.BLACK));
+                    myText=new Phrase(actcorr.get(i).getDescripcion(),FontFactory.getFont(FontFactory.HELVETICA, 10, Font.NORMAL,Color.BLACK));
                 }
                 activo.setSimpleColumn(myText, 42, 750, 355, 317, 12, Element.ALIGN_LEFT);
                 activo.addText(Chunk.NEWLINE);
@@ -1161,9 +1161,9 @@ public class CuentaController implements Serializable {
             for(int i=0;i<actfij.size();i++){
                 Phrase myText=null;
                 if(actfij.get(i).getDescripcion().length()>25){
-                    myText=new Phrase(actfij.get(i).getDescripcion().substring(0, 24),FontFactory.getFont(FontFactory.COURIER, 9, Font.NORMAL,Color.BLACK));
+                    myText=new Phrase(actfij.get(i).getDescripcion().substring(0, 24),FontFactory.getFont(FontFactory.HELVETICA, 10, Font.NORMAL,Color.BLACK));
                 }else{
-                    myText=new Phrase(actfij.get(i).getDescripcion(),FontFactory.getFont(FontFactory.COURIER, 9, Font.NORMAL,Color.BLACK));
+                    myText=new Phrase(actfij.get(i).getDescripcion(),FontFactory.getFont(FontFactory.HELVETICA, 10, Font.NORMAL,Color.BLACK));
                 }
                 activo.setSimpleColumn(myText, 42, 750, 355, 317, 12, Element.ALIGN_LEFT);
                 activo.addText(Chunk.NEWLINE);
@@ -1181,7 +1181,7 @@ public class CuentaController implements Serializable {
             for(int i=0;i<actcorr.size();i++){
                 Phrase myText=null;
 
-                myText=new Phrase(String.valueOf(this.getSaldoCuenta(actcorr.get(i))),FontFactory.getFont(FontFactory.COURIER, 9, Font.NORMAL,Color.BLACK));
+                myText=new Phrase(String.valueOf(this.getSaldoCuenta(actcorr.get(i))),FontFactory.getFont(FontFactory.HELVETICA, 10, Font.NORMAL,Color.BLACK));
 
                 activosal.setSimpleColumn(myText, 200, 750, 270, 317, 12, Element.ALIGN_RIGHT);
                 activosal.addText(Chunk.NEWLINE);
@@ -1190,7 +1190,7 @@ public class CuentaController implements Serializable {
             activosal.addText(Chunk.NEWLINE);
             for(int i=0;i<actfij.size();i++){
                 Phrase myText=null;
-                myText=new Phrase(String.valueOf(this.getSaldoCuenta(actfij.get(i))),FontFactory.getFont(FontFactory.COURIER, 9, Font.NORMAL,Color.BLACK));
+                myText=new Phrase(String.valueOf(this.getSaldoCuenta(actfij.get(i))),FontFactory.getFont(FontFactory.HELVETICA, 10, Font.NORMAL,Color.BLACK));
                 activosal.setSimpleColumn(myText, 200, 750, 270, 317, 12, Element.ALIGN_RIGHT);
                 activosal.addText(Chunk.NEWLINE);
             }
@@ -1213,13 +1213,28 @@ public class CuentaController implements Serializable {
             for(int i=0;i<pascorr.size();i++){
                 Phrase myText=null;
                 if(pascorr.get(i).getDescripcion().length()>25){
-                    myText=new Phrase(pascorr.get(i).getDescripcion().substring(0, 24),FontFactory.getFont(FontFactory.COURIER, 9, Font.NORMAL,Color.BLACK));
+                    myText=new Phrase(pascorr.get(i).getDescripcion().substring(0, 24),FontFactory.getFont(FontFactory.HELVETICA, 10, Font.NORMAL,Color.BLACK));
                 }else{
-                    myText=new Phrase(pascorr.get(i).getDescripcion(),FontFactory.getFont(FontFactory.COURIER, 9, Font.NORMAL,Color.BLACK));
+                    myText=new Phrase(pascorr.get(i).getDescripcion(),FontFactory.getFont(FontFactory.HELVETICA, 10, Font.NORMAL,Color.BLACK));
                 }
                 pasivo.setSimpleColumn(myText, 300, 750, 620, 317, 12, Element.ALIGN_LEFT);
                 pasivo.addText(Chunk.NEWLINE);
             }
+            
+            List<Cuenta> paslplaz=this.pasivoLargoPlazoList;
+            pasivo.addText(new Phrase("PASIVO LARGO PLAZO"));
+            pasivo.addText(Chunk.NEWLINE);
+            for(int i=0;i<paslplaz.size();i++){
+                Phrase myText=null;
+                if(paslplaz.get(i).getDescripcion().length()>25){
+                    myText=new Phrase(paslplaz.get(i).getDescripcion().substring(0, 24),FontFactory.getFont(FontFactory.HELVETICA, 10, Font.NORMAL,Color.BLACK));
+                }else{
+                    myText=new Phrase(paslplaz.get(i).getDescripcion(),FontFactory.getFont(FontFactory.HELVETICA, 10, Font.NORMAL,Color.BLACK));
+                }
+                pasivo.setSimpleColumn(myText, 300, 750, 620, 317, 12, Element.ALIGN_LEFT);
+                pasivo.addText(Chunk.NEWLINE);
+            }
+            
             pasivo.addText(new Phrase("TOTAL PASIVO"));
             pasivo.addText(Chunk.NEWLINE);
             pasivo.addText(Chunk.NEWLINE);
@@ -1230,9 +1245,9 @@ public class CuentaController implements Serializable {
             for(int i=0;i<patri.size();i++){
                 Phrase myText=null;
                 if(patri.get(i).getDescripcion().length()>25){
-                    myText=new Phrase(patri.get(i).getDescripcion().substring(0, 24),FontFactory.getFont(FontFactory.COURIER, 9, Font.NORMAL,Color.BLACK));
+                    myText=new Phrase(patri.get(i).getDescripcion().substring(0, 24),FontFactory.getFont(FontFactory.HELVETICA, 10, Font.NORMAL,Color.BLACK));
                 }else{
-                    myText=new Phrase(patri.get(i).getDescripcion(),FontFactory.getFont(FontFactory.COURIER, 9, Font.NORMAL,Color.BLACK));
+                    myText=new Phrase(patri.get(i).getDescripcion(),FontFactory.getFont(FontFactory.HELVETICA, 10, Font.NORMAL,Color.BLACK));
                 }
                 pasivo.setSimpleColumn(myText, 300, 750, 620, 317, 12, Element.ALIGN_LEFT);
                 pasivo.addText(Chunk.NEWLINE);
@@ -1251,7 +1266,17 @@ public class CuentaController implements Serializable {
             pasivosal.addText(Chunk.NEWLINE);
             for(int i=0;i<pascorr.size();i++){
                 Phrase myText=null;
-                myText=new Phrase(String.valueOf(this.getSaldoCuenta(pascorr.get(i))),FontFactory.getFont(FontFactory.COURIER, 9, Font.NORMAL,Color.BLACK));
+                myText=new Phrase(String.valueOf(this.getSaldoCuenta(pascorr.get(i))),FontFactory.getFont(FontFactory.HELVETICA, 10, Font.NORMAL,Color.BLACK));
+                pasivosal.setSimpleColumn(myText, 400, 750, 570, 317, 12, Element.ALIGN_RIGHT);
+                pasivosal.addText(Chunk.NEWLINE);
+            }
+            //List<Cuenta> paslplaz=this.pasivoLargoPlazoList;
+            //pasivosal.addText(new Phrase("PASIVO LARGO PLAZO"));
+            pasivosal.addText(Chunk.NEWLINE);
+            for(int i=0;i<paslplaz.size();i++){
+                Phrase myText=null;
+                myText=new Phrase(String.valueOf(this.getSaldoCuenta(paslplaz.get(i))),FontFactory.getFont(FontFactory.HELVETICA, 10, Font.NORMAL,Color.BLACK));
+             
                 pasivosal.setSimpleColumn(myText, 400, 750, 570, 317, 12, Element.ALIGN_RIGHT);
                 pasivosal.addText(Chunk.NEWLINE);
             }
@@ -1265,7 +1290,7 @@ public class CuentaController implements Serializable {
             for(int i=0;i<patri.size();i++){
                 Phrase myText=null;
                 Double saldo=this.getSaldoCuenta(patri.get(i));
-                myText=new Phrase(String.valueOf(round(saldo,2)),FontFactory.getFont(FontFactory.COURIER, 9, Font.NORMAL,Color.BLACK));
+                myText=new Phrase(String.valueOf(round(saldo,2)),FontFactory.getFont(FontFactory.HELVETICA, 10, Font.NORMAL,Color.BLACK));
                 pasivosal.setSimpleColumn(myText, 400, 750, 570, 317, 12, Element.ALIGN_RIGHT);
                 pasivosal.addText(Chunk.NEWLINE);
             }
