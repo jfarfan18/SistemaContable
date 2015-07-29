@@ -56,18 +56,18 @@ public class TipocuentaController implements Serializable {
     }
 
     public void create() {
-        persist(PersistAction.CREATE, ResourceBundle.getBundle("/Bundle").getString("TipocuentaCreated"));
+        persist(PersistAction.CREATE, "Tipo cuenta creada satisfactoriamente");
         if (!JsfUtil.isValidationFailed()) {
             items = null;    // Invalidate list of items to trigger re-query.
         }
     }
 
     public void update() {
-        persist(PersistAction.UPDATE, ResourceBundle.getBundle("/Bundle").getString("TipocuentaUpdated"));
+        persist(PersistAction.UPDATE, "Tipo cuenta actualizada satisfactoriamene");
     }
 
     public void destroy() {
-        persist(PersistAction.DELETE, ResourceBundle.getBundle("/Bundle").getString("TipocuentaDeleted"));
+        persist(PersistAction.DELETE, "Tipo cuenta eliminada satisfactoriamente");
         if (!JsfUtil.isValidationFailed()) {
             selected = null; // Remove selection
             items = null;    // Invalidate list of items to trigger re-query.
