@@ -109,12 +109,14 @@ public class CabecerafacturacController implements Serializable {
         this.updateKardex();
         persist(PersistAction.CREATE, ResourceBundle.getBundle("/Bundle").getString("CabecerafacturacCreated"));
         this.createAsiento();
-        /*String numeroFac=selected.getNumeroFacturaC();
-        aux=ejbFacade.getIdFactura(numeroFac);
-        System.out.println(numeroFac+" --  "+aux);
+//        String numeroFac=selected.getNumeroFacturaC();
+//        aux=ejbFacade.getIdFactura(numeroFac);
+        List <Cabecerafacturac>lista=ejbFacade.findAll();
+        aux=lista.get(lista.size()-1);
+        System.out.println(" --  "+aux);
         selected=aux;
         onPrerender();
-        RequestContext.getCurrentInstance().execute("PF('FacturaDialog').show();");*/
+        RequestContext.getCurrentInstance().execute("PF('FacturaCDialog').show();");
         if (!JsfUtil.isValidationFailed()) {
             items = null;    // Invalidate list of items to trigger re-query.
         }
@@ -567,10 +569,10 @@ public class CabecerafacturacController implements Serializable {
 
         getGeneraReporte().getParametros().put("codigo", codIfip);
 
-        nombreReporte = "factura";
+        nombreReporte = "facturaC";
 
-        getGeneraReporte().exporta("/cabecerafacturac/", nombreReporte,
-                nombreReporte + String.valueOf("CatalogoCuentas") + ".pdf",
+        getGeneraReporte().exporta("/cabecerafacturaC/", nombreReporte,
+                nombreReporte + String.valueOf("FacturaC") + ".pdf",
                 "PDF", externalContext, facesContext);
 
         //System.out.println("Imprimió Movimiento");
