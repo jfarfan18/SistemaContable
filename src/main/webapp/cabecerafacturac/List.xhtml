@@ -24,8 +24,8 @@
                                  rowsPerPageTemplate="10,20,30,40,50"
                                  >
 
-                        <p:ajax event="rowSelect"   update="createButton viewButton"/>
-                        <p:ajax event="rowUnselect" update="createButton viewButton"/>
+                        <p:ajax event="rowSelect"   update="createButton viewButton printButton"/>
+                        <p:ajax event="rowUnselect" update="createButton viewButton printButton"/>
 
                         <p:column>
                             <f:facet name="header">
@@ -56,6 +56,7 @@
                         <f:facet name="footer">
                             <p:commandButton id="createButton" icon="ui-icon-plus"   value="#{bundle.Create}" actionListener="#{cabecerafacturacController.prepareCreate}" update=":CabecerafacturacCreateForm" oncomplete="PF('CabecerafacturacCreateDialog').show()"/>
                             <p:commandButton id="viewButton"   icon="ui-icon-search" value="#{bundle.View}" update=":CabecerafacturacViewForm" oncomplete="PF('CabecerafacturacViewDialog').show()" disabled="#{empty cabecerafacturacController.selected}"/>
+                            <p:commandButton id="printButton"   icon="ui-icon-search" value="Imprimir" actionListener="#{cabecerafacturacController.onPrerender()}" update="FacturaCForm" oncomplete="PF('FacturaCDialog').show()" disabled="#{empty cabecerafacturacController.selected}"/>
                           
                         </f:facet>
                     </p:dataTable>

@@ -170,7 +170,7 @@
                         </h:panelGrid>
                     </h:panelGrid>
                     
-                    <p:commandButton actionListener="#{cabecerafacturacController.create}" value="#{bundle.Save}" update="display,:CabecerafacturacListForm:datalist,:growl" oncomplete="handleSubmit(args,'CabecerafacturacCreateDialog');"/>
+                    <p:commandButton actionListener="#{cabecerafacturacController.create}" value="#{bundle.Save}" update="display,:FacturaCForm,:CabecerafacturacListForm:datalist,:growl" oncomplete="handleSubmit(args,'CabecerafacturacCreateDialog');"/>
                     <p:commandButton value="#{bundle.Cancel}" onclick="CabecerafacturacCreateDialog.hide()"/>
                 </h:panelGroup>
             </h:form>
