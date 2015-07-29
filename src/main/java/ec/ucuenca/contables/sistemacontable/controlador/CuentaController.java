@@ -1,11 +1,24 @@
 package ec.ucuenca.contables.sistemacontable.controlador;
 
+import com.lowagie.text.Chunk;
+import com.lowagie.text.Document;
+import com.lowagie.text.Element;
+import com.lowagie.text.Font;
+import com.lowagie.text.FontFactory;
+import com.lowagie.text.Paragraph;
+import com.lowagie.text.Phrase;
+import com.lowagie.text.pdf.ColumnText;
+import com.lowagie.text.pdf.PdfContentByte;
+import com.lowagie.text.pdf.PdfWriter;
 import ec.ucuenca.contables.sistemacontable.controlador.util.JsfUtil;
 import ec.ucuenca.contables.sistemacontable.controlador.util.JsfUtil.PersistAction;
 import ec.ucuenca.contables.sistemacontable.modelo.Cuenta;
 import ec.ucuenca.contables.sistemacontable.modelo.Transaccion;
 import ec.ucuenca.contables.sistemacontable.negocio.CuentaFacade;
 import ec.ucuenca.contables.sistemacontable.negocio.TransaccionFacade;
+import java.awt.Color;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,8 +33,11 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
+import javax.faces.event.ComponentSystemEvent;
 import javax.inject.Named;
 import org.primefaces.context.RequestContext;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 
 @Named("cuentaController")
 @SessionScoped
@@ -543,6 +559,17 @@ public class CuentaController implements Serializable {
         return totaldebe;
     }
     
+    public float getTotalSumasDebeByPeriodoDiario(Integer periodo,Integer diario){
+        float totaldebe=0;
+        this.items=this.getFacade().findAll();
+        FacesContext facesContext= FacesContext.getCurrentInstance();
+        TransaccionController beanTransaccion = (TransaccionController)facesContext.getApplication().createValueBinding("#{transaccionController}").getValue(facesContext);
+        for(int i=0;i<items.size();i++){
+            totaldebe=totaldebe+beanTransaccion.getSumaDebeByCuentaPeriodoDiario(items.get(i).getNumeroCuenta(),periodo,diario);
+        }
+        return totaldebe;
+    }
+    
     public float getTotalSumasHaber(){
         float totalhaber=0;
         this.items=this.getFacade().findAll();
@@ -561,6 +588,17 @@ public class CuentaController implements Serializable {
         TransaccionController beanTransaccion = (TransaccionController)facesContext.getApplication().createValueBinding("#{transaccionController}").getValue(facesContext);
         for(int i=0;i<items.size();i++){
             totalhaber=totalhaber+beanTransaccion.getSumaHaberByCuentaAndPeriodo(items.get(i).getNumeroCuenta(),periodo);
+        }
+        return totalhaber;
+    }
+    
+    public float getTotalSumasHaberByPeriodoDiario(Integer periodo,Integer diario){
+        float totalhaber=0;
+        this.items=this.getFacade().findAll();
+        FacesContext facesContext= FacesContext.getCurrentInstance();
+        TransaccionController beanTransaccion = (TransaccionController)facesContext.getApplication().createValueBinding("#{transaccionController}").getValue(facesContext);
+        for(int i=0;i<items.size();i++){
+            totalhaber=totalhaber+beanTransaccion.getSumaHaberByCuentaPeriodoDiario(items.get(i).getNumeroCuenta(),periodo,diario);
         }
         return totalhaber;
     }
@@ -587,6 +625,17 @@ public class CuentaController implements Serializable {
         return totaldebe;
     }
     
+    public float getTotalSaldosDebeByPeriodoDiario(Integer periodo, Integer diario){
+        float totaldebe=0;
+        this.items=this.getFacade().findAll();
+        FacesContext facesContext= FacesContext.getCurrentInstance();
+        TransaccionController beanTransaccion = (TransaccionController)facesContext.getApplication().createValueBinding("#{transaccionController}").getValue(facesContext);
+        for(int i=0;i<items.size();i++){
+            totaldebe=totaldebe+beanTransaccion.getSaldoDebeByCuentaPeriodoDiario(items.get(i).getNumeroCuenta(),periodo,diario);
+        }
+        return totaldebe;
+    }
+    
     public float getTotalSaldosHaber(){
         float totalhaber=0;
         this.items=this.getFacade().findAll();
@@ -605,6 +654,17 @@ public class CuentaController implements Serializable {
         TransaccionController beanTransaccion = (TransaccionController)facesContext.getApplication().createValueBinding("#{transaccionController}").getValue(facesContext);
         for(int i=0;i<items.size();i++){
             totalhaber=totalhaber+beanTransaccion.getSaldoHaberByCuentaAndPeriodo(items.get(i).getNumeroCuenta(),periodo);
+        }
+        return totalhaber;
+    }
+    
+    public float getTotalSaldosHaberByPeriodoDiario(Integer periodo, Integer diario){
+        float totalhaber=0;
+        this.items=this.getFacade().findAll();
+        FacesContext facesContext= FacesContext.getCurrentInstance();
+        TransaccionController beanTransaccion = (TransaccionController)facesContext.getApplication().createValueBinding("#{transaccionController}").getValue(facesContext);
+        for(int i=0;i<items.size();i++){
+            totalhaber=totalhaber+beanTransaccion.getSaldoHaberByCuentaPeriodoDiario(items.get(i).getNumeroCuenta(),periodo,diario);
         }
         return totalhaber;
     }
@@ -762,6 +822,23 @@ public class CuentaController implements Serializable {
         return total;
     }
     
+    public float getTotalSaldosIngresosOpByPeriodoDiario(Integer periodo, Integer diario){
+        float total=0;
+        this.items=this.getFacade().findAll();
+        FacesContext facesContext= FacesContext.getCurrentInstance();
+        TransaccionController beanTransaccion = (TransaccionController)facesContext.getApplication().createValueBinding("#{transaccionController}").getValue(facesContext);
+        for(int i=0;i<items.size();i++){
+            if(items.get(i).getIdTipoCuenta().getIdTipoCuenta()==4){
+                if(items.get(i).getNumeroCuenta().startsWith("4.1.")){
+                    if(items.get(i).getCategoria()=='D'){
+                        total=total+beanTransaccion.getSaldoHaberByCuentaPeriodoDiario(items.get(i).getNumeroCuenta(), periodo, diario);
+                    }
+                }
+            }
+        }
+        return total;
+    }
+    
     public float getTotalSaldosGastosOp(){
         float total=0;
         this.items=this.getFacade().findAll();
@@ -796,6 +873,23 @@ public class CuentaController implements Serializable {
         return total;
     }
     
+    public float getTotalSaldosCostosByPeriodoDiario(Integer periodo, Integer diario){
+        float total=0;
+        this.items=this.getFacade().findAll();
+        FacesContext facesContext= FacesContext.getCurrentInstance();
+        TransaccionController beanTransaccion = (TransaccionController)facesContext.getApplication().createValueBinding("#{transaccionController}").getValue(facesContext);
+        for(int i=0;i<items.size();i++){
+            if(items.get(i).getIdTipoCuenta().getIdTipoCuenta()==5){
+                if(items.get(i).getNumeroCuenta().startsWith("5.1.")){
+                    if(items.get(i).getCategoria()=='D'){
+                        total=total+beanTransaccion.getSaldoDebeByCuentaPeriodoDiario(items.get(i).getNumeroCuenta(),periodo,diario);
+                    }
+                }
+            }
+        }
+        return total;
+    }
+    
     public float getTotalSaldosGastosOpByPeriodo(Integer periodo){
         float total=0;
         this.items=this.getFacade().findAll();
@@ -806,6 +900,23 @@ public class CuentaController implements Serializable {
                 if(items.get(i).getNumeroCuenta().startsWith("6.1.")){
                     if(items.get(i).getCategoria()=='D'){
                         total=total+beanTransaccion.getSaldoDebeByCuentaAndPeriodo(items.get(i).getNumeroCuenta(),periodo);
+                    }
+                }
+            }
+        }
+        return total;
+    }
+    
+    public float getTotalSaldosGastosOpByPeriodoDiario(Integer periodo, Integer diario){
+        float total=0;
+        this.items=this.getFacade().findAll();
+        FacesContext facesContext= FacesContext.getCurrentInstance();
+        TransaccionController beanTransaccion = (TransaccionController)facesContext.getApplication().createValueBinding("#{transaccionController}").getValue(facesContext);
+        for(int i=0;i<items.size();i++){
+            if(items.get(i).getIdTipoCuenta().getIdTipoCuenta()==6){
+                if(items.get(i).getNumeroCuenta().startsWith("6.1.")){
+                    if(items.get(i).getCategoria()=='D'){
+                        total=total+beanTransaccion.getSaldoDebeByCuentaPeriodoDiario(items.get(i).getNumeroCuenta(),periodo,diario);
                     }
                 }
             }
@@ -847,6 +958,23 @@ public class CuentaController implements Serializable {
         return total;
     }
     
+    public float getTotalSaldosIngresosnoOpByPeriodoDiario(Integer periodo, Integer diario){
+        float total=0;
+        this.items=this.getFacade().findAll();
+        FacesContext facesContext= FacesContext.getCurrentInstance();
+        TransaccionController beanTransaccion = (TransaccionController)facesContext.getApplication().createValueBinding("#{transaccionController}").getValue(facesContext);
+        for(int i=0;i<items.size();i++){
+            if(items.get(i).getIdTipoCuenta().getIdTipoCuenta()==4){
+                if(!items.get(i).getNumeroCuenta().startsWith("4.1.")){
+                    if(items.get(i).getCategoria()=='D'){
+                        total=total+beanTransaccion.getSaldoHaberByCuentaPeriodoDiario(items.get(i).getNumeroCuenta(),periodo,diario);
+                    }
+                }
+            }
+        }
+        return total;
+    }
+    
     public float getTotalSaldosGastosnoOp(){
         float total=0;
         this.items=this.getFacade().findAll();
@@ -881,6 +1009,23 @@ public class CuentaController implements Serializable {
         return total;
     }
     
+    public float getTotalSaldosGastosnoOpByPeriodoDiario(Integer periodo, Integer diario){
+        float total=0;
+        this.items=this.getFacade().findAll();
+        FacesContext facesContext= FacesContext.getCurrentInstance();
+        TransaccionController beanTransaccion = (TransaccionController)facesContext.getApplication().createValueBinding("#{transaccionController}").getValue(facesContext);
+        for(int i=0;i<items.size();i++){
+            if(items.get(i).getIdTipoCuenta().getIdTipoCuenta()==6){
+                if(!items.get(i).getNumeroCuenta().startsWith("6.1.")){
+                    if(items.get(i).getCategoria()=='D'){
+                        total=total+beanTransaccion.getSaldoDebeByCuentaPeriodoDiario(items.get(i).getNumeroCuenta(), periodo,diario);
+                    }
+                }
+            }
+        }
+        return total;
+    }
+    
     public float getUtilidadOperacional(){
         float utilidad=0;
         utilidad=this.getTotalSaldosIngresosOp()-this.getTotalSaldosGastosOp();
@@ -893,9 +1038,21 @@ public class CuentaController implements Serializable {
         return utilidad;
     }
     
+    public float getUtilidadBrutaByPeriodoDiario(Integer periodo, Integer diario){
+        float utilidad=0;
+        utilidad=this.getTotalSaldosIngresosOpByPeriodoDiario(periodo,diario)-this.getTotalSaldosCostosByPeriodoDiario(periodo,diario);
+        return utilidad;
+    }
+    
     public float getUtilidadOperacionalByPeriodo(Integer periodo){
         float utilidad=0;
         utilidad=this.getUtilidadBrutaByPeriodo(periodo)-this.getTotalSaldosGastosOpByPeriodo(periodo);
+        return utilidad;
+    }
+    
+    public float getUtilidadOperacionalByPeriodoDiario(Integer periodo, Integer diario){
+        float utilidad=0;
+        utilidad=this.getUtilidadBrutaByPeriodoDiario(periodo,diario)-this.getTotalSaldosGastosOpByPeriodoDiario(periodo,diario);
         return utilidad;
     }
     
@@ -908,6 +1065,12 @@ public class CuentaController implements Serializable {
     public float getUtilidadByPeriodo(Integer periodo){
         float utilidad=0;
         utilidad=this.getUtilidadOperacionalByPeriodo(periodo)+this.getTotalSaldosIngresosnoOpByPeriodo(periodo)-this.getTotalSaldosGastosnoOpByPeriodo(periodo);
+        return utilidad;
+    }
+    
+    public float getUtilidadByPeriodoDiario(Integer periodo, Integer diario){
+        float utilidad=0;
+        utilidad=this.getUtilidadOperacionalByPeriodoDiario(periodo,diario)+this.getTotalSaldosIngresosnoOpByPeriodoDiario(periodo,diario)-this.getTotalSaldosGastosnoOpByPeriodoDiario(periodo,diario);
         return utilidad;
     }
     
@@ -932,7 +1095,7 @@ public class CuentaController implements Serializable {
     }
     
     public List<Cuenta> getCuentasDetalleMovimiento(){
-        this.items=this.getFacade().findAll();
+        this.items=this.getFacade().findAllOrderedByNumeroCuenta();
         char d='D';
         List<Cuenta> cdetalle=new ArrayList();
         FacesContext facesContext= FacesContext.getCurrentInstance();
@@ -946,4 +1109,196 @@ public class CuentaController implements Serializable {
         }
         return cdetalle;
     }
+    
+    public List<Cuenta> getCuentasUtilidad(){
+
+        List<Cuenta> cdetalle=new ArrayList();
+
+        return cdetalle;
+    }
+    
+    private StreamedContent content;  
+  
+    public void onPrerender() {  
+  
+        try {  
+      
+            ByteArrayOutputStream out = new ByteArrayOutputStream();  
+  
+            Document document = new Document(); 
+            PdfWriter writer=PdfWriter.getInstance(document, out); 
+            document.open(); 
+             
+            Paragraph titulo=new Paragraph("BALANCE GENERAL");
+            titulo.setAlignment(Element.ALIGN_CENTER);
+            document.add(titulo);   
+            Paragraph fecha=new Paragraph("PERIODO: "+this.periodo);
+            fecha.setAlignment(Element.ALIGN_CENTER);
+            document.add(fecha);   
+            
+                     
+            ColumnText activo=new ColumnText(writer.getDirectContent());
+           
+            List<Cuenta> actcorr=this.activoCorrienteList;
+            activo.addText(new Phrase("ACTIVO"));
+            activo.addText(Chunk.NEWLINE);
+            activo.addText(new Phrase("ACTIVO CORRIENTE"));
+            activo.addText(Chunk.NEWLINE);
+            for(int i=0;i<actcorr.size();i++){
+                Phrase myText=null;
+                if(actcorr.get(i).getDescripcion().length()>25){
+                    myText=new Phrase(actcorr.get(i).getDescripcion().substring(0, 24),FontFactory.getFont(FontFactory.COURIER, 9, Font.NORMAL,Color.BLACK));
+                }else{
+                    myText=new Phrase(actcorr.get(i).getDescripcion(),FontFactory.getFont(FontFactory.COURIER, 9, Font.NORMAL,Color.BLACK));
+                }
+                activo.setSimpleColumn(myText, 42, 750, 355, 317, 12, Element.ALIGN_LEFT);
+                activo.addText(Chunk.NEWLINE);
+            }
+            
+            List<Cuenta> actfij=this.activoFijoList;
+            activo.addText(new Phrase("ACTIVO FIJO"));
+            activo.addText(Chunk.NEWLINE);
+            for(int i=0;i<actfij.size();i++){
+                Phrase myText=null;
+                if(actfij.get(i).getDescripcion().length()>25){
+                    myText=new Phrase(actfij.get(i).getDescripcion().substring(0, 24),FontFactory.getFont(FontFactory.COURIER, 9, Font.NORMAL,Color.BLACK));
+                }else{
+                    myText=new Phrase(actfij.get(i).getDescripcion(),FontFactory.getFont(FontFactory.COURIER, 9, Font.NORMAL,Color.BLACK));
+                }
+                activo.setSimpleColumn(myText, 42, 750, 355, 317, 12, Element.ALIGN_LEFT);
+                activo.addText(Chunk.NEWLINE);
+            }
+            activo.addText(new Phrase("TOTAL ACTIVO"));
+            activo.addText(Chunk.NEWLINE);
+            activo.go();
+            
+            ColumnText activosal=new ColumnText(writer.getDirectContent());
+           
+            //activosal.addText(new Phrase("-"));
+            activosal.addText(Chunk.NEWLINE);
+            //activosal.addText(new Phrase("-"));
+            activosal.addText(Chunk.NEWLINE);
+            for(int i=0;i<actcorr.size();i++){
+                Phrase myText=null;
+
+                myText=new Phrase(String.valueOf(this.getSaldoCuenta(actcorr.get(i))),FontFactory.getFont(FontFactory.COURIER, 9, Font.NORMAL,Color.BLACK));
+
+                activosal.setSimpleColumn(myText, 200, 750, 270, 317, 12, Element.ALIGN_RIGHT);
+                activosal.addText(Chunk.NEWLINE);
+            }
+            //activosal.addText(new Phrase("-"));
+            activosal.addText(Chunk.NEWLINE);
+            for(int i=0;i<actfij.size();i++){
+                Phrase myText=null;
+                myText=new Phrase(String.valueOf(this.getSaldoCuenta(actfij.get(i))),FontFactory.getFont(FontFactory.COURIER, 9, Font.NORMAL,Color.BLACK));
+                activosal.setSimpleColumn(myText, 200, 750, 270, 317, 12, Element.ALIGN_RIGHT);
+                activosal.addText(Chunk.NEWLINE);
+            }
+            Double totalact=this.getTotalAcivo();
+            
+            activosal.addText(new Phrase(String.valueOf(round(totalact,2))));
+            activosal.addText(Chunk.NEWLINE);
+            activosal.go();
+            
+            
+            
+            
+            ColumnText pasivo=new ColumnText(writer.getDirectContent());
+           
+            List<Cuenta> pascorr=this.pasivoCorrienteList;
+            pasivo.addText(new Phrase("PASIVO"));
+            pasivo.addText(Chunk.NEWLINE);
+            pasivo.addText(new Phrase("PASIVO CORRIENTE"));
+            pasivo.addText(Chunk.NEWLINE);
+            for(int i=0;i<pascorr.size();i++){
+                Phrase myText=null;
+                if(pascorr.get(i).getDescripcion().length()>25){
+                    myText=new Phrase(pascorr.get(i).getDescripcion().substring(0, 24),FontFactory.getFont(FontFactory.COURIER, 9, Font.NORMAL,Color.BLACK));
+                }else{
+                    myText=new Phrase(pascorr.get(i).getDescripcion(),FontFactory.getFont(FontFactory.COURIER, 9, Font.NORMAL,Color.BLACK));
+                }
+                pasivo.setSimpleColumn(myText, 300, 750, 620, 317, 12, Element.ALIGN_LEFT);
+                pasivo.addText(Chunk.NEWLINE);
+            }
+            pasivo.addText(new Phrase("TOTAL PASIVO"));
+            pasivo.addText(Chunk.NEWLINE);
+            pasivo.addText(Chunk.NEWLINE);
+           
+            List<Cuenta> patri=this.patrimonioList;
+            pasivo.addText(new Phrase("PATRIMONIO"));
+            pasivo.addText(Chunk.NEWLINE);
+            for(int i=0;i<patri.size();i++){
+                Phrase myText=null;
+                if(patri.get(i).getDescripcion().length()>25){
+                    myText=new Phrase(patri.get(i).getDescripcion().substring(0, 24),FontFactory.getFont(FontFactory.COURIER, 9, Font.NORMAL,Color.BLACK));
+                }else{
+                    myText=new Phrase(patri.get(i).getDescripcion(),FontFactory.getFont(FontFactory.COURIER, 9, Font.NORMAL,Color.BLACK));
+                }
+                pasivo.setSimpleColumn(myText, 300, 750, 620, 317, 12, Element.ALIGN_LEFT);
+                pasivo.addText(Chunk.NEWLINE);
+            }
+            pasivo.addText(new Phrase("TOTAL PATRIMONIO"));
+            pasivo.addText(Chunk.NEWLINE);
+            pasivo.addText(new Phrase("TOTAL PASIVO+PATRIMONIO"));
+            pasivo.addText(Chunk.NEWLINE);
+            pasivo.go();
+            
+            ColumnText pasivosal=new ColumnText(writer.getDirectContent());
+           
+            //pasivosal.addText(new Phrase("PASIVO"));
+            pasivosal.addText(Chunk.NEWLINE);
+            //pasivosal.addText(new Phrase("PASIVO CORRIENTE"));
+            pasivosal.addText(Chunk.NEWLINE);
+            for(int i=0;i<pascorr.size();i++){
+                Phrase myText=null;
+                myText=new Phrase(String.valueOf(this.getSaldoCuenta(pascorr.get(i))),FontFactory.getFont(FontFactory.COURIER, 9, Font.NORMAL,Color.BLACK));
+                pasivosal.setSimpleColumn(myText, 400, 750, 570, 317, 12, Element.ALIGN_RIGHT);
+                pasivosal.addText(Chunk.NEWLINE);
+            }
+            //pasivo.addText(new Phrase("TOTAL PASIVO"));
+            pasivosal.addText(Chunk.NEWLINE);
+            pasivosal.addText(Chunk.NEWLINE);
+           
+            
+            //pasivosal.addText(new Phrase("PATRIMONIO"));
+            pasivosal.addText(Chunk.NEWLINE);
+            for(int i=0;i<patri.size();i++){
+                Phrase myText=null;
+                Double saldo=this.getSaldoCuenta(patri.get(i));
+                myText=new Phrase(String.valueOf(round(saldo,2)),FontFactory.getFont(FontFactory.COURIER, 9, Font.NORMAL,Color.BLACK));
+                pasivosal.setSimpleColumn(myText, 400, 750, 570, 317, 12, Element.ALIGN_RIGHT);
+                pasivosal.addText(Chunk.NEWLINE);
+            }
+            Double patrim=this.getTotalPatrimonio();
+            pasivosal.addText(new Phrase(String.valueOf(round(patrim,2))));
+            pasivosal.addText(Chunk.NEWLINE);
+            Double paspatri=this.getTotalPasivoPatrimonio();
+            pasivosal.addText(new Phrase(String.valueOf(round(paspatri,2))));
+            pasivosal.addText(Chunk.NEWLINE);
+            pasivosal.go();
+            
+            
+            document.close();  
+            content = new DefaultStreamedContent(new ByteArrayInputStream(out.toByteArray()), "application/pdf");  
+        } catch (Exception e) {  
+            e.printStackTrace();  
+        }  
+    }  
+  
+    public StreamedContent getContent() {  
+        return content;  
+    }  
+  
+    public void setContent(StreamedContent content) {  
+        this.content = content;  
+    }  
+    
+    public static double round(double value, int places) {
+    if (places < 0) throw new IllegalArgumentException();
+
+    long factor = (long) Math.pow(10, places);
+    value = value * factor;
+    long tmp = Math.round(value);
+    return (double) tmp / factor;
+}
 }

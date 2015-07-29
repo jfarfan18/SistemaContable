@@ -259,6 +259,28 @@ public class TransaccionController implements Serializable {
         return saldo;
     }
     
+    public float getSaldoByCuentaPeriodoDiario(String numerocuenta, Integer periodo, Integer diario){
+        if(periodo==null)
+            periodo=0;
+        
+        float saldo=0;
+        this.items=this.getFacade().findAll();
+        for(int i=0;i<items.size();i++){
+            if(items.get(i).getIdCuenta().getNumeroCuenta().equals(numerocuenta)){
+                if(items.get(i).getIdCuenta().getIdTipoCuenta().getIdTipoCuenta()==1 || items.get(i).getIdCuenta().getIdTipoCuenta().getIdTipoCuenta()==5){
+                    if(items.get(i).getIdAsiento().getPeriodo()<=periodo)
+                        if(items.get(i).getIdAsiento().getNumeroDiario()==diario)
+                            saldo=saldo+items.get(i).getDebe().floatValue()-items.get(i).getHaber().floatValue();
+                }else{
+                    if(items.get(i).getIdAsiento().getPeriodo()<=periodo)
+                        if(items.get(i).getIdAsiento().getNumeroDiario()==diario)    
+                            saldo=saldo-items.get(i).getDebe().floatValue()+items.get(i).getHaber().floatValue();
+                }
+            }
+        }
+        return saldo;
+    }
+    
     public float getSaldoDebeByCuenta(String numerocuenta){
         float saldo=0;
         this.items=this.getFacade().findAll();
@@ -285,6 +307,28 @@ public class TransaccionController implements Serializable {
                 if(items.get(i).getIdCuenta().getIdTipoCuenta().getIdTipoCuenta()==1 || items.get(i).getIdCuenta().getIdTipoCuenta().getIdTipoCuenta()==5){
                     if(items.get(i).getIdAsiento().getPeriodo()<=periodo){
                         saldo=saldo+items.get(i).getDebe().floatValue()-items.get(i).getHaber().floatValue();
+                    }
+                }else{
+                    return 0;
+                }
+            }
+        }
+        return saldo;
+    }
+    
+    public float getSaldoDebeByCuentaPeriodoDiario(String numerocuenta, Integer periodo, Integer diario){
+        if(periodo==null)
+            periodo=0;
+        
+        float saldo=0;
+        this.items=this.getFacade().findAll();
+        for(int i=0;i<items.size();i++){
+            if(items.get(i).getIdCuenta().getNumeroCuenta().equals(numerocuenta)){
+                if(items.get(i).getIdCuenta().getIdTipoCuenta().getIdTipoCuenta()==1 || items.get(i).getIdCuenta().getIdTipoCuenta().getIdTipoCuenta()==5){
+                    if(items.get(i).getIdAsiento().getPeriodo()<=periodo){
+                        if(items.get(i).getIdAsiento().getNumeroDiario()==diario){
+                            saldo=saldo+items.get(i).getDebe().floatValue()-items.get(i).getHaber().floatValue();
+                        }
                     }
                 }else{
                     return 0;
@@ -331,6 +375,30 @@ public class TransaccionController implements Serializable {
         return saldo;
     }
     
+    public float getSaldoHaberByCuentaPeriodoDiario(String numerocuenta, Integer periodo, Integer diario){
+        if(periodo==null)
+            periodo=0;
+        
+        float saldo=0;
+        this.items=this.getFacade().findAll();
+
+            for(int i=0;i<items.size();i++){
+                if(items.get(i).getIdCuenta().getNumeroCuenta().equals(numerocuenta)){
+                    if(items.get(i).getIdCuenta().getIdTipoCuenta().getIdTipoCuenta()==1 || items.get(i).getIdCuenta().getIdTipoCuenta().getIdTipoCuenta()==5){
+                        return 0;
+                    }else{
+                        if(items.get(i).getIdAsiento().getPeriodo()<=periodo){
+                            if(items.get(i).getIdAsiento().getNumeroDiario()==diario){
+                                saldo=saldo+items.get(i).getHaber().floatValue()-items.get(i).getDebe().floatValue();
+                            }
+                        }
+                    }
+                }
+            }
+        
+        return saldo;
+    }
+    
     public float getSumaDebeByCuenta(String numerocuenta){
         float debe=0;
         this.items=this.getFacade().findAll();
@@ -353,6 +421,25 @@ public class TransaccionController implements Serializable {
                 if(items.get(i).getIdAsiento().getPeriodo()<=periodo){
                     debe=debe+items.get(i).getDebe().floatValue();
                     System.out.println("Debe="+debe);
+                }
+            }
+        }
+        return debe;
+    }
+    
+    public float getSumaDebeByCuentaPeriodoDiario(String numerocuenta, Integer periodo, Integer diario){
+        if(periodo==null)
+            periodo=0;
+        
+        float debe=0;
+        this.items=this.getFacade().findAll();
+        for(int i=0;i<items.size();i++){
+            if(items.get(i).getIdCuenta().getNumeroCuenta().equals(numerocuenta)){
+                if(items.get(i).getIdAsiento().getPeriodo()<=periodo){
+                    if(items.get(i).getIdAsiento().getNumeroDiario()==diario){
+                        debe=debe+items.get(i).getDebe().floatValue();
+                        System.out.println("Debe="+debe);
+                    }
                 }
             }
         }
@@ -387,6 +474,25 @@ public class TransaccionController implements Serializable {
         return haber;
     }
    
+    public float getSumaHaberByCuentaPeriodoDiario(String numerocuenta, Integer periodo, Integer diario){
+        if(periodo==null)
+            periodo=0;
+        
+        float haber=0;
+        this.items=this.getFacade().findAll();
+        for(int i=0;i<items.size();i++){
+            if(items.get(i).getIdCuenta().getNumeroCuenta().equals(numerocuenta)){
+                if(items.get(i).getIdAsiento().getPeriodo()<=periodo){
+                    if(items.get(i).getIdAsiento().getNumeroDiario()==diario){
+                        haber=haber+items.get(i).getHaber().floatValue();
+                        System.out.println("Haber="+haber);
+                    }
+                }
+            }
+        }
+        return haber;
+    }
+    
     public boolean cuentaSeMovio(Integer idcuenta){
         this.items=this.getFacade().findAll();
         for(int i=0;i<items.size();i++){
