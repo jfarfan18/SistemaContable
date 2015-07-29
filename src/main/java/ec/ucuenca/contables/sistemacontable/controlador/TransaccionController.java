@@ -59,18 +59,18 @@ public class TransaccionController implements Serializable {
     }
 
     public void create() {
-        persist(PersistAction.CREATE, ResourceBundle.getBundle("/Bundle").getString("TransaccionCreated"));
+        persist(PersistAction.CREATE, "Transaccion creada satisfactoriamente");
         if (!JsfUtil.isValidationFailed()) {
             items = null;    // Invalidate list of items to trigger re-query.
         }
     }
 
     public void update() {
-        persist(PersistAction.UPDATE, ResourceBundle.getBundle("/Bundle").getString("TransaccionUpdated"));
+        persist(PersistAction.UPDATE, "Transaccion actualizada correctamente");
     }
 
     public void destroy() {
-        persist(PersistAction.DELETE, ResourceBundle.getBundle("/Bundle").getString("TransaccionDeleted"));
+        persist(PersistAction.DELETE, "Transaccion eliminada satisfactoriamente");
         if (!JsfUtil.isValidationFailed()) {
             selected = null; // Remove selection
             items = null;    // Invalidate list of items to trigger re-query.

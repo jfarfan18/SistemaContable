@@ -149,11 +149,11 @@ public class AsientoController implements Serializable {
             }
         }
         if (this.getTipoValor() == 'D') {
-            nuevaTransaccion.setDebe(new BigDecimal(this.valorTransaccion));
+            nuevaTransaccion.setDebe(new BigDecimal(String.valueOf(this.valorTransaccion)));
             nuevaTransaccion.setHaber(new BigDecimal(0));
         }
         if (this.getTipoValor() == 'H') {
-            nuevaTransaccion.setHaber(new BigDecimal(this.valorTransaccion));
+            nuevaTransaccion.setHaber(new BigDecimal(String.valueOf(this.valorTransaccion)));
             nuevaTransaccion.setDebe(new BigDecimal(0));
         }
         nuevaTransaccion.setIdAsiento(selected);
@@ -162,6 +162,15 @@ public class AsientoController implements Serializable {
         this.valorTransaccion = 0;
         System.out.println(selected.getTransaccionList().size());
     }
+    
+    public static double round(double value, int places) {
+    if (places < 0) throw new IllegalArgumentException();
+
+    long factor = (long) Math.pow(10, places);
+    value = value * factor;
+    long tmp = Math.round(value);
+    return (double) tmp / factor;
+}
 
     public void onCellEdit(CellEditEvent event) {
         Object oldValue = event.getOldValue();
@@ -290,11 +299,11 @@ public class AsientoController implements Serializable {
     }
 
     public void update() {
-        persist(PersistAction.UPDATE, ResourceBundle.getBundle("/Bundle").getString("AsientoUpdated"));
+        persist(PersistAction.UPDATE, "Asiento actualizado correctamente");
     }
 
     public void destroy() {
-        persist(PersistAction.DELETE, ResourceBundle.getBundle("/Bundle").getString("AsientoDeleted"));
+        persist(PersistAction.DELETE, "Asiento eliminado correctamente");
         if (!JsfUtil.isValidationFailed()) {
             selected = null; // Remove selection
             items = null;    // Invalidate list of items to trigger re-query.
