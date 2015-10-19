@@ -113,10 +113,7 @@ public class ProductoController implements Serializable {
     }
 
     public List<Producto> getItems() {
-        if (items == null) {
-        items = getFacade().findAll();
-        }
-        return items;
+        return getFacade().findAll();
     }
 
     private void persist(PersistAction persistAction, String successMessage) {

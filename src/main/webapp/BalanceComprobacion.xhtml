@@ -90,11 +90,11 @@
                 </p:column>  
       
                 <p:column style="text-align:right">  
-                    <h:outputText value="#{transaccionController.getSaldoDebeByCuentaPeriodoDiario(cuentas.numeroCuenta,asientoController.selectedperiodo,asientoController.selecteddiario)}" />   
+                    <h:outputText value="#{transaccionController.getSaldoBCByCuentaPeriodoDiario(cuentas,asientoController.selectedperiodo,asientoController.selecteddiario,1)}" />   
                 </p:column>  
                 
                 <p:column style="text-align:right">  
-                    <h:outputText value="#{transaccionController.getSaldoHaberByCuentaPeriodoDiario(cuentas.numeroCuenta,asientoController.selectedperiodo,asientoController.selecteddiario)}" /> 
+                    <h:outputText value="#{transaccionController.getSaldoBCByCuentaPeriodoDiario(cuentas,asientoController.selectedperiodo,asientoController.selecteddiario,2)}" /> 
                 </p:column>
       
                 <p:columnGroup type="footer">  

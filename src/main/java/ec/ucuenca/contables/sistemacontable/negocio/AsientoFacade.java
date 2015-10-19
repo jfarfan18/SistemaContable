@@ -37,7 +37,7 @@ public class AsientoFacade extends AbstractFacade<Asiento> {
         query.setParameter("numeroDiario",numeroDiario);
         List <Asiento> res= query.getResultList();
         if (res.isEmpty())
-            return 1;
+            return 0;
         else
             return res.get(res.size()-1).getNumeroAsiento();
     }
