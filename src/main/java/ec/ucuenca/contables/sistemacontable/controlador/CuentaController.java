@@ -130,7 +130,7 @@ public class CuentaController implements Serializable {
                 totalPatrimonio=totalPatrimonio+saldo;
         }
         Cuenta utilidad=new Cuenta();
-        utilidad.setDescripcion("Utilida (Pérdida)");
+        utilidad.setDescripcion("Utilidad del Ejercicio Actual");
         patrimonioList.add(utilidad);
         totalPatrimonio+=round(this.getUtilidadByPeriodo(periodo),2);
         for (Cuenta cuenta:quitar){
@@ -146,15 +146,15 @@ public class CuentaController implements Serializable {
     
     
     public double getTotalAcivo(){
-        return totalActivoCorriente+totalActivoFijo;
+        return Double.parseDouble(String.valueOf(round(totalActivoCorriente+totalActivoFijo,2)));
     }
     
     public double getTotalPasivoPatrimonio(){
-        return totalPasivoCorriente+totalPasivoLargo+totalPatrimonio;
+        return Double.parseDouble(String.valueOf(round(totalPasivoCorriente+totalPasivoLargo+totalPatrimonio,2)));
     }
     
     public double getSaldoCuenta(Cuenta cuenta){
-        if (cuenta.getDescripcion().equals("Utilida (Pérdida)"))
+        if (cuenta.getDescripcion().equals("Utilidad del Ejercicio Actual"))
             return round(this.getUtilidadByPeriodo(this.getPeriodo()),2);
         double res=0;
         List<Transaccion> lista=ejbFacadeTransaccion.getTransaccionPeriodo(cuenta.getIdCuenta(), numeroDiario, periodo);
@@ -571,6 +571,7 @@ public class CuentaController implements Serializable {
         FacesContext facesContext= FacesContext.getCurrentInstance();
         TransaccionController beanTransaccion = (TransaccionController)facesContext.getApplication().createValueBinding("#{transaccionController}").getValue(facesContext);
         for(int i=0;i<items.size();i++){
+            //totaldebe=totaldebe+beanTransaccion.getSaldoBCByCuentaPeriodoDiario(items.get(i), periodo, diario, 1);
             totaldebe=totaldebe+beanTransaccion.getSumaDebeByCuentaPeriodoDiario(items.get(i).getNumeroCuenta(),periodo,diario);
         }
         return totaldebe;
@@ -604,6 +605,7 @@ public class CuentaController implements Serializable {
         FacesContext facesContext= FacesContext.getCurrentInstance();
         TransaccionController beanTransaccion = (TransaccionController)facesContext.getApplication().createValueBinding("#{transaccionController}").getValue(facesContext);
         for(int i=0;i<items.size();i++){
+            //totalhaber=totalhaber+beanTransaccion.getSaldoBCByCuentaPeriodoDiario(items.get(i), periodo, diario, 1);
             totalhaber=totalhaber+beanTransaccion.getSumaHaberByCuentaPeriodoDiario(items.get(i).getNumeroCuenta(),periodo,diario);
         }
         return totalhaber;
@@ -637,7 +639,8 @@ public class CuentaController implements Serializable {
         FacesContext facesContext= FacesContext.getCurrentInstance();
         TransaccionController beanTransaccion = (TransaccionController)facesContext.getApplication().createValueBinding("#{transaccionController}").getValue(facesContext);
         for(int i=0;i<items.size();i++){
-            totaldebe=totaldebe+beanTransaccion.getSaldoDebeByCuentaPeriodoDiario(items.get(i).getNumeroCuenta(),periodo,diario);
+            totaldebe=totaldebe+beanTransaccion.getSaldoBCByCuentaPeriodoDiario(items.get(i), periodo, diario, 1);
+            //totaldebe=totaldebe+beanTransaccion.getSaldoDebeByCuentaPeriodoDiario(items.get(i).getNumeroCuenta(),periodo,diario);
         }
         return totaldebe;
     }
@@ -670,7 +673,8 @@ public class CuentaController implements Serializable {
         FacesContext facesContext= FacesContext.getCurrentInstance();
         TransaccionController beanTransaccion = (TransaccionController)facesContext.getApplication().createValueBinding("#{transaccionController}").getValue(facesContext);
         for(int i=0;i<items.size();i++){
-            totalhaber=totalhaber+beanTransaccion.getSaldoHaberByCuentaPeriodoDiario(items.get(i).getNumeroCuenta(),periodo,diario);
+            totalhaber=totalhaber+beanTransaccion.getSaldoBCByCuentaPeriodoDiario(items.get(i), periodo, diario, 2);
+            //totalhaber=totalhaber+beanTransaccion.getSaldoHaberByCuentaPeriodoDiario(items.get(i).getNumeroCuenta(),periodo,diario);
         }
         return totalhaber;
     }
@@ -1187,7 +1191,7 @@ public class CuentaController implements Serializable {
             for(int i=0;i<actcorr.size();i++){
                 Phrase myText=null;
 
-                myText=new Phrase(String.valueOf(this.getSaldoCuenta(actcorr.get(i))),FontFactory.getFont(FontFactory.HELVETICA, 10, Font.NORMAL,Color.BLACK));
+                myText=new Phrase(String.valueOf(round(this.getSaldoCuenta(actcorr.get(i)),2)),FontFactory.getFont(FontFactory.HELVETICA, 10, Font.NORMAL,Color.BLACK));
 
                 activosal.setSimpleColumn(myText, 200, 750, 270, 317, 12, Element.ALIGN_RIGHT);
                 activosal.addText(Chunk.NEWLINE);
@@ -1196,7 +1200,7 @@ public class CuentaController implements Serializable {
             activosal.addText(Chunk.NEWLINE);
             for(int i=0;i<actfij.size();i++){
                 Phrase myText=null;
-                myText=new Phrase(String.valueOf(this.getSaldoCuenta(actfij.get(i))),FontFactory.getFont(FontFactory.HELVETICA, 10, Font.NORMAL,Color.BLACK));
+                myText=new Phrase(String.valueOf(round(this.getSaldoCuenta(actfij.get(i)),2)),FontFactory.getFont(FontFactory.HELVETICA, 10, Font.NORMAL,Color.BLACK));
                 activosal.setSimpleColumn(myText, 200, 750, 270, 317, 12, Element.ALIGN_RIGHT);
                 activosal.addText(Chunk.NEWLINE);
             }
@@ -1272,7 +1276,7 @@ public class CuentaController implements Serializable {
             pasivosal.addText(Chunk.NEWLINE);
             for(int i=0;i<pascorr.size();i++){
                 Phrase myText=null;
-                myText=new Phrase(String.valueOf(this.getSaldoCuenta(pascorr.get(i))),FontFactory.getFont(FontFactory.HELVETICA, 10, Font.NORMAL,Color.BLACK));
+                myText=new Phrase(String.valueOf(round(this.getSaldoCuenta(pascorr.get(i)),2)),FontFactory.getFont(FontFactory.HELVETICA, 10, Font.NORMAL,Color.BLACK));
                 pasivosal.setSimpleColumn(myText, 400, 750, 570, 317, 12, Element.ALIGN_RIGHT);
                 pasivosal.addText(Chunk.NEWLINE);
             }
@@ -1281,7 +1285,7 @@ public class CuentaController implements Serializable {
             pasivosal.addText(Chunk.NEWLINE);
             for(int i=0;i<paslplaz.size();i++){
                 Phrase myText=null;
-                myText=new Phrase(String.valueOf(this.getSaldoCuenta(paslplaz.get(i))),FontFactory.getFont(FontFactory.HELVETICA, 10, Font.NORMAL,Color.BLACK));
+                myText=new Phrase(String.valueOf(round(this.getSaldoCuenta(paslplaz.get(i)),2)),FontFactory.getFont(FontFactory.HELVETICA, 10, Font.NORMAL,Color.BLACK));
              
                 pasivosal.setSimpleColumn(myText, 400, 750, 570, 317, 12, Element.ALIGN_RIGHT);
                 pasivosal.addText(Chunk.NEWLINE);

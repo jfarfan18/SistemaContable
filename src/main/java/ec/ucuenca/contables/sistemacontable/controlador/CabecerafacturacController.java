@@ -421,7 +421,7 @@ public class CabecerafacturacController implements Serializable {
         ProductoController beanProducto = (ProductoController)facesContext.getApplication().createValueBinding("#{productoController}").getValue(facesContext);
         beanProducto.setSelected(beanProducto.getProducto(idproducto.getIdproducto()));
         beanProducto.getSelected().setCosto(costo);
-        beanProducto.getSelected().setPrecio(costo.multiply(new BigDecimal(1.3)));
+        //beanProducto.getSelected().setPrecio(costo.multiply(new BigDecimal(1.3)));
         beanProducto.update();
     }
     

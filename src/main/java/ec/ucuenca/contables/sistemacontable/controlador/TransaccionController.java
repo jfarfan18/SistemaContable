@@ -3,6 +3,7 @@ package ec.ucuenca.contables.sistemacontable.controlador;
 import ec.ucuenca.contables.sistemacontable.modelo.Transaccion;
 import ec.ucuenca.contables.sistemacontable.controlador.util.JsfUtil;
 import ec.ucuenca.contables.sistemacontable.controlador.util.JsfUtil.PersistAction;
+import ec.ucuenca.contables.sistemacontable.modelo.Cuenta;
 import ec.ucuenca.contables.sistemacontable.negocio.TransaccionFacade;
 
 import java.io.Serializable;
@@ -321,7 +322,7 @@ public class TransaccionController implements Serializable {
             periodo=0;
         
         float saldo=0;
-        this.items=this.getFacade().findAll();
+
         for(int i=0;i<items.size();i++){
             if(items.get(i).getIdCuenta().getNumeroCuenta().equals(numerocuenta)){
                 if(items.get(i).getIdCuenta().getIdTipoCuenta().getIdTipoCuenta()==1 || items.get(i).getIdCuenta().getIdTipoCuenta().getIdTipoCuenta()==5 || items.get(i).getIdCuenta().getIdTipoCuenta().getIdTipoCuenta()==6){
@@ -381,7 +382,7 @@ public class TransaccionController implements Serializable {
         
         float saldo=0;
         this.items=this.getFacade().findAll();
-
+        
             for(int i=0;i<items.size();i++){
                 if(items.get(i).getIdCuenta().getNumeroCuenta().equals(numerocuenta)){
                     if(items.get(i).getIdCuenta().getIdTipoCuenta().getIdTipoCuenta()==1 || items.get(i).getIdCuenta().getIdTipoCuenta().getIdTipoCuenta()==5 || items.get(i).getIdCuenta().getIdTipoCuenta().getIdTipoCuenta()==6){
@@ -395,7 +396,6 @@ public class TransaccionController implements Serializable {
                     }
                 }
             }
-        
         return saldo;
     }
     
@@ -501,5 +501,36 @@ public class TransaccionController implements Serializable {
             }
         }
         return false;
+    }
+    
+    public float getSaldoBCByCuentaPeriodoDiario(Cuenta cuenta, Integer periodo, Integer diario, int dh){
+        float saldo=0;
+        saldo=this.getSaldoByCuentaPeriodoDiario(cuenta.getNumeroCuenta(), periodo, diario);
+        if(dh==1){
+            if(cuenta.getIdTipoCuenta().getIdTipoCuenta()==1 || cuenta.getIdTipoCuenta().getIdTipoCuenta()==5 || cuenta.getIdTipoCuenta().getIdTipoCuenta()==6){
+                if(saldo<0){
+                    return 0;
+                }else{
+                    return saldo;
+                }
+            }else{
+                if(saldo<0){
+                    return saldo*(-1);
+                }
+            }
+        }else if(dh==2){
+            if(cuenta.getIdTipoCuenta().getIdTipoCuenta()==2 || cuenta.getIdTipoCuenta().getIdTipoCuenta()==3 || cuenta.getIdTipoCuenta().getIdTipoCuenta()==4){
+                if(saldo<0){
+                    return 0;
+                }else{
+                    return saldo;
+                }
+            }else{
+                 if(saldo<0){
+                    return saldo*(-1);
+                }
+            }
+        }
+        return 0;
     }
 }
